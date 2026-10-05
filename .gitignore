@@ -1,0 +1,13 @@
+# 원자료·가공 데이터는 용량이 커서 git에서 제외 (받는 절차는 data/README.md에 기록)
+data/raw/
+data/processed/
+*.parquet
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
