@@ -1,0 +1,891 @@
+_id,Auction Name,Primary Fuel Type,Generating Technology Class,De Rating Factor
+1,2016-17 (TR) Transitional Capacity Auction,Biomass/Coal/EfW,Coal/biomass,0.8786
+2,2016-17 (TR) Transitional Capacity Auction,DSR,DSR,0.868
+3,2016-17 (TR) Transitional Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.89
+4,2016-17 (TR) Transitional Capacity Auction,Gas,CHP and autogeneration,0.9
+5,2016-17 (TR) Transitional Capacity Auction,Gas,OCGT and Reciprocating Engines,0.9454
+6,2016-17 (TR) Transitional Capacity Auction,Hydro,Hydro,0.8487
+7,2016-17 (TR) Transitional Capacity Auction,Interconnector,BritNED (Netherlands),0.69
+8,2016-17 (TR) Transitional Capacity Auction,Interconnector,IFA (France),0.52
+9,2016-17 (TR) Transitional Capacity Auction,Interconnector,Eleclink (France),0.56
+10,2016-17 (TR) Transitional Capacity Auction,Interconnector,NEMO (Belgium),0.54
+11,2016-17 (TR) Transitional Capacity Auction,Interconnector,Moyle and EWIC (Ireland),0.06
+12,2016-17 (TR) Transitional Capacity Auction,Nuclear,Nuclear,0.8231
+13,2016-17 (TR) Transitional Capacity Auction,Oil,Oil-fired steam generators,0.8461
+14,2016-17 (TR) Transitional Capacity Auction,Storage,Storage,0.9663
+15,2017-18 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal/biomass,0.8692
+16,2017-18 (T-1) One Year Ahead Capacity Auction,DSR,DSR,0.8688
+17,2017-18 (T-1) One Year Ahead Capacity Auction,Diesel,OCGT and Reciprocating Engines (Fuel Type - Diesel),0.9417
+18,2017-18 (T-1) One Year Ahead Capacity Auction,Gas,OCGT and Reciprocating Engines (Fuel Type - Gas),0.9417
+19,2017-18 (T-1) One Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.876
+20,2017-18 (T-1) One Year Ahead Capacity Auction,Gas,CHP and autogeneration,0.9
+21,2017-18 (T-1) One Year Ahead Capacity Auction,Gas,OCGT and Reciprocating Engines,0.9417
+22,2017-18 (T-1) One Year Ahead Capacity Auction,Hydro,Hydro,0.8616
+23,2017-18 (T-1) One Year Ahead Capacity Auction,Interconnector,IFA (France),0.59
+24,2017-18 (T-1) One Year Ahead Capacity Auction,Interconnector,Moyle and EWIC (Ireland),0.3
+25,2017-18 (T-1) One Year Ahead Capacity Auction,Interconnector,BritNED (Netherlands),0.74
+26,2017-18 (T-1) One Year Ahead Capacity Auction,Nuclear,Nuclear,0.8436
+27,2017-18 (T-1) One Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.8544
+28,2017-18 (T-1) One Year Ahead Capacity Auction,Storage,Storage,0.9629
+29,2017-18 (TR) Transitional Capacity Auction,DSR,DSR,0.8688
+30,2018-19 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal/biomass,0.8758
+31,2018-19 (T-1) One Year Ahead Capacity Auction,DSR,DSR,0.8634
+32,2018-19 (T-1) One Year Ahead Capacity Auction,Diesel,OCGT and Reciprocating Engines (Fuel Type - Diesel),0.9481
+33,2018-19 (T-1) One Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9481
+34,2018-19 (T-1) One Year Ahead Capacity Auction,Gas,CHP and autogeneration,0.9
+35,2018-19 (T-1) One Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9
+36,2018-19 (T-1) One Year Ahead Capacity Auction,Gas,OCGT and Reciprocating Engines,0.9481
+37,2018-19 (T-1) One Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9481
+38,2018-19 (T-1) One Year Ahead Capacity Auction,Gas,OCGT and Reciprocating Engines (Fuel Type - Gas),0.9481
+39,2018-19 (T-1) One Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.8854
+40,2018-19 (T-1) One Year Ahead Capacity Auction,Hydro,Hydro,0.8792
+41,2018-19 (T-1) One Year Ahead Capacity Auction,Interconnector,EWIC (Ireland),0.59
+42,2018-19 (T-1) One Year Ahead Capacity Auction,Nuclear,Nuclear,0.8524
+43,2018-19 (T-1) One Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.8804
+44,2018-19 (T-1) One Year Ahead Capacity Auction,Storage,Storage,0.9611
+45,2018-19 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8764
+46,2018-19 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.8764
+47,2018-19 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.8764
+48,2018-19 (T-4) Four Year Ahead Capacity Auction,DSR,DSR,0.897
+49,2018-19 (T-4) Four Year Ahead Capacity Auction,Diesel,OCGT and Reciprocating Engines (Fuel Type - Diesel),0.9361
+50,2018-19 (T-4) Four Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9361
+51,2018-19 (T-4) Four Year Ahead Capacity Auction,Gas,OCGT and Reciprocating Engines (Fuel Type - Gas),0.9361
+52,2018-19 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9
+53,2018-19 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.88
+54,2018-19 (T-4) Four Year Ahead Capacity Auction,Hydro,Hydro,0.8361
+55,2018-19 (T-4) Four Year Ahead Capacity Auction,Nuclear,Nuclear,0.8139
+56,2018-19 (T-4) Four Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.821
+57,2018-19 (T-4) Four Year Ahead Capacity Auction,Storage,Storage,0.9738
+58,2019-20 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8656
+59,2019-20 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.8656
+60,2019-20 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.8656
+61,2019-20 (T-1) One Year Ahead Capacity Auction,DSR,DSR,0.8428
+62,2019-20 (T-1) One Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.8905
+63,2019-20 (T-1) One Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9514
+64,2019-20 (T-1) One Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9514
+65,2019-20 (T-1) One Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9
+66,2019-20 (T-1) One Year Ahead Capacity Auction,Hydro,Hydro,0.9009
+67,2019-20 (T-1) One Year Ahead Capacity Auction,Interconnector,NEMO (Belgium),0.68
+68,2019-20 (T-1) One Year Ahead Capacity Auction,Interconnector,Eleclink (France),0.73
+69,2019-20 (T-1) One Year Ahead Capacity Auction,Interconnector,EWIC (Ireland),0.43
+70,2019-20 (T-1) One Year Ahead Capacity Auction,Interconnector,Moyle (Northern Ireland),0.26
+71,2019-20 (T-1) One Year Ahead Capacity Auction,Interconnector,IFA2 (France),0.69
+72,2019-20 (T-1) One Year Ahead Capacity Auction,Nuclear,Nuclear,0.842
+73,2019-20 (T-1) One Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.8913
+74,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 9h),0.9552
+75,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 8.5h),0.9552
+76,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.8157
+77,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 10h),0.9552
+78,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 10.5h),0.9552
+79,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.9552
+80,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 11h),0.9552
+81,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 11.5h),0.9552
+82,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 12h),0.9552
+83,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 9.5h),0.9552
+84,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 7.5h),0.9552
+85,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 8h),0.9552
+86,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 6.5h),0.9552
+87,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 7h),0.9552
+88,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.7196
+89,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.628
+90,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.5
+91,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.3421
+92,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.7809
+93,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.9552
+94,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.9552
+95,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h),0.9552
+96,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 6h),0.9552
+97,2019-20 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.175
+98,2019-20 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal/biomass,0.8786
+99,2019-20 (T-4) Four Year Ahead Capacity Auction,DSR,DSR,0.868
+100,2019-20 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.89
+101,2019-20 (T-4) Four Year Ahead Capacity Auction,Gas,CHP and autogeneration,0.9
+102,2019-20 (T-4) Four Year Ahead Capacity Auction,Gas,OCGT and Reciprocating Engines,0.9454
+103,2019-20 (T-4) Four Year Ahead Capacity Auction,Hydro,Hydro,0.8487
+104,2019-20 (T-4) Four Year Ahead Capacity Auction,Interconnector,NEMO (Belgium),0.54
+105,2019-20 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA (France),0.52
+106,2019-20 (T-4) Four Year Ahead Capacity Auction,Interconnector,Eleclink (France),0.56
+107,2019-20 (T-4) Four Year Ahead Capacity Auction,Interconnector,BritNED (Netherlands),0.69
+108,2019-20 (T-4) Four Year Ahead Capacity Auction,Interconnector,Moyle and EWIC (Ireland),0.06
+109,2019-20 (T-4) Four Year Ahead Capacity Auction,Nuclear,Nuclear,0.8231
+110,2019-20 (T-4) Four Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.8461
+111,2019-20 (T-4) Four Year Ahead Capacity Auction,Storage,Storage,0.9663
+112,2020-21 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.8581
+113,2020-21 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.8581
+114,2020-21 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8581
+115,2020-21 (T-1) One Year Ahead Capacity Auction,DSR,DSR,0.8614
+116,2020-21 (T-1) One Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9
+117,2020-21 (T-1) One Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9498
+118,2020-21 (T-1) One Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9
+119,2020-21 (T-1) One Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9498
+120,2020-21 (T-1) One Year Ahead Capacity Auction,Hydro,Hydro,0.8965
+121,2020-21 (T-1) One Year Ahead Capacity Auction,Interconnector,NEMO (Belgium),0.82
+122,2020-21 (T-1) One Year Ahead Capacity Auction,Interconnector,Eleclink (France),0.92
+123,2020-21 (T-1) One Year Ahead Capacity Auction,Interconnector,IFA2 (France),0.87
+124,2020-21 (T-1) One Year Ahead Capacity Auction,Nuclear,Nuclear,0.8122
+125,2020-21 (T-1) One Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.9126
+126,2020-21 (T-1) One Year Ahead Capacity Auction,Solar,Solar Photovoltaic,0.0234
+127,2020-21 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.7298
+128,2020-21 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.9508
+129,2020-21 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.7038
+130,2020-21 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.6593
+131,2020-21 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.5868
+132,2020-21 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.4866
+133,2020-21 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h+),0.9508
+134,2020-21 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.3696
+135,2020-21 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.7503
+136,2020-21 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.247
+137,2020-21 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.1226
+138,2020-21 (T-1) One Year Ahead Capacity Auction,Wind,Onshore Wind,0.0898
+139,2020-21 (T-1) One Year Ahead Capacity Auction,Wind,Offshore Wind,0.1445
+140,2020-21 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal/biomass,0.8692
+141,2020-21 (T-4) Four Year Ahead Capacity Auction,DSR,DSR,0.8688
+142,2020-21 (T-4) Four Year Ahead Capacity Auction,Diesel,OCGT and Reciprocating Engines (Fuel Type - Diesel),0.9417
+143,2020-21 (T-4) Four Year Ahead Capacity Auction,Gas,CHP and autogeneration,0.9
+144,2020-21 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9
+145,2020-21 (T-4) Four Year Ahead Capacity Auction,Gas,OCGT and Reciprocating Engines,0.9417
+146,2020-21 (T-4) Four Year Ahead Capacity Auction,Gas,OCGT and Reciprocating Engines (Fuel Type - Gas),0.9417
+147,2020-21 (T-4) Four Year Ahead Capacity Auction,Hydro,Hydro,0.8616
+148,2020-21 (T-4) Four Year Ahead Capacity Auction,Interconnector,Moyle and EWIC (Ireland),0.26
+149,2020-21 (T-4) Four Year Ahead Capacity Auction,Interconnector,NEMO (Belgium),0.77
+150,2020-21 (T-4) Four Year Ahead Capacity Auction,Interconnector,BritNED (Netherlands),0.74
+151,2020-21 (T-4) Four Year Ahead Capacity Auction,Interconnector,Eleclink (France),0.65
+152,2020-21 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA (France),0.6
+153,2020-21 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA2 (France),0.62
+154,2020-21 (T-4) Four Year Ahead Capacity Auction,Interconnector,NSL (Norway),0.78
+155,2020-21 (T-4) Four Year Ahead Capacity Auction,Nuclear,Nuclear,0.8436
+156,2020-21 (T-4) Four Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.8544
+157,2020-21 (T-4) Four Year Ahead Capacity Auction,Storage,Storage,0.9629
+158,2021-22 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.848
+159,2021-22 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.848
+160,2021-22 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.848
+161,2021-22 (T-1) One Year Ahead Capacity Auction,DSR,DSR,0.7921
+162,2021-22 (T-1) One Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9
+163,2021-22 (T-1) One Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9522
+164,2021-22 (T-1) One Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9
+165,2021-22 (T-1) One Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9522
+166,2021-22 (T-1) One Year Ahead Capacity Auction,Hydro,Hydro,0.9099
+167,2021-22 (T-1) One Year Ahead Capacity Auction,Interconnector,BritNED (Netherlands),0.0
+168,2021-22 (T-1) One Year Ahead Capacity Auction,Interconnector,EWIC (Ireland),0.59
+169,2021-22 (T-1) One Year Ahead Capacity Auction,Nuclear,Nuclear,0.8143
+170,2021-22 (T-1) One Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.9522
+171,2021-22 (T-1) One Year Ahead Capacity Auction,Solar,Solar Photovoltaic,0.0254
+172,2021-22 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.3771
+173,2021-22 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.7135
+174,2021-22 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.732
+175,2021-22 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.9464
+176,2021-22 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.5823
+177,2021-22 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.4917
+178,2021-22 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.2532
+179,2021-22 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h+),0.9464
+180,2021-22 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.6876
+181,2021-22 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.1275
+182,2021-22 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.647
+183,2021-22 (T-1) One Year Ahead Capacity Auction,Wind,Onshore Wind,0.0801
+184,2021-22 (T-1) One Year Ahead Capacity Auction,Wind,Offshore Wind,0.1211
+185,2021-22 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.8758
+186,2021-22 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal/biomass,0.8758
+187,2021-22 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8758
+188,2021-22 (T-4) Four Year Ahead Capacity Auction,DSR,DSR,0.8634
+189,2021-22 (T-4) Four Year Ahead Capacity Auction,Diesel,OCGT and Reciprocating Engines (Fuel Type - Diesel),0.9481
+190,2021-22 (T-4) Four Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9481
+191,2021-22 (T-4) Four Year Ahead Capacity Auction,Gas,OCGT and Reciprocating Engines (Fuel Type - Gas),0.9481
+192,2021-22 (T-4) Four Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9481
+193,2021-22 (T-4) Four Year Ahead Capacity Auction,Gas,OCGT and Reciprocating Engines,0.9481
+194,2021-22 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9
+195,2021-22 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9
+196,2021-22 (T-4) Four Year Ahead Capacity Auction,Gas,CHP and autogeneration,0.9
+197,2021-22 (T-4) Four Year Ahead Capacity Auction,Hydro,Hydro,0.8792
+198,2021-22 (T-4) Four Year Ahead Capacity Auction,Interconnector,NEMO (Belgium),0.75
+199,2021-22 (T-4) Four Year Ahead Capacity Auction,Interconnector,BritNED (Netherlands),0.76
+200,2021-22 (T-4) Four Year Ahead Capacity Auction,Interconnector,Eleclink (France),0.69
+201,2021-22 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA (France),0.63
+202,2021-22 (T-4) Four Year Ahead Capacity Auction,Interconnector,EWIC (Ireland),0.59
+203,2021-22 (T-4) Four Year Ahead Capacity Auction,Interconnector,Moyle (Northern Ireland),0.14
+204,2021-22 (T-4) Four Year Ahead Capacity Auction,Interconnector,NSL (Norway),0.85
+205,2021-22 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA2 (France),0.65
+206,2021-22 (T-4) Four Year Ahead Capacity Auction,Nuclear,Nuclear,0.8524
+207,2021-22 (T-4) Four Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.8804
+208,2021-22 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.9611
+209,2021-22 (T-4) Four Year Ahead Capacity Auction,Storage,Storage,0.9611
+210,2021-22 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.4041
+211,2022-23 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.8855
+212,2022-23 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8855
+213,2022-23 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.8011
+214,2022-23 (T-1) One Year Ahead Capacity Auction,DSR,DSR,0.7845
+215,2022-23 (T-1) One Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9547
+216,2022-23 (T-1) One Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9092
+217,2022-23 (T-1) One Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9092
+218,2022-23 (T-1) One Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9547
+219,2022-23 (T-1) One Year Ahead Capacity Auction,Hydro,Hydro,0.9115
+220,2022-23 (T-1) One Year Ahead Capacity Auction,Nuclear,Nuclear,0.8044
+221,2022-23 (T-1) One Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.9547
+222,2022-23 (T-1) One Year Ahead Capacity Auction,Solar,Solar Photovoltaic,0.0215
+223,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 6.5h),0.9461
+224,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 6h),0.9461
+225,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 7.5h),0.9461
+226,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 7h),0.9461
+227,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 8h),0.9461
+844,2030-31 (T-4) Four Year Ahead Capacity Auction,DSR,DSR,0.8118
+228,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.1294
+229,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.2587
+230,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.3862
+231,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.5063
+232,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 8.5h),0.9461
+233,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 9h),0.9461
+234,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 9.5h),0.9461
+235,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 10h),0.9461
+236,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 10.5h),0.9461
+237,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 11h),0.9461
+238,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.6061
+239,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 12h),0.9461
+240,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.6782
+241,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h+),0.9461
+242,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.7225
+243,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h),0.9461
+244,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.7484
+245,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.9461
+246,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.9461
+247,2022-23 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 11.5h),0.9461
+248,2022-23 (T-1) One Year Ahead Capacity Auction,Wind,Onshore Wind,0.0781
+249,2022-23 (T-1) One Year Ahead Capacity Auction,Wind,Offshore Wind,0.1133
+250,2022-23 (T-3) Three Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.8581
+251,2022-23 (T-3) Three Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.8581
+252,2022-23 (T-3) Three Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8581
+253,2022-23 (T-3) Three Year Ahead Capacity Auction,DSR,DSR,0.8614
+254,2022-23 (T-3) Three Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9
+255,2022-23 (T-3) Three Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9498
+256,2022-23 (T-3) Three Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9
+257,2022-23 (T-3) Three Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9498
+258,2022-23 (T-3) Three Year Ahead Capacity Auction,Hydro,Hydro,0.8965
+259,2022-23 (T-3) Three Year Ahead Capacity Auction,Interconnector,Eleclink (France),0.75
+260,2022-23 (T-3) Three Year Ahead Capacity Auction,Interconnector,IFA2 (France),0.71
+261,2022-23 (T-3) Three Year Ahead Capacity Auction,Interconnector,NSL (Norway),0.88
+262,2022-23 (T-3) Three Year Ahead Capacity Auction,Interconnector,Moyle (Northern Ireland),0.56
+263,2022-23 (T-3) Three Year Ahead Capacity Auction,Interconnector,EWIC (Ireland),0.56
+264,2022-23 (T-3) Three Year Ahead Capacity Auction,Interconnector,BritNED (Netherlands),0.5
+265,2022-23 (T-3) Three Year Ahead Capacity Auction,Interconnector,IFA (France),0.69
+266,2022-23 (T-3) Three Year Ahead Capacity Auction,Interconnector,NEMO (Belgium),0.58
+267,2022-23 (T-3) Three Year Ahead Capacity Auction,Nuclear,Nuclear,0.8122
+268,2022-23 (T-3) Three Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.9126
+269,2022-23 (T-3) Three Year Ahead Capacity Auction,Solar,Solar Photovoltaic,0.0313
+270,2022-23 (T-3) Three Year Ahead Capacity Auction,Storage,Storage (Duration 12h),0.9508
+271,2022-23 (T-3) Three Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h+),0.9508
+272,2022-23 (T-3) Three Year Ahead Capacity Auction,Storage,Storage (Duration 6h),0.9508
+273,2022-23 (T-3) Three Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.4253
+274,2022-23 (T-3) Three Year Ahead Capacity Auction,Storage,Storage,0.2136
+275,2022-23 (T-3) Three Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.7113
+276,2022-23 (T-3) Three Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h),0.9508
+277,2022-23 (T-3) Three Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.6927
+278,2022-23 (T-3) Three Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.3194
+279,2022-23 (T-3) Three Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.6704
+280,2022-23 (T-3) Three Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.1059
+281,2022-23 (T-3) Three Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.5218
+282,2022-23 (T-3) Three Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.5943
+283,2022-23 (T-3) Three Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.2136
+284,2022-23 (T-3) Three Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.6407
+285,2022-23 (T-3) Three Year Ahead Capacity Auction,Wind,Onshore Wind,0.082
+286,2022-23 (T-3) Three Year Ahead Capacity Auction,Wind,Offshore Wind,0.123
+287,2022-23 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.8656
+288,2022-23 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8656
+289,2022-23 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.8656
+290,2022-23 (T-4) Four Year Ahead Capacity Auction,DSR,DSR,0.8428
+291,2022-23 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9
+292,2022-23 (T-4) Four Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9514
+293,2022-23 (T-4) Four Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9514
+294,2022-23 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9
+295,2022-23 (T-4) Four Year Ahead Capacity Auction,Hydro,Hydro,0.9009
+296,2022-23 (T-4) Four Year Ahead Capacity Auction,Interconnector,NSL (Norway),0.87
+297,2022-23 (T-4) Four Year Ahead Capacity Auction,Interconnector,Moyle (Northern Ireland),0.33
+298,2022-23 (T-4) Four Year Ahead Capacity Auction,Interconnector,NEMO (Belgium),0.5
+299,2022-23 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA2 (France),0.67
+300,2022-23 (T-4) Four Year Ahead Capacity Auction,Interconnector,BritNED (Netherlands),0.43
+301,2022-23 (T-4) Four Year Ahead Capacity Auction,Interconnector,EWIC (Ireland),0.33
+302,2022-23 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA (France),0.66
+303,2022-23 (T-4) Four Year Ahead Capacity Auction,Interconnector,Eleclink (France),0.71
+304,2022-23 (T-4) Four Year Ahead Capacity Auction,Nuclear,Nuclear,0.842
+305,2022-23 (T-4) Four Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.8913
+306,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 11h),0.9552
+307,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 10.5h),0.9552
+308,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 10h),0.9552
+309,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 9.5h),0.9552
+310,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 9h),0.9552
+311,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.9552
+312,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 8h),0.9552
+313,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 7.5h),0.9552
+314,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 7h),0.9552
+315,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 6.5h),0.9552
+316,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 6h),0.9552
+317,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h),0.9552
+318,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 8.5h),0.9552
+319,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.8
+320,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.7778
+321,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.7376
+322,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.6682
+323,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.5668
+324,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.4357
+325,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.294
+326,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.1491
+327,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 11.5h),0.9552
+328,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.9552
+329,2022-23 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 12h),0.9552
+330,2023-24 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.804
+331,2023-24 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8799
+332,2023-24 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.8799
+333,2023-24 (T-1) One Year Ahead Capacity Auction,DSR,DSR,0.7145
+334,2023-24 (T-1) One Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9518
+335,2023-24 (T-1) One Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9518
+336,2023-24 (T-1) One Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9134
+337,2023-24 (T-1) One Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9134
+338,2023-24 (T-1) One Year Ahead Capacity Auction,Hydro,Hydro,0.9113
+339,2023-24 (T-1) One Year Ahead Capacity Auction,Nuclear,Nuclear,0.7825
+340,2023-24 (T-1) One Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.9518
+341,2023-24 (T-1) One Year Ahead Capacity Auction,Solar,Solar Photovoltaic,0.0332
+342,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 9h),0.9525
+343,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 8.5h),0.9525
+344,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 8h),0.9525
+345,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 7.5h),0.9525
+346,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 7h),0.9525
+347,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 6.5h),0.9525
+348,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 6h),0.9525
+349,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h),0.6902
+350,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.5879
+351,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.6474
+352,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 9.5h),0.9525
+353,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.5339
+354,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.4595
+355,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.3702
+356,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.279
+357,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.186
+358,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.093
+359,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.6697
+360,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 10h),0.9525
+361,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.6232
+362,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 12h),0.9525
+363,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 11.5h),0.9525
+364,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 11h),0.9525
+365,2023-24 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 10.5h),0.9525
+366,2023-24 (T-1) One Year Ahead Capacity Auction,Wind,Onshore Wind,0.082
+367,2023-24 (T-1) One Year Ahead Capacity Auction,Wind,Offshore Wind,0.1133
+368,2023-24 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.8581
+369,2023-24 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.8581
+370,2023-24 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8581
+371,2023-24 (T-4) Four Year Ahead Capacity Auction,DSR,DSR,0.8614
+372,2023-24 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9
+373,2023-24 (T-4) Four Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9498
+374,2023-24 (T-4) Four Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9498
+375,2023-24 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9
+376,2023-24 (T-4) Four Year Ahead Capacity Auction,Hydro,Hydro,0.8965
+377,2023-24 (T-4) Four Year Ahead Capacity Auction,Interconnector,Eleclink (France),0.69
+378,2023-24 (T-4) Four Year Ahead Capacity Auction,Interconnector,NEMO (Belgium),0.46
+379,2023-24 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA2 (France),0.65
+380,2023-24 (T-4) Four Year Ahead Capacity Auction,Interconnector,NSL (Norway),0.88
+381,2023-24 (T-4) Four Year Ahead Capacity Auction,Interconnector,Moyle (Northern Ireland),0.44
+382,2023-24 (T-4) Four Year Ahead Capacity Auction,Interconnector,EWIC (Ireland),0.44
+383,2023-24 (T-4) Four Year Ahead Capacity Auction,Interconnector,BritNED (Netherlands),0.36
+384,2023-24 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA (France),0.63
+385,2023-24 (T-4) Four Year Ahead Capacity Auction,Interconnector,VikingLink (Denmark),0.32
+386,2023-24 (T-4) Four Year Ahead Capacity Auction,Interconnector,Greenlink (Republic of Ireland),0.42
+387,2023-24 (T-4) Four Year Ahead Capacity Auction,Nuclear,Nuclear,0.8122
+388,2023-24 (T-4) Four Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.9126
+389,2023-24 (T-4) Four Year Ahead Capacity Auction,Solar,Solar Photovoltaic,0.0322
+390,2023-24 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h),0.9508
+391,2023-24 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.6816
+392,2023-24 (T-4) Four Year Ahead Capacity Auction,Storage,Storage,0.1059
+393,2023-24 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.702
+394,2023-24 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 7h),0.9508
+395,2023-24 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.6593
+396,2023-24 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 6h),0.9508
+397,2023-24 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.6277
+398,2023-24 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 12h),0.9508
+399,2023-24 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.5794
+400,2023-24 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.5051
+401,2023-24 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.4104
+402,2023-24 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.3083
+403,2023-24 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.2043
+404,2023-24 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.1012
+405,2023-24 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h+),0.9508
+406,2023-24 (T-4) Four Year Ahead Capacity Auction,Wind,Offshore Wind,0.1055
+407,2023-24 (T-4) Four Year Ahead Capacity Auction,Wind,Onshore Wind,0.0742
+408,2024-25 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.8852
+409,2024-25 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8852
+410,2024-25 (T-1) One Year Ahead Capacity Auction,DSR,DSR,0.7902
+411,2024-25 (T-1) One Year Ahead Capacity Auction,Gas,OCGT and Reciprocating Engines (Fuel Type - Gas),0.9435
+412,2024-25 (T-1) One Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9159
+413,2024-25 (T-1) One Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9435
+414,2024-25 (T-1) One Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9435
+415,2024-25 (T-1) One Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9159
+416,2024-25 (T-1) One Year Ahead Capacity Auction,Hydro,Hydro,0.912
+417,2024-25 (T-1) One Year Ahead Capacity Auction,Nuclear,Nuclear,0.78
+418,2024-25 (T-1) One Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.9435
+419,2024-25 (T-1) One Year Ahead Capacity Auction,Solar,Solar Photovoltaic,0.0508
+420,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 6h),0.5806
+421,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 12h),0.9437
+422,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 11.5h),0.9437
+423,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.341
+424,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.0571
+425,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 10.5h),0.9437
+426,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 10h),0.9437
+427,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 9.5h),0.9437
+428,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 11h),0.9437
+429,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 9h),0.9437
+430,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h),0.5493
+431,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 8.5h),0.9437
+432,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.5188
+433,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.4857
+434,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 8h),0.9437
+435,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.446
+436,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.3963
+437,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 7.5h),0.6727
+438,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 7h),0.6414
+439,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 6.5h),0.611
+440,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.1134
+441,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.1705
+442,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.2267
+443,2024-25 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.2838
+444,2024-25 (T-1) One Year Ahead Capacity Auction,Wind,Onshore Wind,0.084
+445,2024-25 (T-1) One Year Ahead Capacity Auction,Wind,Offshore Wind,0.1152
+446,2024-25 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.848
+447,2024-25 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.848
+448,2024-25 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.848
+449,2024-25 (T-4) Four Year Ahead Capacity Auction,DSR,DSR,0.7921
+450,2024-25 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9
+451,2024-25 (T-4) Four Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9522
+452,2024-25 (T-4) Four Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9522
+453,2024-25 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9
+454,2024-25 (T-4) Four Year Ahead Capacity Auction,Hydro,Hydro,0.9099
+455,2024-25 (T-4) Four Year Ahead Capacity Auction,Interconnector,Moyle (Northern Ireland),0.49
+456,2024-25 (T-4) Four Year Ahead Capacity Auction,Interconnector,Eleclink (France),0.75
+457,2024-25 (T-4) Four Year Ahead Capacity Auction,Interconnector,NSL (Norway),0.9
+458,2024-25 (T-4) Four Year Ahead Capacity Auction,Interconnector,BritNED (Netherlands),0.61
+459,2024-25 (T-4) Four Year Ahead Capacity Auction,Interconnector,NEMO (Belgium),0.68
+460,2024-25 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA2 (France),0.71
+461,2024-25 (T-4) Four Year Ahead Capacity Auction,Interconnector,EWIC (Ireland),0.49
+462,2024-25 (T-4) Four Year Ahead Capacity Auction,Interconnector,VikingLink (Denmark),0.52
+463,2024-25 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA (France),0.69
+464,2024-25 (T-4) Four Year Ahead Capacity Auction,Nuclear,Nuclear,0.8143
+465,2024-25 (T-4) Four Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.9522
+466,2024-25 (T-4) Four Year Ahead Capacity Auction,Solar,Solar Photovoltaic,0.0234
+467,2024-25 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 12h),0.9464
+468,2024-25 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h+),0.9464
+469,2024-25 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 6h),0.9464
+470,2024-25 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.6618
+471,2024-25 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h),0.9464
+472,2024-25 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.7579
+473,2024-25 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 7h),0.9464
+474,2024-25 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.7376
+475,2024-25 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.1238
+476,2024-25 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.7098
+477,2024-25 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.2477
+478,2024-25 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.3697
+479,2024-25 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.9464
+480,2024-25 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.4862
+481,2024-25 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.5878
+482,2024-25 (T-4) Four Year Ahead Capacity Auction,Wind,Onshore Wind,0.0781
+483,2024-25 (T-4) Four Year Ahead Capacity Auction,Wind,Offshore Wind,0.1113
+484,2025-26 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.8803
+485,2025-26 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8803
+486,2025-26 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.0
+487,2025-26 (T-1) One Year Ahead Capacity Auction,DSR,DSR,0.7987
+488,2025-26 (T-1) One Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9095
+489,2025-26 (T-1) One Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9349
+490,2025-26 (T-1) One Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9095
+491,2025-26 (T-1) One Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9349
+492,2025-26 (T-1) One Year Ahead Capacity Auction,Hydro,Hydro,0.91
+493,2025-26 (T-1) One Year Ahead Capacity Auction,Interconnector,Greenlink (Republic of Ireland),0.49
+494,2025-26 (T-1) One Year Ahead Capacity Auction,Nuclear,Nuclear,0.7544
+495,2025-26 (T-1) One Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.9349
+496,2025-26 (T-1) One Year Ahead Capacity Auction,Solar,Solar Photovoltaic,0.0547
+497,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 9h),0.9299
+498,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 6h),0.7463
+499,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.3397
+500,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 8h),0.9299
+501,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 9.5h),0.9299
+502,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.5996
+503,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 8.5h),0.9299
+504,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 7.5h),0.8865
+505,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.2715
+506,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 11.5h),0.9299
+507,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 11h),0.9299
+508,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 10h),0.9299
+509,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.4761
+510,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.0682
+511,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 7h),0.8402
+512,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 6.5h),0.7926
+513,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.2033
+514,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h),0.6987
+515,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.5417
+516,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 10.5h),0.9299
+517,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.651
+518,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.4079
+519,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.1364
+520,2025-26 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 12h),0.9299
+521,2025-26 (T-1) One Year Ahead Capacity Auction,Wind,Offshore Wind,0.0957
+522,2025-26 (T-1) One Year Ahead Capacity Auction,Wind,Onshore Wind,0.0771
+523,2025-26 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.8011
+524,2025-26 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8855
+525,2025-26 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.8855
+526,2025-26 (T-4) Four Year Ahead Capacity Auction,DSR,DSR,0.7845
+527,2025-26 (T-4) Four Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9547
+528,2025-26 (T-4) Four Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9547
+529,2025-26 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9092
+530,2025-26 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9092
+531,2025-26 (T-4) Four Year Ahead Capacity Auction,Hydro,Hydro,0.9115
+532,2025-26 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA (France),0.69
+533,2025-26 (T-4) Four Year Ahead Capacity Auction,Interconnector,Eleclink (France),0.75
+534,2025-26 (T-4) Four Year Ahead Capacity Auction,Interconnector,VikingLink (Denmark),0.63
+535,2025-26 (T-4) Four Year Ahead Capacity Auction,Interconnector,BritNED (Netherlands),0.66
+536,2025-26 (T-4) Four Year Ahead Capacity Auction,Interconnector,NEMO (Belgium),0.65
+537,2025-26 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA2 (France),0.71
+538,2025-26 (T-4) Four Year Ahead Capacity Auction,Interconnector,NSL (Norway),0.83
+539,2025-26 (T-4) Four Year Ahead Capacity Auction,Interconnector,EWIC (Ireland),0.49
+540,2025-26 (T-4) Four Year Ahead Capacity Auction,Interconnector,Moyle (Northern Ireland),0.49
+541,2025-26 (T-4) Four Year Ahead Capacity Auction,Nuclear,Nuclear,0.8044
+542,2025-26 (T-4) Four Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.9547
+543,2025-26 (T-4) Four Year Ahead Capacity Auction,Solar,Solar Photovoltaic,0.0332
+544,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.3973
+545,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.0998
+546,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.1996
+547,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.2994
+548,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.4897
+549,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 10h),0.9461
+550,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.6154
+551,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h+),0.9461
+552,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 12h),0.9461
+553,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 11.5h),0.9461
+554,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 11h),0.9461
+555,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 10.5h),0.9461
+556,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 9.5h),0.9461
+557,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.5618
+558,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 8.5h),0.9461
+559,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 9h),0.9461
+560,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 7.5h),0.9461
+561,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 7h),0.9461
+562,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 6.5h),0.9461
+563,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 6h),0.9461
+564,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h),0.9461
+565,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.6948
+566,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.6745
+567,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.6486
+568,2025-26 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 8h),0.9461
+569,2025-26 (T-4) Four Year Ahead Capacity Auction,Wind,Onshore Wind,0.0625
+570,2025-26 (T-4) Four Year Ahead Capacity Auction,Wind,Offshore Wind,0.0859
+571,2026-27 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8877
+572,2026-27 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.8877
+573,2026-27 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.0
+574,2026-27 (T-1) One Year Ahead Capacity Auction,DSR,DSR,0.8558
+575,2026-27 (T-1) One Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9079
+576,2026-27 (T-1) One Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9079
+577,2026-27 (T-1) One Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9296
+578,2026-27 (T-1) One Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9296
+579,2026-27 (T-1) One Year Ahead Capacity Auction,Hydro,Hydro,0.904
+580,2026-27 (T-1) One Year Ahead Capacity Auction,Nuclear,Nuclear,0.7554
+581,2026-27 (T-1) One Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.9296
+582,2026-27 (T-1) One Year Ahead Capacity Auction,Solar,Solar Photovoltaic,0.0566
+583,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 9h),0.9216
+584,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 10.5h),0.9216
+585,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.6745
+586,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h),0.7329
+587,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 9.5h),0.9216
+588,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 8h),0.9216
+589,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 7.5h),0.9216
+590,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 8.5h),0.9216
+591,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 6.5h),0.8495
+592,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 6h),0.7912
+593,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.5444
+594,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.6117
+595,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.4083
+596,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.4756
+597,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.341
+598,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 12h),0.9216
+599,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.2722
+600,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 11h),0.9216
+601,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 7h),0.9078
+602,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.2049
+603,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.1361
+604,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.0688
+605,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 11.5h),0.9216
+606,2026-27 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 10h),0.9216
+607,2026-27 (T-1) One Year Ahead Capacity Auction,Wind,Onshore Wind,0.0742
+608,2026-27 (T-1) One Year Ahead Capacity Auction,Wind,Offshore Wind,0.0898
+609,2026-27 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.804
+610,2026-27 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.8799
+611,2026-27 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8799
+612,2026-27 (T-4) Four Year Ahead Capacity Auction,DSR,DSR,0.7145
+613,2026-27 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9134
+614,2026-27 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9134
+615,2026-27 (T-4) Four Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9518
+616,2026-27 (T-4) Four Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9518
+617,2026-27 (T-4) Four Year Ahead Capacity Auction,Hydro,Hydro,0.9113
+618,2026-27 (T-4) Four Year Ahead Capacity Auction,Interconnector,VikingLink (Denmark),0.55
+619,2026-27 (T-4) Four Year Ahead Capacity Auction,Interconnector,EWIC (Ireland),0.54
+620,2026-27 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA (France),0.63
+621,2026-27 (T-4) Four Year Ahead Capacity Auction,Interconnector,Eleclink (France),0.69
+622,2026-27 (T-4) Four Year Ahead Capacity Auction,Interconnector,BritNED (Netherlands),0.61
+623,2026-27 (T-4) Four Year Ahead Capacity Auction,Interconnector,NEMO (Belgium),0.64
+624,2026-27 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA2 (France),0.65
+625,2026-27 (T-4) Four Year Ahead Capacity Auction,Interconnector,NSL (Norway),0.83
+626,2026-27 (T-4) Four Year Ahead Capacity Auction,Interconnector,Greenlink (Republic of Ireland),0.54
+627,2026-27 (T-4) Four Year Ahead Capacity Auction,Interconnector,Moyle (Northern Ireland),0.54
+628,2026-27 (T-4) Four Year Ahead Capacity Auction,Nuclear,Nuclear,0.7825
+629,2026-27 (T-4) Four Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.9518
+630,2026-27 (T-4) Four Year Ahead Capacity Auction,Solar,Solar Photovoltaic,0.0498
+631,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.2363
+632,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 12h),0.9525
+633,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.1777
+634,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.1181
+635,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.0595
+636,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.4111
+637,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.4948
+638,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.5283
+639,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h),0.5581
+640,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 6h),0.5897
+641,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 6.5h),0.6195
+642,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 7h),0.6492
+643,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 7.5h),0.6799
+644,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 8h),0.7088
+645,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 8.5h),0.7385
+646,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 9h),0.7664
+647,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 9.5h),0.9525
+648,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 10h),0.9525
+649,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 10.5h),0.9525
+650,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 11h),0.9525
+651,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 11.5h),0.9525
+652,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.2958
+653,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.3553
+654,2026-27 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.4586
+655,2026-27 (T-4) Four Year Ahead Capacity Auction,Wind,Offshore Wind,0.083
+656,2026-27 (T-4) Four Year Ahead Capacity Auction,Wind,Onshore Wind,0.0674
+657,2027-28 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.0
+658,2027-28 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8908
+659,2027-28 (T-1) One Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.8908
+660,2027-28 (T-1) One Year Ahead Capacity Auction,DSR,DSR,0.8118
+661,2027-28 (T-1) One Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9048
+662,2027-28 (T-1) One Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9297
+663,2027-28 (T-1) One Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9297
+664,2027-28 (T-1) One Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9048
+665,2027-28 (T-1) One Year Ahead Capacity Auction,Hydro,Hydro,0.906
+666,2027-28 (T-1) One Year Ahead Capacity Auction,Nuclear,Nuclear,0.7566
+667,2027-28 (T-1) One Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.9297
+668,2027-28 (T-1) One Year Ahead Capacity Auction,Solar,Solar Photovoltaic,0.0586
+669,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 6h),0.7377
+670,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.3689
+671,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.4309
+672,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 9h),0.9075
+673,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.3084
+674,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.062
+675,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.1224
+676,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.1844
+677,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 12.5h),0.9075
+678,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 12h),0.9075
+679,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 11.5h),0.9075
+680,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 11h),0.9075
+681,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 10.5h),0.9075
+682,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 10h),0.9075
+683,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 9.5h),0.9075
+684,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 8.5h),0.9075
+685,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.2464
+686,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 8h),0.9075
+687,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 7.5h),0.9075
+688,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 7h),0.8586
+689,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 6.5h),0.7982
+690,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h),0.6773
+691,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.6153
+692,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.5549
+693,2027-28 (T-1) One Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.4929
+694,2027-28 (T-1) One Year Ahead Capacity Auction,Wind,Offshore Wind,0.0957
+695,2027-28 (T-1) One Year Ahead Capacity Auction,Wind,Onshore Wind,0.0752
+696,2027-28 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.8852
+697,2027-28 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8852
+698,2027-28 (T-4) Four Year Ahead Capacity Auction,DSR,DSR,0.7902
+699,2027-28 (T-4) Four Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9435
+700,2027-28 (T-4) Four Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9435
+701,2027-28 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9159
+702,2027-28 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9159
+703,2027-28 (T-4) Four Year Ahead Capacity Auction,Hydro,Hydro,0.912
+704,2027-28 (T-4) Four Year Ahead Capacity Auction,Interconnector,Greenlink (Republic of Ireland),0.54
+705,2027-28 (T-4) Four Year Ahead Capacity Auction,Interconnector,EWIC (Ireland),0.54
+706,2027-28 (T-4) Four Year Ahead Capacity Auction,Interconnector,Moyle (Northern Ireland),0.54
+707,2027-28 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA2 (France),0.6
+708,2027-28 (T-4) Four Year Ahead Capacity Auction,Interconnector,NSL (Norway),0.83
+709,2027-28 (T-4) Four Year Ahead Capacity Auction,Interconnector,BritNED (Netherlands),0.61
+710,2027-28 (T-4) Four Year Ahead Capacity Auction,Interconnector,Eleclink (France),0.64
+711,2027-28 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA (France),0.59
+712,2027-28 (T-4) Four Year Ahead Capacity Auction,Interconnector,VikingLink (Denmark),0.55
+713,2027-28 (T-4) Four Year Ahead Capacity Auction,Interconnector,NEMO (Belgium),0.64
+714,2027-28 (T-4) Four Year Ahead Capacity Auction,Nuclear,Nuclear,0.78
+715,2027-28 (T-4) Four Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.9435
+716,2027-28 (T-4) Four Year Ahead Capacity Auction,Solar,Solar Photovoltaic,0.0635
+717,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.2691
+718,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.0387
+719,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.0774
+720,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.1539
+721,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.1926
+722,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.2304
+723,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.3078
+724,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.1152
+725,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.3843
+726,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 12h),0.9437
+727,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 11.5h),0.9437
+728,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.3465
+729,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 10.5h),0.9437
+730,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 10h),0.9437
+731,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 9.5h),0.9437
+732,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 9h),0.9437
+733,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 11h),0.9437
+734,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 8h),0.6036
+735,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 7.5h),0.5677
+736,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 7h),0.5308
+737,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 6.5h),0.4949
+738,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 6h),0.458
+739,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h),0.4212
+740,2027-28 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 8.5h),0.6386
+741,2027-28 (T-4) Four Year Ahead Capacity Auction,Wind,Onshore Wind,0.0703
+742,2027-28 (T-4) Four Year Ahead Capacity Auction,Wind,Offshore Wind,0.0869
+743,2028-29 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.8803
+744,2028-29 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8803
+745,2028-29 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.0
+746,2028-29 (T-4) Four Year Ahead Capacity Auction,DSR,DSR,0.7987
+747,2028-29 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9095
+748,2028-29 (T-4) Four Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9349
+749,2028-29 (T-4) Four Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9349
+750,2028-29 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9095
+751,2028-29 (T-4) Four Year Ahead Capacity Auction,Hydro,Hydro,0.91
+752,2028-29 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA2 (France),0.63
+753,2028-29 (T-4) Four Year Ahead Capacity Auction,Interconnector,Eleclink (France),0.67
+754,2028-29 (T-4) Four Year Ahead Capacity Auction,Interconnector,NeuConnect (Germany),0.6
+755,2028-29 (T-4) Four Year Ahead Capacity Auction,Interconnector,BritNED (Netherlands),0.66
+756,2028-29 (T-4) Four Year Ahead Capacity Auction,Interconnector,Greenlink (Republic of Ireland),0.54
+757,2028-29 (T-4) Four Year Ahead Capacity Auction,Interconnector,EWIC (Republic of Ireland),0.54
+758,2028-29 (T-4) Four Year Ahead Capacity Auction,Interconnector,NEMO (Belgium),0.67
+759,2028-29 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA (France),0.62
+760,2028-29 (T-4) Four Year Ahead Capacity Auction,Interconnector,NSL (Norway),0.75
+761,2028-29 (T-4) Four Year Ahead Capacity Auction,Interconnector,Moyle (Northern Ireland),0.54
+762,2028-29 (T-4) Four Year Ahead Capacity Auction,Interconnector,VikingLink (Denmark),0.6
+763,2028-29 (T-4) Four Year Ahead Capacity Auction,Nuclear,Nuclear,0.7544
+764,2028-29 (T-4) Four Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.9349
+765,2028-29 (T-4) Four Year Ahead Capacity Auction,Solar,Solar Photovoltaic,0.0625
+766,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 7.5h),0.7831
+767,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.3127
+768,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 12h),0.9299
+769,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 6h),0.6267
+770,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.1047
+771,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.2094
+772,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 10h),0.9299
+773,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 7h),0.7314
+774,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 9.5h),0.9299
+775,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 9h),0.9299
+776,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 8.5h),0.8878
+777,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.5234
+778,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.261
+779,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.1577
+780,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.053
+781,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.4704
+782,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 11.5h),0.9299
+783,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 6.5h),0.6784
+784,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 11h),0.9299
+785,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h),0.5751
+786,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.3657
+787,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.4174
+788,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 10.5h),0.9299
+789,2028-29 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 8h),0.8347
+790,2028-29 (T-4) Four Year Ahead Capacity Auction,Wind,Offshore Wind,0.0762
+791,2028-29 (T-4) Four Year Ahead Capacity Auction,Wind,Onshore Wind,0.0664
+792,2029-30 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.8877
+793,2029-30 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.0
+794,2029-30 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8877
+795,2029-30 (T-4) Four Year Ahead Capacity Auction,DSR,DSR,0.8558
+796,2029-30 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9079
+797,2029-30 (T-4) Four Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9296
+798,2029-30 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9079
+799,2029-30 (T-4) Four Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9296
+800,2029-30 (T-4) Four Year Ahead Capacity Auction,Hydro,Hydro,0.904
+801,2029-30 (T-4) Four Year Ahead Capacity Auction,Interconnector,NeuConnect (Germany),0.63
+802,2029-30 (T-4) Four Year Ahead Capacity Auction,Interconnector,VikingLink (Denmark),0.63
+803,2029-30 (T-4) Four Year Ahead Capacity Auction,Interconnector,NSL (Norway),0.7
+804,2029-30 (T-4) Four Year Ahead Capacity Auction,Interconnector,NEMO (Belgium),0.68
+805,2029-30 (T-4) Four Year Ahead Capacity Auction,Interconnector,Moyle (Northern Ireland),0.6
+806,2029-30 (T-4) Four Year Ahead Capacity Auction,Interconnector,EWIC (Republic of Ireland),0.6
+807,2029-30 (T-4) Four Year Ahead Capacity Auction,Interconnector,Eleclink (France),0.68
+808,2029-30 (T-4) Four Year Ahead Capacity Auction,Interconnector,BritNED (Netherlands),0.67
+809,2029-30 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA2 (France),0.64
+810,2029-30 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA (France),0.62
+811,2029-30 (T-4) Four Year Ahead Capacity Auction,Interconnector,Greenlink (Republic of Ireland),0.6
+812,2029-30 (T-4) Four Year Ahead Capacity Auction,Nuclear,Nuclear,0.7554
+813,2029-30 (T-4) Four Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.9296
+814,2029-30 (T-4) Four Year Ahead Capacity Auction,Solar,Solar Photovoltaic,0.0596
+815,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 7.5h),0.8235
+816,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 11.5h),0.9216
+817,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.1099
+818,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 7h),0.7693
+819,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 10h),0.9216
+820,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.2198
+821,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.3297
+822,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 11h),0.9216
+823,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.3854
+824,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 10.5h),0.9216
+825,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.5509
+826,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 6.5h),0.7136
+827,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 8h),0.8777
+828,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 12h),0.9216
+829,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.0557
+830,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.1641
+831,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.4953
+832,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 9h),0.9216
+833,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 9.5h),0.9216
+834,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h),0.6052
+835,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 8.5h),0.9216
+836,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 6h),0.6608
+837,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.2755
+838,2029-30 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.4396
+839,2029-30 (T-4) Four Year Ahead Capacity Auction,Wind,Offshore Wind,0.0781
+840,2029-30 (T-4) Four Year Ahead Capacity Auction,Wind,Onshore Wind,0.0635
+841,2030-31 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Energy from Waste,0.8908
+842,2030-31 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Biomass,0.8908
+843,2030-31 (T-4) Four Year Ahead Capacity Auction,Biomass/Coal/EfW,Coal,0.0
+845,2030-31 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Heat and Power (CHP),0.9048
+846,2030-31 (T-4) Four Year Ahead Capacity Auction,Gas,Combined Cycle Gas Turbine (CCGT),0.9048
+847,2030-31 (T-4) Four Year Ahead Capacity Auction,Gas,Reciprocating engines,0.9297
+848,2030-31 (T-4) Four Year Ahead Capacity Auction,Gas,Open Cycle Gas Turbine (OCGT),0.9297
+849,2030-31 (T-4) Four Year Ahead Capacity Auction,Hydro,Hydro,0.906
+850,2030-31 (T-4) Four Year Ahead Capacity Auction,Interconnector,Moyle (Northern Ireland),0.49
+851,2030-31 (T-4) Four Year Ahead Capacity Auction,Interconnector,Eleclink (France),0.6
+852,2030-31 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA2 (France),0.57
+853,2030-31 (T-4) Four Year Ahead Capacity Auction,Interconnector,IFA (France),0.55
+854,2030-31 (T-4) Four Year Ahead Capacity Auction,Interconnector,VikingLink (Denmark),0.67
+855,2030-31 (T-4) Four Year Ahead Capacity Auction,Interconnector,NEMO (Belgium),0.71
+856,2030-31 (T-4) Four Year Ahead Capacity Auction,Interconnector,BritNED (Netherlands),0.57
+857,2030-31 (T-4) Four Year Ahead Capacity Auction,Interconnector,EWIC (Republic of Ireland),0.6
+858,2030-31 (T-4) Four Year Ahead Capacity Auction,Interconnector,NeuConnect (Germany),0.66
+859,2030-31 (T-4) Four Year Ahead Capacity Auction,Interconnector,Greenlink (Republic of Ireland),0.61
+860,2030-31 (T-4) Four Year Ahead Capacity Auction,Interconnector,NSL (Norway),0.68
+861,2030-31 (T-4) Four Year Ahead Capacity Auction,Nuclear,Nuclear,0.7566
+862,2030-31 (T-4) Four Year Ahead Capacity Auction,Oil,Oil-fired steam generators,0.9297
+863,2030-31 (T-4) Four Year Ahead Capacity Auction,Solar,Solar Photovoltaic,0.0557
+864,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5.5h),0.6149
+865,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 10.5h),0.9075
+866,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 5h),0.5592
+867,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 8.5h),0.9075
+868,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 9h),0.9075
+869,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 7h),0.7822
+870,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 4.5h),0.5019
+871,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 12.5h),0.9075
+872,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 11h),0.9075
+873,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 12h),0.9075
+874,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 6.5h),0.7265
+875,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 4h),0.4461
+876,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 7.5h),0.838
+877,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 3h),0.3346
+878,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2.5h),0.2788
+879,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1.5h),0.1673
+880,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 10h),0.9075
+881,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 0.5h),0.0558
+882,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 2h),0.2231
+883,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 9.5h),0.9075
+884,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 1h),0.1115
+885,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 8h),0.9075
+886,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 6h),0.6692
+887,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 11.5h),0.9075
+888,2030-31 (T-4) Four Year Ahead Capacity Auction,Storage,Storage (Duration 3.5h),0.3904
+889,2030-31 (T-4) Four Year Ahead Capacity Auction,Wind,Onshore Wind,0.0645
+890,2030-31 (T-4) Four Year Ahead Capacity Auction,Wind,Offshore Wind,0.0781

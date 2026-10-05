@@ -1,5 +1,4 @@
-# 원자료·가공 데이터는 용량이 커서 git에서 제외 (받는 절차는 data/README.md에 기록)
-data/raw/
+# 원자료(data/raw/, 약 33MB)는 클라우드 세션에서 쓰도록 git에 포함. 가공 데이터만 제외 (받는 절차는 data/README.md)
 data/processed/
 *.parquet
 
@@ -11,3 +10,6 @@ __pycache__/
 
 # OS
 .DS_Store
+
+# 로컬 테스트 흔적
+.probe
