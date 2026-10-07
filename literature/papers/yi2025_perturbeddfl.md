@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Smart Grid"
 volume_issue_pages: "16(3):2574-2586"
 doi: "10.1109/TSG.2025.3548009"
 quartile: "Q1 (SJR 2025, Computer Science (miscellaneous); SJR 2025 = 4.363)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Bolun Xu (Columbia University, Earth & Environmental Engineering / Data Science Institute)"
 lineage: "Columbia Xu group: Ming Yi = postdoc (Data Science Institute, alumni 2026), Saud Alghumayjan = current PhD student - both verified on bolunxu.github.io/group. Xu = UW PhD 2018 (Kirschen group)."
 streams: [S5_rl_learning]

@@ -7,6 +7,7 @@ journal: "Nature Climate Change"
 volume_issue_pages: "6(10):964-969"
 doi: "10.1038/nclimate3045"
 quartile: "Q1 (SJR 2016 and 2024/2025, Environmental Science (misc.); Social Sciences (misc.))"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Jessika Trancik — Institute for Data, Systems, and Society (IDSS), MIT; Santa Fe Institute"
 lineage: "Trancik lab (MIT); Braff (MIT MechE) and Mueller (IDSS) co-authors. Line continues in Ziegler et al. 2019 Joule (Trancik lab, storage requirements & costs) — not archived here."
 streams: [S1_foundations_value]

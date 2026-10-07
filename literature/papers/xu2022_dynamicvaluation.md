@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Power Systems"
 volume_issue_pages: "37(3):2177-2186"
 doi: "10.1109/TPWRS.2021.3116130"
 quartile: "Q1 (SJR 2025, IEEE Trans. Power Systems, SJR 4.217)"
+quartile_basis: "pub-year; rule=pass; SJR 2022 Q1 for this journal recorded in baker2024_transferablebidder"
 group: "Bolun Xu (Columbia Univ., Earth & Environmental Engineering)"
 lineage: "Xu = UW PhD 2018 (Kirschen group), MIT postdoc 2018-2019, Columbia faculty (Xu CV). Continues xu2018_cycleagingcost; Columbia students later extend (Zheng, Jaworski & Xu 2022 TPWRS variable-efficiency SDP — cross-ref S3)."
 streams: [S4_degradation_operation, S1_foundations_value]

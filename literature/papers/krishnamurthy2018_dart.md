@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Power Systems"
 volume_issue_pages: "33(1):84-93"
 doi: "10.1109/TPWRS.2017.2685347"
 quartile: "Q1 (SJR 2024, IEEE Trans. Power Systems, SJR 3.629; Q1 Electrical & Electronic Eng. and Energy Eng. & Power Tech.)"
+quartile_basis: "pub-year; rule=pass; SJR 2018 Q1 for this journal recorded in xu2018_regdparticipation"
 group: "Botterud (Argonne National Laboratory; later MIT LIDS)"
 lineage: "All authors Argonne (OpenAlex); Botterud senior author. Argonne CEEESA market-modelling group."
 streams: [S3_bidding_uncertainty]

@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Power Systems"
 volume_issue_pages: "34(2):1416-1426"
 doi: "10.1109/TPWRS.2018.2876466"
 quartile: "Q1 (SJR 2025, IEEE Trans. Power Systems, SJR 4.217)"
+quartile_basis: "pub-year; rule=pass; SJR 2019 Q1 for this journal recorded in baker2024_transferablebidder"
 group: "Hrvoje Pandžić (Univ. of Zagreb FER, Innovation Centre Nikola Tesla / LARES lab)"
 lineage: "Pandžić was a postdoc with D. Kirschen at UW (co-authored UW storage siting/sizing papers with Kirschen c. 2014-2015; citation not re-verified here) — tie per co-authorship; Bobanac = Zagreb researcher. Funded by Croatian Science Foundation EVBASS (IP-2014-09-3517) and SIREN (with Croatian TSO HOPS)."
 streams: [S4_degradation_operation]

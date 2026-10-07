@@ -7,6 +7,7 @@ journal: "Energy Economics"
 volume_issue_pages: "145:108439"
 doi: "10.1016/j.eneco.2025.108439"
 quartile: "Q1 (SJR 2024/2025, Economics & Econometrics; Energy (misc.))"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Werner Antweiler (UBC Sauder School of Business) and Felix Müsgens (Chair of Energy Economics, BTU Cottbus-Senftenberg)"
 lineage: "Independent economics groups; builds on peak-load pricing/storage efficiency literature incl. junge2022_efficientstorage."
 streams: [S1_foundations_value, S7_market_design]

@@ -7,6 +7,7 @@ journal: "Renewable Energy"
 volume_issue_pages: "151:1269-1277"
 doi: "10.1016/j.renene.2019.11.117"
 quartile: "Q1 (SJR 2020, Renewable Energy, Sustainability and the Environment)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Paul Denholm / Wesley Cole - NREL Strategic Energy Analysis Center (ReEDS team)"
 lineage: "NREL grid-analysis group; Denholm long-time co-author of Sioshansi (sioshansi2014_capacityvalue). Advisor-student ties not applicable/verified."
 streams: [S7_market_design]

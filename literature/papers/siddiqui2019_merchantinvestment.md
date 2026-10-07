@@ -7,6 +7,7 @@ journal: "The Energy Journal"
 volume_issue_pages: "40(4):129-164"
 doi: "10.5547/01956574.40.4.asid"
 quartile: "Q1 (SJR 2019, Economics & Econometrics; Energy (misc.))"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Afzal Siddiqui (UCL Statistical Science / Stockholm University / HEC Montreal) with Sioshansi and Conejo (Ohio State ISE/ECE)"
 lineage: "Senior-PI collaboration (Siddiqui-Conejo bilevel investment line; Sioshansi = Oren PhD 2007). No student authors."
 streams: [S7_market_design]

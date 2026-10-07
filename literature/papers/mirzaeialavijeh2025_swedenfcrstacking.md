@@ -7,6 +7,7 @@ journal: "Applied Energy"
 volume_issue_pages: "381:125151"
 doi: "10.1016/j.apenergy.2024.125151"
 quartile: "Q1 (SJR 2025, Energy (misc.); Renewable Energy, Sustainability and the Environment; Mechanical Engineering)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Div. of Electric Power Engineering, Chalmers University of Technology (D. Steen, Le Anh Tuan)"
 lineage: "Chalmers Electric Power Engineering group (Steen, Le Anh Tuan as senior authors). Mirzaei Alavijeh's Chalmers record also lists 'Flexibility from local resources: Congestion management..., and frequency containment reserves' (likely his thesis). The advisor tie was not verified."
 streams: [S2_stacking_cooptimization, S4_degradation_operation, S6_ancillary_products]

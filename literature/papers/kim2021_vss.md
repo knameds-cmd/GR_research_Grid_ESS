@@ -7,6 +7,7 @@ journal: "Journal of Modern Power Systems and Clean Energy"
 volume_issue_pages: "9(1):181-189"
 doi: "10.35833/MPCE.2019.000238"
 quartile: "Q1 (SJR 2021, 2023 and 2024, J. Modern Power Systems & Clean Energy; Q1 Energy Eng. & Power Tech. and Renewable Energy, Sustainability & Environment)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Sioshansi & Conejo (The Ohio State University)"
 lineage: "All three at Ohio State (OpenAlex). Kim = Sioshansi PhD student (co-authored follow-up Kim, Sioshansi et al. 2022 TPWRS SDP capacity-value paper per Sioshansi publication list). Conejo link to UCLM offering school."
 streams: [S3_bidding_uncertainty]

@@ -7,6 +7,7 @@ journal: "<full journal name>"
 volume_issue_pages: "<vol(issue):pages or article no.>"
 doi: "<10.xxxx/...>"
 quartile: "<Q1 + source, e.g. 'Q1 (SJR 2023, Energy Engineering)' or 'Q1 (JCR 2023, EEE)'>"
+quartile_basis: "<pub-year | nearest-year | bracketed | latest-only>; rule=<pass | FAIL | unchecked>; <evidence note>"   # rule: SJR quartile in the publication year (nearest year if none); see INDEX.md
 group: "<PI / lab / institution of senior author>"
 lineage: "<advisor→student or group ties if verifiable, e.g. 'Kirschen (UW) group; Xu = Kirschen PhD 2018'>"
 streams: [<stream tags>]
@@ -14,6 +15,7 @@ market_context: "<market/country/product, e.g. 'PJM RegD + energy', 'GB DC', 'ge
 method_class: "<LP | MILP | NLP | SP | RO | DRO | SDP/DP | MPC | RL/DRL | econometric | agent-based | review>"
 evidence_read: "<full text (URL) | abstract + intro only | metadata only>"
 oa_link: "<open-access URL if any>"
+competitor: "<optional: C1..C5 if the paper is tracked in WATCHLIST.md as a competitor>"
 ---
 
 ## 1. Research question

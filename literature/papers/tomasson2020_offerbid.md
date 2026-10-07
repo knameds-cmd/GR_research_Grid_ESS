@@ -7,6 +7,7 @@ journal: "Applied Energy"
 volume_issue_pages: "260:114251"
 doi: "10.1016/j.apenergy.2019.114251"
 quartile: "Q1 (SJR 2024, Applied Energy; Q1 in all four categories)"
+quartile_basis: "pub-year; rule=pass; SJR 2020 Q1 for this journal recorded in mallapragada2020_longrunvalue"
 group: "Hesamzadeh (KTH Royal Institute of Technology) with Wolak (Stanford, Program on Energy and Sustainable Development)"
 lineage: "Tómasson = KTH PhD (Hesamzadeh senior; supervision not re-verified). Wolak = leading empirical market-power economist → market-power framing."
 streams: [S3_bidding_uncertainty]

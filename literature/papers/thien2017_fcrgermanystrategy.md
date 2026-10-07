@@ -7,6 +7,7 @@ journal: "Journal of Energy Storage"
 volume_issue_pages: "13:143-163"
 doi: "10.1016/j.est.2017.06.012"
 quartile: "Q1 (SJR 2017, Electrical and Electronic Engineering; Energy Engineering and Power Technology) [Q2 in Renewable Energy category]"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Dirk Uwe Sauer, ISEA / Institute for Power Generation and Storage Systems (PGS), RWTH Aachen; Albert Moser, IAEW RWTH Aachen; JARA-Energy"
 lineage: "RWTH Sauer group (M5BAT project); Schweer/vom Stein from Moser's IAEW. Thien doctoral supervision by Sauer not verified in this session."
 streams: [S6_ancillary_products]

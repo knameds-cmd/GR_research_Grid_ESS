@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Smart Grid"
 volume_issue_pages: "13(4):2822-2832"
 doi: "10.1109/TSG.2022.3166791"
 quartile: "Q1 (SJR 2022 and 2024/2025, Computer Science (miscellaneous); SJR 2024 = 4.608)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Yinliang Xu (Tsinghua-Berkeley Shenzhen Institute / Tsinghua SIGS), with Hongbin Sun (Tsinghua EE, State Key Lab of Power Systems) and Qinran Hu (Southeast Univ.)"
 lineage: "Tsinghua power-systems lineage (Hongbin Sun). Sang first-authored under corresponding author Y. Xu at Tsinghua SIGS (advisor relation plausible, not independently verified)."
 streams: [S5_rl_learning]
@@ -56,7 +57,7 @@ Key reference for the "predict-then-optimise vs decision-focused vs RL" spectrum
 
 ## 10. Lineage links
 - Builds on: Elmachtoub & Grigas "Smart predict-then-optimize" (Management Science 2022); Donti, Amos & Kolter task-based learning (NeurIPS 2017, conference).
-- Built upon by (notable): yi2025_dfpredictthenbid (Bolun Xu group, strategic storage); decision-focused forecasting for storage in later TSG/TPWRS work.
+- Built upon by (notable): yi2025_perturbeddfl (Bolun Xu group, strategic storage); decision-focused forecasting for storage in later TSG/TPWRS work.
 
 ## 11. Verification log
 - OpenAlex (doi:10.1109/TSG.2022.3166791): title, author order, 13(4):2822-2832, online 2022-04-12.

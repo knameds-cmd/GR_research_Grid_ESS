@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Sustainable Energy"
 volume_issue_pages: "9(2):582-598"
 doi: "10.1109/TSTE.2017.2749434"
 quartile: "Q1 (SJR 2024, IEEE Trans. Sustainable Energy, SJR 4.261; Q1 Renewable Energy, Sustainability & Environment)"
+quartile_basis: "latest-only; rule=unchecked; SJR 2018 (publication year) not checked — only later years"
 group: "Zareipour & Rosehart (Univ. of Calgary) with Kazempour (DTU)"
 lineage: "Nasrolahpour = Calgary PhD (Zareipour corresponding author; supervision not re-verified). Kazempour (DTU) — earlier UCLM bilevel/MPEC work with Conejo & Ruiz (not re-verified this session) → direct heir of ruiz2009_mpecoffer."
 streams: [S3_bidding_uncertainty]

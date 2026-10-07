@@ -7,6 +7,7 @@ journal: "Applied Energy"
 volume_issue_pages: "137:554-566"
 doi: "10.1016/j.apenergy.2014.08.080"
 quartile: "Q1 (SJR 2025, Energy (misc.); Renewable Energy, Sustainability and the Environment)"
+quartile_basis: "latest-only; rule=unchecked; SJR 2015 (publication year) not checked — only later years"
 group: "Goran Strbac, Control & Power group, Imperial College London (R. Moreno also Univ. of Chile)"
 lineage: "Imperial (Strbac) group. Moreno and Moreira at Imperial; Moreno later at Universidad de Chile (repository record, funding by Conicyt). Direct predecessor of perez2016 (Pérez, Moreno, Moreira, Orchard, Strbac, IEEE TSTE 2016) on degradation in multi-service portfolios."
 streams: [S2_stacking_cooptimization]

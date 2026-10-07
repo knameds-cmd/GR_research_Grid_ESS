@@ -7,6 +7,7 @@ journal: "Journal of Energy Storage"
 volume_issue_pages: "50:104234"
 doi: "10.1016/j.est.2022.104234"
 quartile: "Q1 (SJR 2025, Energy Engineering and Power Technology; Renewable Energy, Sustainability and the Environment; Electrical and Electronic Engineering)"
+quartile_basis: "pub-year; rule=pass; SJR 2022 Q1 for this journal recorded in staffell2016_maxvalue"
 group: "Solomon Brown, Dept. of Chemical & Biological Engineering, University of Sheffield"
 lineage: "Sheffield process-systems/energy group of S. Brown. Biggins and Homan = Brown's doctoral researchers (per affiliation and authorship pattern; not verified on a thesis page)."
 streams: [S2_stacking_cooptimization, S6_ancillary_products]

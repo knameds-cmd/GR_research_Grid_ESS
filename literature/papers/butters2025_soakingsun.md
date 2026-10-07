@@ -7,6 +7,7 @@ journal: "Econometrica"
 volume_issue_pages: "93(3):891-927"
 doi: "10.3982/ECTA20411"
 quartile: "Q1 (SJR 2025, Economics and Econometrics; SJR 19.9)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Gowrisankaran (Columbia, formerly Arizona; NBER/CEPR) with Butters (Indiana Kelley) and Dorsey (UT Austin)"
 lineage: "Empirical-IO dynamic-structural tradition (Gowrisankaran; cf. Gowrisankaran-Reynolds-Samano 2016 JPE on intermittency). Advisor-student ties among the three authors NOT verified."
 streams: [S8_empirical_econ]

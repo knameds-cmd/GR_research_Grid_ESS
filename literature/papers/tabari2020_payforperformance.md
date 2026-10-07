@@ -7,6 +7,7 @@ journal: "Energy Economics"
 volume_issue_pages: "92:104949"
 doi: "10.1016/j.eneco.2020.104949"
 quartile: "Q1 (SJR 2025, Economics and Econometrics; Energy (misc.))"
+quartile_basis: "latest-only; rule=unchecked; SJR 2020 (publication year) not checked — only later years"
 group: "Shaffer (Univ. of Calgary, Economics & School of Public Policy); Tabari (UBC Sauder)"
 lineage: "Not verified."
 streams: [S8_empirical_econ]

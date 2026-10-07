@@ -7,6 +7,7 @@ journal: "International Journal of Electrical Power & Energy Systems"
 volume_issue_pages: "142:108327"
 doi: "10.1016/j.ijepes.2022.108327"
 quartile: "Q1 (SJR 2022, Electrical and Electronic Engineering; Energy Engineering and Power Technology)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Dirk Uwe Sauer, ISEA RWTH Aachen / JARA-Energy (Figgener, Zurmühlen)"
 lineage: "RWTH ISEA Sauer group; continues thien2017_fcrgermanystrategy line; Koltermann also co-author of celicortes2025_deterministicfreq."
 streams: [S6_ancillary_products]

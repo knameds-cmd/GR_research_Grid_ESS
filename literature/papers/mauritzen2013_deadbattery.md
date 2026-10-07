@@ -7,6 +7,7 @@ journal: "The Energy Journal"
 volume_issue_pages: "34(1):103-124"
 doi: "10.5547/01956574.34.1.5"
 quartile: "Q1 (SJR 2013, Economics and Econometrics; Energy misc.)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "NHH Norwegian School of Economics / IFN Stockholm (doctoral-era work)"
 lineage: "Co-author of tangeras2018_hydrodarealtime (IFN). Advisor not verified."
 streams: [S8_empirical_econ]

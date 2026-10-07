@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Smart Grid"
 volume_issue_pages: "11(4):3270-3279"
 doi: "10.1109/TSG.2019.2963098"
 quartile: "Q1 (SJR 2025, Computer Science (misc.))"
+quartile_basis: "pub-year; rule=pass; SJR 2020 Q1 for this journal recorded in cao2020_drlarbitragedegradation"
 group: "Geert Deconinck, KU Leuven ELECTA / EnergyVille, with Centrica Business Solutions (B. Claessens)"
 lineage: "KU Leuven/EnergyVille. Engels has a dual Centrica + KU Leuven/EnergyVille affiliation with Deconinck as senior academic author, which suggests an industrial PhD under Deconinck (not verified). Claessens is affiliated with Centrica."
 streams: [S2_stacking_cooptimization, S6_ancillary_products]

@@ -7,6 +7,7 @@ journal: "The Energy Journal"
 volume_issue_pages: "33(3):1-22"
 doi: "10.5547/01956574.33.3.1"
 quartile: "Q1 (SJR 2012, Economics and Econometrics; Energy misc.)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Richard Green (then Birmingham, later Imperial College Business School) with Vasilakos (UEA Norwich Business School)"
 lineage: "Green: long-running GB/European market-design group (Green & Newbery 1992 lineage); later Williams & Green 2022 Energy Policy on storage market power (S7)."
 streams: [S8_empirical_econ]

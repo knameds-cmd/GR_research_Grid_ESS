@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Smart Grid"
 volume_issue_pages: "15(2):1608-1619 (online 2023-08-09)"
 doi: "10.1109/TSG.2023.3303469"
 quartile: "Q1 (SJR 2024, Computer Science (miscellaneous); SJR 2024 = 4.608)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Yuanyuan Shi (UC San Diego ECE) and Bolun Xu (Columbia EEE)"
 lineage: "UCSD Shi group x Columbia Xu group. N. Zheng = Xu PhD 2024 (verified on bolunxu.github.io/group). Bian = UCSD ECE student member, first author with Shi as senior author (advisor relation consistent, not independently verified). Shi and Xu both UW Seattle PhDs in the Kirschen/B. Zhang power-systems cluster (not independently checked here)."
 streams: [S5_rl_learning]

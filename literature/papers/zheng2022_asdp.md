@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Power Systems"
 volume_issue_pages: "37(6):4785-4795"
 doi: "10.1109/TPWRS.2022.3154353"
 quartile: "Q1 (SJR 2024, IEEE Trans. Power Systems, SJR 3.629; Q1 Electrical & Electronic Eng. and Energy Eng. & Power Tech.)"
+quartile_basis: "pub-year; rule=pass; SJR 2022 Q1 for this journal recorded in baker2024_transferablebidder"
 group: "Bolun Xu (Columbia University)"
 lineage: "All Columbia (OpenAlex). Xu = Kirschen PhD (UW 2018) → Columbia; Zheng = Xu PhD student (Zheng's site lists joint papers). Successor work: baker2024_transferablebidder (filed by S5 stream)."
 streams: [S3_bidding_uncertainty]

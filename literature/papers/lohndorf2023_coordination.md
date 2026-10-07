@@ -7,6 +7,7 @@ journal: "Operations Research"
 volume_issue_pages: "71(1):1-22"
 doi: "10.1287/opre.2021.2247"
 quartile: "Q1 (SJR 2024, Operations Research, SJR 2.557; Q1 Computer Science Applications and Management Science & OR)"
+quartile_basis: "latest-only; rule=unchecked; SJR 2023 (publication year) not checked — only later years"
 group: "Löhndorf (Univ. of Luxembourg) / Wozabal (TU Munich → VU Amsterdam)"
 lineage: "Same authors as lohndorf2013_addp (with Minner). OpenAlex affiliations: Luxembourg; TU Munich. VU Amsterdam research portal lists Wozabal (Operations Analytics, VU) as corresponding author."
 streams: [S3_bidding_uncertainty]

@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Power Systems"
 volume_issue_pages: "32(3):2028-2040"
 doi: "10.1109/TPWRS.2016.2607153"
 quartile: "Q1 (SJR 2017, Electrical & Electronic Engineering; Energy Engineering & Power Technology)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Sioshansi (Ohio State ISE; now CMU)"
 lineage: "Sioshansi = Oren (Berkeley) PhD 2007 (CV). Single author. Conceptual sibling of financial transmission rights (Hogan 1992) and of Munoz-Alvarez & Bitar's financial storage rights (J Regul Econ 2017)."
 streams: [S7_market_design]

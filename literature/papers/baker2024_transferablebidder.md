@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Power Systems"
 volume_issue_pages: "39(2):4117-4126 (online 2023-05-29)"
 doi: "10.1109/TPWRS.2023.3280841"
 quartile: "Q1 (SJR 2019-2025, Electrical & Electronic Eng. and Energy Eng. & Power Technology; SJR 2024 = 3.629)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Bolun Xu (Columbia University, Earth & Environmental Engineering)"
 lineage: "Columbia Xu group (Xu = UW PhD 2018, Kirschen group). Baker = current PhD student and Ningkun (Nik) Zheng = PhD graduate 2024, both listed on bolunxu.github.io/group (verified)."
 streams: [S5_rl_learning]

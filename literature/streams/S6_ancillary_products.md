@@ -6,7 +6,7 @@ Papers written by this stream (13): oudalov2007_pfcsizing, greenwood2017_efrserv
 
 Related files from other streams that carry S6 content: he2016_pbrcyclelife (S4), shi2019_cycleagingpfp (S4), mirzaeialavijeh2025_swedenfcrstacking, engels2020_fcrpeakshaving and namor2019_multiservicecontrol (S2), cheng2018_multiscaledp (S2), rangarajan2023_batteryfcasdid and tabari2020_payforperformance (S8).
 
-Evidence level: full text read for gundogdu2018, lee2019, fan2025, engels2019, xu2018_regd, gilmore2024 (working-paper version). The rest are from the abstract only; see `evidence_read` in each file.
+Evidence level: full text read for gundogdu2018, lee2019, fan2025, engels2019, xu2018_regdparticipation, gilmore2024 (working-paper version). The rest are from the abstract only; see `evidence_read` in each file.
 
 ---
 
@@ -16,13 +16,13 @@ The literature splits into three generations.
 
 1. **Feasibility and sizing for symmetric proportional products (2007–2017).** oudalov2007 asked how small a battery can be while still supplying UCTE primary control continuously. Its answer was SoC-dependent limits plus an energy sink (resistors). The German line (thien2017, then engels2019) formalised the TSO "degrees of freedom": the ±10 mHz deadband, 20% over-fulfilment, set-point (schedule) trades on intraday markets, and the 30-min (later 15-min) energy criterion. It showed that these rules, not cell chemistry, decide feasibility and optimal sizing.
 2. **Products designed for storage (GB 2016–2024).** GB EFR (2016) was the first product written with batteries in mind: 1 s response, an envelope with ±9% freedom inside the deadband, and a 30-min rest after 15-min events (greenwood2017, gundogdu2018, lee2019). Dynamic Containment (2020–) replaced it. DC has a ±0.2 Hz deadband, a 15-min Minimum Energy Requirement, State-of-Energy rules with baselines notified 1 h ahead, and an all-or-nothing payment per EFA block (fan2025, cao2024). The rule changes moved the binding constraint from envelope compliance to energy/baseline management.
-3. **Performance-based and settlement design (US, DE, NEM).** In PJM RegD under FERC Order 755, the mileage and performance-score rules set the optimal cycle depth and the product mix (he2016, xu2018_regd, shi2019). tabari2020 finds the rule itself raised the probability of storage deployment by about 37%. In Germany, the implicit settlement of FCR energy through the balancing group adds €0.3–1.1k/MW/month (koltermann2022). In the NEM, the energy content of each product (regulation versus contingency) fixes the optimal battery duration and the long-run price (gilmore2024). Mandatory unpaid PFR consumes 3–4% of warranted cycles.
+3. **Performance-based and settlement design (US, DE, NEM).** In PJM RegD under FERC Order 755, the mileage and performance-score rules set the optimal cycle depth and the product mix (he2016, xu2018_regdparticipation, shi2019). tabari2020 finds the rule itself raised the probability of storage deployment by about 37%. In Germany, the implicit settlement of FCR energy through the balancing group adds €0.3–1.1k/MW/month (koltermann2022). In the NEM, the energy content of each product (regulation versus contingency) fixes the optimal battery duration and the long-run price (gilmore2024). Mandatory unpaid PFR consumes 3–4% of warranted cycles.
 
 Across regions, the recurring result is that **the binding constraint is set by the product's energy/endurance and SoC-recovery rules**, and this constraint sets the optimal power/energy ratio:
 - FCR DE: 1.6 MW / 1.6 MWh per MW (engels2019).
 - DC: about 16 min of energy per MW (fan2025).
 - NEM regulation: 3–4 h (gilmore2024).
-- PJM RegD: about 0.3 h (xu2018_regd case).
+- PJM RegD: about 0.3 h (xu2018_regdparticipation case).
 
 The capacity price then sets profitability (engelhardt2022: "capacity payment is the strongest factor").
 
@@ -52,7 +52,7 @@ Nordic: Engelhardt 2022 (DK) ; Mirzaei Alavijeh 2025 (SE FCR-N/FCR-D, Chalmers)
 | Stone/Foster/Gladwin, Sheffield (Willenhall BESS) | GB | gundogdu2018 |
 | Brown (Sheffield) + Mac Dowell (Imperial) | GB | lee2019 |
 | Campos-Gaona, Strathclyde | GB | fan2025 |
-| Kirschen & B. Zhang, Univ. of Washington | US PJM | xu2018_regd, shi2019, xu2018_cycleagingcost |
+| Kirschen & B. Zhang, Univ. of Washington | US PJM | xu2018_regdparticipation, shi2019, xu2018_cycleagingcost |
 | Kang/Chen, Tsinghua + Pinson (DTU) | US PJM | he2016 |
 | Simshauser, Griffith/EPRG | AU NEM | gilmore2024 |
 | Le Anh Tuan/Steen, Chalmers | SE | mirzaeialavijeh2025 |
@@ -85,13 +85,13 @@ Nordic: Engelhardt 2022 (DK) ; Mirzaei Alavijeh 2025 (SE FCR-N/FCR-D, Chalmers)
 | Rule parameter | Where | Documented effect on battery operation / economics | Source ids |
 |---|---|---|---|
 | **Energy / endurance requirement** (30-min → 15-min criterion; DC MER 15 min; Nordic LER 20 min FCR-D / 1 h FCR-N; regulation/reserve energy holdbacks) | DE, GB, SE, US | Sets the minimum MWh per MW sold, so it fixes the optimal P/E: 1.6 MWh/MW (DE, 30 min); ~16 min of energy (GB DC); 15-min regulation and 1-h spin holdbacks (He). Relaxing the criterion is flagged as a lever. | engels2019, thien2017, fan2025, mirzaeialavijeh2025, he2016 |
-| **Deadband width** (FCR ±10 mHz; EFR ±0.015/±0.05 Hz; DC ±0.2 Hz; NEM contingency >0.15 Hz) | all | Narrow bands mean continuous micro-cycling and energy drift: EFR cycles about 1.4/day at 200 MW. Wide bands (DC) mean near-zero activation energy, so availability revenue comes with little degradation. | lee2019, gundogdu2018, gilmore2024, cao2024 |
+| **Deadband width** (FCR ±10 mHz; EFR ±0.015/±0.05 Hz; DC ±0.015 Hz deadband with only 5% delivery up to the ±0.2 Hz knee and 100% at ±0.5 Hz; DM knee ±0.1 Hz, full ±0.2 Hz; DR linear to 100% at ±0.2 Hz; NEM contingency >0.15 Hz) [corrected 2026-10-07 from "DC ±0.2 Hz"] | all | Narrow bands mean continuous micro-cycling and energy drift: EFR cycles about 1.4/day at 200 MW. DC's low-delivery zone up to ±0.2 Hz means near-zero activation energy in normal operation, so availability revenue comes with little degradation. | lee2019, gundogdu2018, gilmore2024, cao2024 |
 | **Freedom inside the deadband / envelope** (±9% in EFR deadband; FCR deadband utilisation) | GB, DE | The main SoC-recovery lever with no market trade needed. Without it, SoC hits 0% and availability/SPM falls (98% vs 100%). | gundogdu2018, lee2019, thien2017 |
 | **Over-fulfilment allowance** (DE: up to 20%) | DE | Lets the battery steer SoC through the activation response. Needs P ≥ 1.25 × contracted power, which oversizes the inverter. | engels2019, thien2017 |
 | **SoC-recovery route and lead time** (intraday set-point trades 15-min blocks, 5-min lead, 100 kW steps; DC baselines 1 h ahead, ≥20% MER per SP, ramp ≤5%/min; Nordic intraday vs imbalance vs TSO exemption) | DE, GB, DK | Faster and cheaper routes let more MW be sold per MWh. The exemption agreement gives the highest profit in DK. Imbalance settlement beats intraday trading. A recovery delay can destabilise SoC (oscillation under DC). DC baseline costs reach about −£4.6m PV for LF. | engelhardt2022, cao2024, fan2025, engels2019, thien2017 |
 | **Rest / suspension rules after long events** (EFR: 30-min rest after 15 min outside deadband) | GB | Keeps 100% availability and allows recharge at ±9%. Worth up to £646 per Triad day when stacked. | gundogdu2018 |
 | **Activation-energy settlement** (DE implicit via balancing group at reBAP; FCR-N explicit energy pay; DC no energy pay) | DE, Nordic, GB | DE: +€302–1,068/MW/month from the energy shifted through the degrees of freedom. HF DC is more profitable than LF because its charging energy has value (NPV £41.9m vs £22.1m). | koltermann2022, fan2025, mirzaeialavijeh2025 |
-| **Performance measurement and mileage payment** (PJM score ≥0.70; mileage ratio about 3 for RegD) | US PJM | Removing mileage pay cuts income about 25% and shifts capacity to spinning reserve. The required score sets an optimal cycle-depth threshold, trading profit against life (26→69 months). Order 755 raised deployment by about 37%. | he2016, xu2018_regd, shi2019, tabari2020 |
+| **Performance measurement and mileage payment** (PJM score ≥0.70; mileage ratio about 3 for RegD) | US PJM | Removing mileage pay cuts income about 25% and shifts capacity to spinning reserve. The required score sets an optimal cycle-depth threshold, trading profit against life (26→69 months). Order 755 raised deployment by about 37%. | he2016, xu2018_regdparticipation, shi2019, tabari2020 |
 | **Penalty severity** (DC all-or-nothing block deduction; DE penalty-free probability constraint; EFR SPM scaling) | GB, DE, US | Harsh penalties push operators to over-size energy, as in the chance constraint Pr{penalty}≤0.005 behind the 1.6 MWh kink. Graded SPM gives softer incentives. | fan2025, engels2019, gundogdu2018 |
 | **Response time** (EFR 1 s; FCR 30 s; NEM 6 s/1 s FFR) | GB, DE, AU | Fast products favour inverter-based storage and remove thermal competitors. Short-duration NEM markets show the largest price falls after battery entry. | greenwood2017, rangarajan2023, gilmore2024 |
 | **Product granularity / procurement format** (weekly pay-as-bid → daily 4-h marginal (DE); EFA-block day-ahead DC; hourly D-1/D-2 Nordic; 5-min co-optimised NEM) | all | Shorter blocks let batteries recover SoC between blocks and stack products hourly; FCR-D up+down stacking dominates in SE. Pay-as-bid needs a WAP assumption in models. | engels2019, fan2025, mirzaeialavijeh2025, gilmore2024 |
@@ -103,10 +103,12 @@ Nordic: Engelhardt 2022 (DK) ; Mirzaei Alavijeh 2025 (SE FCR-N/FCR-D, Chalmers)
 ## 6. Open gaps
 
 1. **No cross-market attribution study.** No Q1 paper runs a single battery or agent through GB DC/DM/DR, DE FCR/aFRR, Nordic FCR-N/D/FFR and NEM FCAS with the rule parameters toggled one at a time. This is the gap the user's study can fill.
+   - **2026-10-07 update:** `landy2026_hybridstacking` compares regions with one model, but at the level of market-access bundles (grid charging, market sets), not individual product-rule parameters. The gap as defined here (toggle rule parameters one at a time) still stands.
 2. **GB DM/DR and post-2023 rules are missing.** No verified Q1 paper models Dynamic Moderation/Regulation or the 2023–24 DC price collapse. fan2025 assumes £8/MW/h flat.
+   - **2026-10-07 update:** partly closed: `casella2024_ukbessmilp` (Q1) models GB dynamic frequency response services; the preprint Xia et al. 2026 models EAC-procured DC/DM/DR with SoE rules (`WATCHLIST.md` C3). The 2023–24 price collapse is still not analysed in a Q1 paper.
 3. **aFRR with batteries (DE/EU PICASSO) and Nordic FFR are absent** from the verified set. No Q1 paper was found within this session's budget.
 4. **CAISO regulation (Reg-Up/Down mileage) is not covered**; only PJM is.
-5. **Learning-based control under product rules is rare.** Most papers use rule-based or threshold controllers (gundogdu2018, engels2019, xu2018_regd). RL agents that learn recovery baselines or set-point trades under the actual compliance and penalty rules are not in the Q1 literature found here.
+5. **Learning-based control under product rules is rare.** Most papers use rule-based or threshold controllers (gundogdu2018, engels2019, xu2018_regdparticipation). RL agents that learn recovery baselines or set-point trades under the actual compliance and penalty rules are not in the Q1 literature found here.
 6. **Endogenous prices.** Almost all papers are price-takers, while saturation is the key driver of profitability decline in DC, FCR and FCAS.
 7. **Evidence quality.** Several core papers (oudalov2007, thien2017, cao2024, engelhardt2022, koltermann2022) were read at abstract level only. Their numbers should be pulled from the full text before quantitative reuse.
 

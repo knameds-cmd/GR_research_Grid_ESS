@@ -7,6 +7,7 @@ journal: "Energy Policy"
 volume_issue_pages: "39(3):1575-1585"
 doi: "10.1016/j.enpol.2010.12.033"
 quartile: "Q1 (SJR 2025, Energy (misc.); Management, Monitoring, Policy and Law)"
+quartile_basis: "latest-only; rule=unchecked; SJR 2011 (publication year) not checked — only later years"
 group: "William D'haeseleer & Erik Delarue (KU Leuven Energy Institute, TME) with Jean-Michel Glachant (EUI Florence School of Regulation); first author at EDF R&D"
 lineage: "KU Leuven TME energy-systems group (D'haeseleer and Delarue; their advisor relationship was not verified) and FSR/EUI. He's affiliation in the working paper is EDF R&D; PhD tie not verified."
 streams: [S2_stacking_cooptimization, S1_foundations_value, S7_market_design]

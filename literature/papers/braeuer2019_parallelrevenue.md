@@ -7,6 +7,7 @@ journal: "Applied Energy"
 volume_issue_pages: "239:1424-1440"
 doi: "10.1016/j.apenergy.2019.01.050"
 quartile: "Q1 (SJR 2025, Energy (misc.); Building and Construction; Management, Monitoring, Policy and Law)"
+quartile_basis: "pub-year; rule=pass; SJR 2019 Q1 for this journal recorded in engels2019_fcrgermanytechnoeco"
 group: "Wolf Fichtner, Chair of Energy Economics, Institute for Industrial Production (IIP), Karlsruhe Institute of Technology"
 lineage: "KIT IIP energy-economics group (Fichtner; McKenna then at KIT IIP). Braeuer and Rominger = IIP researchers (per authorship); advisor ties not verified."
 streams: [S2_stacking_cooptimization]

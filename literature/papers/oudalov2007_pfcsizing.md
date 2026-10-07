@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Power Systems"
 volume_issue_pages: "22(3):1259-1266"
 doi: "10.1109/TPWRS.2007.901459"
 quartile: "Q1 (SJR 2007, Electrical and Electronic Engineering; Energy Engineering and Power Technology)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "ABB Corporate Research, Switzerland (Oudalov, Chartouni, Ohler)"
 lineage: "Industrial research group (ABB CH); seminal reference for all later FCR-battery sizing work (ETH Zurich 1 MW BESS, RWTH, KU Leuven). No advisor-student tie claimed."
 streams: [S6_ancillary_products]

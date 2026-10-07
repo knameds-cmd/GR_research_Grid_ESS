@@ -7,6 +7,7 @@ journal: "Energy Economics"
 volume_issue_pages: "41:106-116"
 doi: "10.1016/j.eneco.2013.09.027"
 quartile: "Q1 (SJR 2014 and 2023-2025, Economics & Econometrics; Energy (misc.))"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Ramteen Sioshansi — The Ohio State University"
 lineage: "Generalises sioshansi2010_ownership to elastic demand and strategic (Cournot) generation."
 streams: [S1_foundations_value, S7_market_design]

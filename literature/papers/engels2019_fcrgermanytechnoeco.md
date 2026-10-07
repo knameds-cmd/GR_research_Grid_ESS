@@ -7,6 +7,7 @@ journal: "Applied Energy"
 volume_issue_pages: "242:1036-1049"
 doi: "10.1016/j.apenergy.2019.03.128"
 quartile: "Q1 (SJR 2019, Energy Engineering and Power Technology)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Geert Deconinck, KU Leuven ELECTA / EnergyVille; industry co-author Bert Claessens (REstore NV)"
 lineage: "Engels affiliated with KU Leuven + EnergyVille + REstore (industry-academic PhD under Deconinck, inferred from affiliations; thesis not checked). Same team: Engels et al. IEEE TSG 2020 FCR + peak shaving (not archived here)."
 streams: [S6_ancillary_products]

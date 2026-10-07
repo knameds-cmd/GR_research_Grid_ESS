@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Sustainable Energy"
 volume_issue_pages: "8(3):1106-1117"
 doi: "10.1109/TSTE.2017.2656800"
 quartile: "Q1 (SJR 2024, IEEE Trans. Sustainable Energy, SJR 4.261; Q1 Renewable Energy, Sustainability & Environment)"
+quartile_basis: "latest-only; rule=unchecked; SJR 2017 (publication year) not checked — only later years"
 group: "Kirschen (Univ. of Washington) with Dvorkin (NYU at publication)"
 lineage: "OpenAlex: Wang, Fernández-Blanco, Xu, Qiu, Kirschen at UW; Dvorkin at NYU Tandon (Dvorkin = UW PhD under Kirschen — widely documented, not re-verified this session). Xu (co-author) = Kirschen PhD 2018 → later Columbia group (zheng2022_asdp)."
 streams: [S3_bidding_uncertainty]

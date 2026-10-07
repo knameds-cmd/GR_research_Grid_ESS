@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Sustainable Energy"
 volume_issue_pages: "7(4):1718-1729"
 doi: "10.1109/TSTE.2016.2589943"
 quartile: "Q1 (SJR 2025, Renewable Energy, Sustainability and the Environment)"
+quartile_basis: "latest-only; rule=unchecked; SJR 2016 (publication year) not checked — only later years"
 group: "Goran Strbac (Imperial College London) with Marcos Orchard & Rodrigo Moreno (Universidad de Chile)"
 lineage: "Imperial–U. Chile collaboration. Direct extension of moreno2015_multiservicemilp (same Moreno/Moreira/Strbac core) adding Orchard's (U. Chile) battery-prognostics degradation modelling. Pérez affiliated with U. Chile EE (OpenAlex); advisor tie not verified."
 streams: [S2_stacking_cooptimization, S4_degradation_operation]

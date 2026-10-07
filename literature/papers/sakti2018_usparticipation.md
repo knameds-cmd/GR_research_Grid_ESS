@@ -7,6 +7,7 @@ journal: "Energy Policy"
 volume_issue_pages: "120:569-579"
 doi: "10.1016/j.enpol.2018.06.001"
 quartile: "Q1 (SJR 2018, Energy (misc.); Management, Monitoring, Policy & Law)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Audun Botterud (MIT LIDS / Argonne) and Francis O'Sullivan (MIT Energy Initiative)"
 lineage: "MIT Energy Initiative storage programme (Sakti = MITEI research scientist; listed on Botterud publication page). Formal advisor ties NOT verified."
 streams: [S7_market_design]

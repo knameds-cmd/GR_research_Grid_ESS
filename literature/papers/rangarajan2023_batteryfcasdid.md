@@ -7,6 +7,7 @@ journal: "Energy Economics"
 volume_issue_pages: "120:106601"
 doi: "10.1016/j.eneco.2023.106601"
 quartile: "Q1 (SJR 2025, Economics and Econometrics; Energy (misc.))"
+quartile_basis: "pub-year; rule=pass; SJR 2023 Q1 for this journal recorded in mercier2023_eudaarbitrage"
 group: "Macquarie Business School (Trück: energy finance/risk; Foley: market microstructure)"
 lineage: "All three authors Macquarie University (OpenAlex). Advisor-student ties not verified."
 streams: [S8_empirical_econ]

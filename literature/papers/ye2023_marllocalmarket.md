@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Smart Grid"
 volume_issue_pages: "14(2):1541-1554 (online 2022-02-07)"
 doi: "10.1109/TSG.2022.3149266"
 quartile: "Q1 (SJR 2023 and 2024/2025, Computer Science (miscellaneous); SJR 2024 = 4.608)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Goran Strbac and Dimitrios Papadaskalopoulos (Imperial College London) with Yujian Ye's group at Southeast University (Nanjing)"
 lineage: "Continuation of ye2020_drlstrategicbidding: Ye (formerly Imperial, now Southeast University) + Imperial Strbac/Papadaskalopoulos. Yuan and Tang at Southeast University."
 streams: [S5_rl_learning]

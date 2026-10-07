@@ -7,6 +7,7 @@ journal: "Energy Economics"
 volume_issue_pages: "123:106721"
 doi: "10.1016/j.eneco.2023.106721"
 quartile: "Q1 (SJR 2023-2025, Economics & Econometrics; Energy (misc.))"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "UCLouvain / EnergyVille-KU Leuven (Emmanuel De Jaeger) with Université Laval (Mathieu Olivier)"
 lineage: "Mercier (corresponding; affiliations UCLouvain, KU Leuven, U. Laval per OpenAlex). Advisor ties not verified."
 streams: [S1_foundations_value, S7_market_design]

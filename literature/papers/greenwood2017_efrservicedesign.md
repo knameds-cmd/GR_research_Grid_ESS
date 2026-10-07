@@ -7,6 +7,7 @@ journal: "Applied Energy"
 volume_issue_pages: "203:115-127"
 doi: "10.1016/j.apenergy.2017.06.046"
 quartile: "Q1 (SJR 2017, Energy Engineering and Power Technology)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Phil Taylor group, Newcastle University (with Universiti Tunku Abdul Rahman, Malaysia)"
 lineage: "Taylor (Newcastle, later Bristol) senior author; Greenwood, Patsios, Lyons = Newcastle researchers in Taylor's group (EPSRC EP/K002252/1). Advisor-student ties not verified."
 streams: [S6_ancillary_products]

@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Power Systems"
 volume_issue_pages: "33(2):2248-2259"
 doi: "10.1109/TPWRS.2017.2733339"
 quartile: "Q1 (SJR 2025, IEEE Trans. Power Systems, SJR 4.217; Q1 Electrical & Electronic Eng. and Energy Eng. & Power Tech.)"
+quartile_basis: "pub-year; rule=pass; SJR 2018 Q1 for this journal recorded in xu2018_regdparticipation"
 group: "Kirschen (Univ. of Washington) with ISO New England (Litvinov, Zheng, Zhao)"
 lineage: "Xu = UW PhD 2018 (Xu CV), Kirschen senior author; ISO-NE market-design co-authors -> formulation targeted at market-clearing integration. Continues xu2018_degradationmodel."
 streams: [S4_degradation_operation, S7_market_design]

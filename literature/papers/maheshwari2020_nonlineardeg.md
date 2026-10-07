@@ -7,6 +7,7 @@ journal: "Applied Energy"
 volume_issue_pages: "261:114360"
 doi: "10.1016/j.apenergy.2019.114360"
 quartile: "Q1 (SJR 2025, Applied Energy, SJR 2.864)"
+quartile_basis: "pub-year; rule=pass; SJR 2020 Q1 for this journal recorded in mallapragada2020_longrunvalue"
 group: "Nikolaos Paterakis & Madeleine Gibescu (TU Eindhoven, Electrical Energy Systems) with Massimo Santarelli (Politecnico di Torino)"
 lineage: "Paterakis = corresponding author (TU/e research portal). Maheshwari's student status/advisor not verified (likely TU/e–PoliTo joint thesis work; unverified)."
 streams: [S4_degradation_operation]

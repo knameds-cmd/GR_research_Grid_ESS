@@ -7,6 +7,7 @@ journal: "Journal of Energy Storage"
 volume_issue_pages: "55:105634"
 doi: "10.1016/j.est.2022.105634"
 quartile: "Q1 (SJR 2025, J. Energy Storage, SJR 1.795)"
+quartile_basis: "pub-year; rule=pass; SJR 2022 Q1 for this journal recorded in staffell2016_maxvalue"
 group: "Andreas Jossen (TUM Chair of Electrical Energy Storage Technology) & Holger Hesse (Kempten UAS / TUM)"
 lineage: "Collath, Tepe, Englberger = TUM EES doctoral researchers (Collath listed as EES alumnus on epe.ed.tum.de); same group as schimpe2018_efficiency and SimSES. Continued by collath2023_lifetimeprofit."
 streams: [S4_degradation_operation]

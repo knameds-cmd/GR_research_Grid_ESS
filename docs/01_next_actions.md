@@ -2,6 +2,8 @@
 
 작성 2026-10-05 · 기준 문서: [`00_research_design_v0.md`](00_research_design_v0.md) (10/5 설계 초안 원본)
 
+> **2026-10-07 진행 상황**: 경쟁 논문을 아카이브와 `literature/WATCHLIST.md`에 반영했습니다. Q1 판정 기준은 "발행연도 SJR(없으면 가장 가까운 연도)"로 통일했습니다(`literature/INDEX.md`). 내려받을 논문 목록은 `literature/DOWNLOAD_LIST.md`, 영국 시장 변천사는 `literature/context/`에 있습니다. 시장 변천사 8장이 4장 M1(국면 분할)과 M4(Shapley 플레이어)의 구체안입니다.
+
 ## 0. 요약
 
 1. **설계 초안 6장에서 "별도 확인 필요"로 남겨둔 경쟁 논문은 실제로 있고, 주변에 비슷한 논문이 더 있다.** Imperial(Staffell 그룹) 2편이 2026년에 Q1 저널에 실렸고, Oxford(Morstyn·Howey 그룹)는 EAC + SoE 규칙 + 열화까지 넣은 GB 수익 스택 모델을 2026년 9월 arXiv에 올렸다. 그러니 **층 1(수익 스택 MILP) 자체는 더 이상 기여가 아니다.** 남은 자리는 "규칙을 변수로 두고, 국면별로 수익을 규칙에 귀속시키는 것"이다. → 3장

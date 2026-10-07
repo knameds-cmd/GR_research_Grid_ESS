@@ -7,6 +7,7 @@ journal: "Journal of Energy Storage"
 volume_issue_pages: "8:212-225"
 doi: "10.1016/j.est.2016.08.010"
 quartile: "Q1 (SJR 2017-2025, Electrical & Electronic Eng. and Energy Eng. & Power Tech.); NOTE: Q2 in 2016 (issue year)"
+quartile_basis: "pub-year; rule=FAIL; SJR 2016 (issue year) = Q2 — keep only as a lineage-anchor exception (decision for the user)"
 group: "Iain Staffell — Centre for Environmental Policy, Imperial College London"
 lineage: "Imperial (Staffell/Hawkes) storage-economics line; continues to schmidt2017_experiencerates and schmidt2019_lcos (Staffell co-author). Rustomji = Imperial Energy Futures Lab."
 streams: [S1_foundations_value, S2_stacking_cooptimization]

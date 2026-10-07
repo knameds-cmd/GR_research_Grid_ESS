@@ -7,6 +7,7 @@ journal: "Energy Policy"
 volume_issue_pages: "35(4):2558-2568"
 doi: "10.1016/j.enpol.2006.09.005"
 quartile: "Q1 (SJR 2007 and 2024/2025, Energy (misc.) and Management, Monitoring, Policy & Law)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Jay Apt — Carnegie Mellon Electricity Industry Center (CEIC), Tepper/EPP, Carnegie Mellon University"
 lineage: "CMU CEIC (Apt) group; Walawalkar was CMU-affiliated at the time (OpenAlex affiliation). Advisor-student tie Apt->Walawalkar plausible but NOT verified here. Same CEIC working-paper series later hosts Sioshansi's storage papers."
 streams: [S1_foundations_value]

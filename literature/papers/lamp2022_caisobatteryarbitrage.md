@@ -7,6 +7,7 @@ journal: "Energy Economics"
 volume_issue_pages: "107:105786"
 doi: "10.1016/j.eneco.2021.105786"
 quartile: "Q1 (SJR 2025, Economics and Econometrics; Energy (misc.))"
+quartile_basis: "latest-only; rule=unchecked; SJR 2022 (publication year) not checked — only later years"
 group: "Samano (HEC Montréal; empirical IO of electricity) and Lamp (UC3M Madrid)"
 lineage: "Samano co-authored Gowrisankaran-Reynolds-Samano 2016 JPE (Arizona IO group) -> tie to butters2025 group. Advisor-student ties not verified."
 streams: [S8_empirical_econ]

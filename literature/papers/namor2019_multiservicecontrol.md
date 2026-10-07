@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Smart Grid"
 volume_issue_pages: "10(3):2799-2808"
 doi: "10.1109/TSG.2018.2810781"
 quartile: "Q1 (SJR 2025, Computer Science (misc.); journal Q1 since 2011 per SJR)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Mario Paolone, Distributed Electrical Systems Laboratory (DESL), EPFL"
 lineage: "EPFL DESL (Paolone, with R. Cherkaoui). All four authors list DESL as their affiliation. Namor is a DESL doctoral researcher (status not verified). Builds on earlier DESL dispatchable-feeder work by Sossan."
 streams: [S2_stacking_cooptimization]

@@ -96,9 +96,11 @@ Working-paper frontier, not yet in the archive because it is not Q1-published: K
 
 ## 6. Open gaps
 1. There is no Q1 paper using **unit-level battery bid data** to compare observed multi-product bidding with an optimal or best-response benchmark. All the existing bid studies are working papers (CAISO storage bids, NEM autobidders, ERCOT). GB EAC and BM data can fill this gap.
+   - **2026-10-07 update:** still true for Q1. The preprint Dalton & O'Sullivan 2026 uses unit-level BM bid–offer ladders (price formation, not bidding optimality).
 2. There is no causal evidence on **co-optimised ancillary-service auction design** (such as the GB EAC launch) and how it affects storage bidding and prices. tabari2020 covers deployment, not bidding.
 3. The causal effect of **battery saturation on AS prices** rests on a single Q1 staggered DiD (rangarajan2023, NEM FCAS), which may use pre-heterogeneity-robust estimators. No GB equivalent exists for the DC/DM/DR price collapse of 2022–23.
 4. **Dispatch frictions** are unmeasured: SO under-utilisation of batteries in the BM (skip rates) and its effect on battery revenue and bidding.
+   - **2026-10-07 update:** `gale2026_balancingbatteries` (Q1) now quantifies the profit cost of skip rates parametrically (each +10 pp ≈ −7% profit), and the preprint Dalton & O'Sullivan 2026 (`WATCHLIST.md` C4) measures battery marginality in the BM unit by unit (2023–25). An **estimated** acceptance/skip model for batteries is still missing.
 5. **Strategic or coordinated behaviour through shared optimisers** (autobidders, route-to-market providers) is documented only in working papers.
 6. **Pumped hydro behaviour in GB** (Dinorwig, Cruachan) under BM and EAC rules has no Q1 empirical study that could be verified here.
 7. Linking **realised revenue to degradation-aware operation**: observed cycling against warranty-driven constraints has not been estimated empirically (butters2025 calibrates degradation and does not estimate it).

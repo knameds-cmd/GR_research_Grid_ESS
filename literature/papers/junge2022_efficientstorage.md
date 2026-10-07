@@ -7,6 +7,7 @@ journal: "The Energy Journal"
 volume_issue_pages: "43(6):1-24"
 doi: "10.5547/01956574.43.6.cjun"
 quartile: "Q1 (SJR 2022 and 2024, Economics & Econometrics; Energy (misc.); Q2 in 2023/2025)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "MIT — Richard Schmalensee (Sloan/Economics), MIT Energy Initiative (Mallapragada, Junge)"
 lineage: "Extends Schmalensee's CEEPR WP 2019-009 'On the Efficiency of Competitive Energy Storage' (Boiteux–Turvey framework); numerical part uses GenX (Jenkins & Sepulveda), linking to mallapragada2020_longrunvalue."
 streams: [S1_foundations_value, S7_market_design]

@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Sustainable Energy"
 volume_issue_pages: "8(4):1726-1735"
 doi: "10.1109/TSTE.2017.2706563"
 quartile: "Q1 (SJR 2025, Renewable Energy, Sustainability and the Environment)"
+quartile_basis: "latest-only; rule=unchecked; SJR 2017 (publication year) not checked — only later years"
 group: "Hamidreza Zareipour & William Rosehart, University of Calgary (with N. Amjady, Semnan; M. Ehsan, Sharif)"
 lineage: "Zareipour group (Calgary). Kazemi's affiliation in OpenAlex is Islamic Azad Univ. Shahreza. Kazemi's advisor relationship was not verified."
 streams: [S2_stacking_cooptimization, S3_bidding_uncertainty]

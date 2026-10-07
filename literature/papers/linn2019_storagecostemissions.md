@@ -7,6 +7,7 @@ journal: "Journal of Environmental Economics and Management"
 volume_issue_pages: "96:130-158"
 doi: "10.1016/j.jeem.2019.05.003"
 quartile: "Q1 (SJR 2019, Economics and Econometrics; Management, Monitoring, Policy and Law)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Resources for the Future (Linn, Shih) — RFF electricity modelling group"
 lineage: "Not verified."
 streams: [S8_empirical_econ]

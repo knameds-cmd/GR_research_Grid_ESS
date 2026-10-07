@@ -13,3 +13,6 @@ __pycache__/
 
 # 로컬 테스트 흔적
 .probe
+
+# 출판사 PDF는 저작권 때문에 공개 저장소에 올리지 않음 (literature/DOWNLOAD_LIST.md 참고)
+literature/pdf/

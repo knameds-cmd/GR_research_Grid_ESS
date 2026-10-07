@@ -7,6 +7,7 @@ journal: "Nature Energy"
 volume_issue_pages: "2(8):17110"
 doi: "10.1038/nenergy.2017.110"
 quartile: "Q1 (SJR 2017 and 2024/2025, Energy Eng. & Power Tech.; Renewable Energy, Sustainability & Environment; Fuel Tech.)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Imperial College London — Grantham Institute / Centre for Environmental Policy / Chemical Engineering (Adam Hawkes, Iain Staffell, Ajay Gambhir)"
 lineage: "Imperial storage-economics line (Staffell/Hawkes); Schmidt first author (Imperial PhD-era; supervision not verified). Precursor of schmidt2019_lcos."
 streams: [S1_foundations_value]

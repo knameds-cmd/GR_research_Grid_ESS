@@ -7,6 +7,7 @@ journal: "Journal of Public Economics"
 volume_issue_pages: "239:105216"
 doi: "10.1016/j.jpubeco.2024.105216"
 quartile: "Q1 (SJR 2024 and 2025, Economics and Econometrics; Finance)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "David P. Brown (Univ. of Alberta, Canada Research Chair in Energy Economics) and Lucija Muehlenbachs (Univ. of Calgary; RFF)"
 lineage: "Not verified."
 streams: [S8_empirical_econ]

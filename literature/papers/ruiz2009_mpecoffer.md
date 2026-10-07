@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Power Systems"
 volume_issue_pages: "24(4):1855-1866"
 doi: "10.1109/TPWRS.2009.2030378"
 quartile: "Q1 (SJR 2024, IEEE Trans. Power Systems, SJR 3.629; Q1 Electrical & Electronic Eng. and Energy Eng. & Power Tech.)"
+quartile_basis: "latest-only; rule=unchecked; SJR 2009 (publication year) not checked — only later years"
 group: "Conejo (UCLM)"
 lineage: "Both authors UCLM (OpenAlex). Ruiz = Conejo PhD student at UCLM (widely documented; not re-verified this session). Template for all later storage MPEC/bilevel offering papers (mohsenianrad2016_pricemaker, wang2017_lookahead, nasrolahpour2018_bilevel, tomasson2020_offerbid)."
 streams: [S3_bidding_uncertainty]

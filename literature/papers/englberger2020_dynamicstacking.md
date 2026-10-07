@@ -7,6 +7,7 @@ journal: "Cell Reports Physical Science"
 volume_issue_pages: "1(11):100238"
 doi: "10.1016/j.xcrp.2020.100238"
 quartile: "No SJR quartile for 2020 (journal launched 2020; first SJR-ranked year 2021). Q1 2021-2025 in all five categories (Energy (misc.); Engineering (misc.); Chemistry (misc.); Materials Science (misc.); Physics and Astronomy (misc.)); SJR 2025 = 1.784"
+quartile_basis: "nearest-year; rule=pass; no SJR for 2020 (launch year), first ranked year 2021 = Q1"
 group: "Andreas Jossen & Holger Hesse, Institute for Electrical Energy Storage Technology (EES), Technical University of Munich"
 lineage: "TUM EES (Jossen chair). Englberger = EES doctoral researcher (TUM EES alumni page; mediaTUM author record). Hesse = EES group leader for stationary storage. Same institute as the TUM BESS simulation and aging-aware operation work (see the degradation stream)."
 streams: [S2_stacking_cooptimization]

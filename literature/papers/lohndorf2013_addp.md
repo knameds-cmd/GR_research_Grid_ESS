@@ -7,6 +7,7 @@ journal: "Operations Research"
 volume_issue_pages: "61(4):810-823"
 doi: "10.1287/opre.2013.1182"
 quartile: "Q1 (SJR 2024, Operations Research, SJR 2.557; Q1 Computer Science Applications and Management Science & OR)"
+quartile_basis: "latest-only; rule=unchecked; SJR 2013 (publication year) not checked — only later years"
 group: "Löhndorf (WU Vienna) / Wozabal & Minner (TU Munich)"
 lineage: "OR/stochastic-programming school (Vienna/Munich); same pair later writes lohndorf2023_coordination. Methodologically descends from SDDP (Pereira & Pinto 1991) and Powell-style ADP."
 streams: [S3_bidding_uncertainty]

@@ -7,6 +7,7 @@ journal: "European Journal of Operational Research"
 volume_issue_pages: "301(2):726-746"
 doi: "10.1016/j.ejor.2021.11.010"
 quartile: "Q1 (SJR 2024, European J. of Operational Research, SJR 2.239; Q1 in all five categories)"
+quartile_basis: "latest-only; rule=unchecked; SJR 2022 (publication year) not checked — only later years"
 group: "Gönsch (Univ. Duisburg-Essen; corresponding) with Ziel (Univ. Duisburg-Essen; known for electricity-price forecasting)"
 lineage: "Finnah = Duisburg-Essen doctoral researcher (supervision not verified). Methodological heir of lohndorf2013_addp / Powell ADP; Ziel contributes high-dimensional price forecasting."
 streams: [S3_bidding_uncertainty]

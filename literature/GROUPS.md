@@ -312,6 +312,10 @@ graph TD
   3. Schmidt, O., Melchior, S., Hawkes, A., Staffell, I. (2019). Projecting the future levelized cost of electricity storage technologies. *Joule* 3(1):81–100. doi:10.1016/j.joule.2018.12.008
   4. Heuberger, C.F., Staffell, I., Shah, N., Mac Dowell, N. (2017). A systems approach to quantifying the value of power generation and energy storage technologies in future electricity networks. *Computers & Chemical Engineering* 107:247–256. doi:10.1016/j.compchemeng.2017.05.012
   5. Ward, K.R., Green, R., Staffell, I. (2019). Getting prices right in structural electricity market models. *Energy Policy* 129:1190–1206. doi:10.1016/j.enpol.2019.01.077
+  6. Schmidt, O., Staffell, I. (2023). *Monetizing Energy Storage: A Toolkit to Assess Future Cost and Value.* Oxford University Press. doi:10.1093/oso/9780192888174.001.0001 (book; see CANON 6a). [added 2026-10-07]
+  7. Gale, E., Schmidt, O., O'Cinneide, A., Johnson, N., Staffell, I. (2026). Balancing with batteries: The impact of revenue stacking and skip rates on battery energy storage profitability in Great Britain. *J. Energy Storage* 166:122328. doi:10.1016/j.est.2026.122328. **Closest Q1 competitor (C1).** [added 2026-10-07; search-engine metadata]
+  8. Landy, M., Schmidt, O., Johnson, N., Staffell, I. (2026). Maximising the economic value of renewable and battery storage hybrids with revenue stacking. *Energy Environ. Sci.* 19(13):4469–4494. doi:10.1039/d6ee00776g. **Cross-country one-model study (C2).** [added 2026-10-07; search-engine metadata]
+- **2026 note.** With items 6–8 the Staffell group is now the main academic producer of GB battery revenue studies. Our study sits in this lineage (Staffell & Rustomji 2016 → C1/C2). See `WATCHLIST.md`.
 
 ## 12. David Newbery & Richard Green — Cambridge EPRG (GB market design)
 
@@ -408,6 +412,9 @@ graph TD
 - **Themes.** Physics-based (SPM-type) degradation models inside optimal control and arbitrage, compared with simple throughput/cycle cost.
 - **Signature paper:**
   1. Reniers, J.M., Mulder, G., Ober-Blöbaum, S., Howey, D.A. (2018). Improving optimal control of grid-connected lithium-ion batteries through more accurate battery and degradation modelling. *J. Power Sources* 379:91–102. doi:10.1016/j.jpowsour.2018.01.004
+- **Oxford GB market cluster (with Thomas Morstyn and Iacopo Savelli, Bocconi)** [added 2026-10-07; preprints, search-engine metadata — see `WATCHLIST.md`]:
+  2. Xia, Y., Schiele, F., Zhou, Y., Kumtepeli, V., Howey, D., Savelli, I., Morstyn, T. (2026). Lifetime profit-maximising co-optimisation of multi-service stacking for battery storage. arXiv:2609.03767. **GB EAC + SoE rules + ageing, receding horizon (C3).**
+  3. Nosratabadi, S.M., Savelli, I., Kumtepeli, V., Grunewald, P., Aunedi, M., Howey, D.A., Morstyn, T. (2024). The impact of grid storage on balancing costs and carbon emissions in Great Britain. arXiv:2410.07740 (C5).
 
 ## 20. Jesse Jenkins — MIT → Princeton ZERO Lab (with Nestor Sepulveda, Dharik Mallapragada, Richard Lester)
 
@@ -492,7 +499,7 @@ graph TD
   1. Borenstein, S., Bushnell, J.B., Wolak, F.A. (2002). Measuring market inefficiencies in California's restructured wholesale electricity market. *American Economic Review* 92(5):1376–1405. doi:10.1257/000282802762024557
   2. Borenstein, S. (2002). The trouble with electricity markets: Understanding California's restructuring disaster. *J. Economic Perspectives* 16(1):191–211. doi:10.1257/0895330027175
   3. Gowrisankaran, G., Reynolds, S.S., Samano, M. (2016). Intermittency and the value of renewable energy. *Journal of Political Economy* 124(4):1187–1234. doi:10.1086/686733
-  - Butters, Dorsey & Gowrisankaran, *Soaking up the sun: battery investment, renewable energy, and market equilibrium* — the journal version and DOI are **UNVERIFIED** (search quota exhausted). Check before citing.
+  - Butters, R.A., Dorsey, J., Gowrisankaran, G. (2025). Soaking up the sun: Battery investment, renewable energy, and market equilibrium. *Econometrica* 93(3):891–927. doi:10.3982/ECTA20411 — verified in `papers/butters2025_soakingsun.md` (Econometric Society article page + Wiley listing). [updated 2026-10-07; earlier note said UNVERIFIED]
 
 ## 29. Na Li / Steven Low — Harvard SEAS & Caltech (RL for power systems)
 

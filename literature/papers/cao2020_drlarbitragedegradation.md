@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Smart Grid"
 volume_issue_pages: "11(5):4513-4521"
 doi: "10.1109/TSG.2020.2986333"
 quartile: "Q1 (SJR 2020 and 2024/2025, Computer Science (miscellaneous); SJR 2024 = 4.608)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Keele University (Zhong Fan, School of Computing & Mathematics) with Thomas Morstyn (Oxford Eng. Science, now Oxford/Edinburgh) and Kang Li (Leeds)"
 lineage: "Keele smart-energy group (Fan); Harrold is a Keele co-author who later first-authored harrold2022_rainbowarbitrage with Cao & Fan (supervision relation not independently verified). Morstyn = Oxford Energy & Power Group, later leading the Edinburgh/Oxford power-systems-economics line."
 streams: [S5_rl_learning]

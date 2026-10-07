@@ -7,12 +7,13 @@ journal: "IEEE Transactions on Power Systems"
 volume_issue_pages: "37(5):3995-4005"
 doi: "10.1109/TPWRS.2022.3144241"
 quartile: "Q1 (SJR 2022, Electrical & Electronic Engineering; Energy Engineering & Power Technology)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Yonghong Chen (MISO market engineering / HIPPO) with Ross Baldick (UT Austin)"
 lineage: "ISO-practitioner + academic collaboration; advisor-student tie not applicable/verified."
 streams: [S7_market_design]
 market_context: "MISO day-ahead SCUC, storage participation model under FERC Order 841 (MO-managed SoC in clearing)"
 method_class: "MILP (SCUC) - convex relaxation vs binary formulations"
-evidence_read: "metadata + method description from the patent application with identical title (US 2023/0026455, Justia); journal full text not read"
+evidence_read: "metadata + method description from the patent application with identical title (US 2023/0026455, Justia); journal full text not read — LOW confidence for §2–§7 (patent text, not the article); bibliographic data verified via OpenAlex"
 oa_link: ""
 ---
 

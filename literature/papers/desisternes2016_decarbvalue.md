@@ -7,6 +7,7 @@ journal: "Applied Energy"
 volume_issue_pages: "175:368-379"
 doi: "10.1016/j.apenergy.2016.05.014"
 quartile: "Q1 (SJR 2016 and 2024/2025, Energy (misc.) and others)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "MIT (de Sisternes, Jenkins — MIT at the time) with Audun Botterud (Argonne National Laboratory; later MIT LIDS)"
 lineage: "MIT–Argonne line; Jenkins later leads Princeton ZERO lab (GenX), continuing in mallapragada2020_longrunvalue. Funded under DOE contract AC02-06CH11357 (Argonne) per OSTI record. Advisor-student ties not verified."
 streams: [S1_foundations_value]

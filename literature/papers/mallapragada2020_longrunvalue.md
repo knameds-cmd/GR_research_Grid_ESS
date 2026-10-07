@@ -7,6 +7,7 @@ journal: "Applied Energy"
 volume_issue_pages: "275:115390"
 doi: "10.1016/j.apenergy.2020.115390"
 quartile: "Q1 (SJR 2020 and 2024/2025, Energy (misc.) and others)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "MIT Energy Initiative (Mallapragada, Sepulveda) with Jesse Jenkins (Princeton, Andlinger Center / ZERO lab)"
 lineage: "GenX modelling team (Jenkins & Sepulveda created GenX at MIT); continues desisternes2016_decarbvalue; companion theory in junge2022_efficientstorage (Mallapragada co-author)."
 streams: [S1_foundations_value]

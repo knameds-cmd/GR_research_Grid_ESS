@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Power Systems"
 volume_issue_pages: "35(1):215-226"
 doi: "10.1109/TPWRS.2019.2936131"
 quartile: "Q1 (SJR 2025, IEEE Trans. Power Systems, SJR 4.217)"
+quartile_basis: "pub-year; rule=pass; SJR 2020 Q1 for this journal recorded in baker2024_transferablebidder"
 group: "Kankar Bhattacharya (Univ. of Waterloo, ECE) with IESO Ontario (M. Ahmed)"
 lineage: "Padmanabhan = Waterloo PhD student of Bhattacharya (affiliation + senior authorship; advisor tie not separately verified). Funded by NSERC Energy Storage Technology (NEST) Network."
 streams: [S4_degradation_operation, S7_market_design]

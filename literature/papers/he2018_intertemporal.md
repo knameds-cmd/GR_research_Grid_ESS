@@ -7,6 +7,7 @@ journal: "Nature Energy"
 volume_issue_pages: "3(5):404-412"
 doi: "10.1038/s41560-018-0129-9"
 quartile: "Q1 (SJR 2025, Nature Energy, SJR 20.769; Q1 in all four categories since 2017)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Whitacre & Kar (Carnegie Mellon Univ.) with Qixin Chen (Tsinghua Univ.)"
 lineage: "G. He: Tsinghua PhD (Kang/Chen group, cf. he2016_pbrcyclelife) -> CMU postdoc with Whitacre (affiliations on paper: CMU + Tsinghua). Follow-up: He, Ciez, Moutis, Kar, Whitacre 2020 Applied Energy 'The economic end of life of electrochemical energy storage'."
 streams: [S4_degradation_operation, S1_foundations_value]

@@ -7,6 +7,7 @@ journal: "International Journal of Electrical Power & Energy Systems"
 volume_issue_pages: "162:110288"
 doi: "10.1016/j.ijepes.2024.110288"
 quartile: "Q1 (SJR 2024, Electrical and Electronic Engineering; Energy Engineering and Power Technology)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Mattia Marinelli, DTU Wind and Energy Systems (Distributed Energy Systems); with Nan Zhao, Lancaster University"
 lineage: "DTU Marinelli group (Engelhardt, Ziras co-authors also on engelhardt2022_fcrnrecovery). Cao listed at DTU (OpenAlex); supervision tie not verified."
 streams: [S6_ancillary_products]

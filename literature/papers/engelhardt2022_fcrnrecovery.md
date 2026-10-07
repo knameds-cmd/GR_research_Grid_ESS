@@ -7,6 +7,7 @@ journal: "Sustainable Energy, Grids and Networks"
 volume_issue_pages: "32:100947"
 doi: "10.1016/j.segan.2022.100947"
 quartile: "Q1 (SJR 2022, Energy Engineering and Power Technology; Electrical and Electronic Engineering; Control and Systems Engineering)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Mattia Marinelli, DTU Wind and Energy Systems (Distributed Energy Systems)"
 lineage: "Marinelli group (DTU); Thingvad = former DTU PhD in Marinelli group (EV FCR-N), here at Hybrid Greentech; Engelhardt/Zepter/Gabderakhmanova DTU (Bornholm EnergyLab). Supervision ties not verified in this session."
 streams: [S6_ancillary_products]

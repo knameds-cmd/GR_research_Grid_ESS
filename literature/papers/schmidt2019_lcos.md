@@ -7,6 +7,7 @@ journal: "Joule"
 volume_issue_pages: "3(1):81-100"
 doi: "10.1016/j.joule.2018.12.008"
 quartile: "Q1 (SJR 2019 and 2024/2025, Energy (misc.))"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Imperial College London — Grantham Institute, Centre for Environmental Policy, Energy Futures Lab, Chemical Engineering (Hawkes, Staffell)"
 lineage: "Direct continuation of schmidt2017_experiencerates (same core team); interactive tool EnergyStorage.ninja."
 streams: [S1_foundations_value]

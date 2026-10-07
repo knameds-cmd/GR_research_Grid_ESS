@@ -7,6 +7,7 @@ journal: "The Energy Journal"
 volume_issue_pages: "39(6):1-26"
 doi: "10.5547/01956574.39.6.mgru"
 quartile: "Q1 (SJR 2018, Economics & Econometrics; Energy (misc.))"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Michael Grubb (UCL Institute for Sustainable Resources) and David Newbery (Cambridge EPRG)"
 lineage: "Senior-PI paper; EPRG working-paper version (EPRG 1817) exists but could not be fetched. No student authors."
 streams: [S7_market_design]

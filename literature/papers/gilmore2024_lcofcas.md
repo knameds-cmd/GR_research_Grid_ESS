@@ -7,6 +7,7 @@ journal: "The Energy Journal"
 volume_issue_pages: "45(1):201-229"
 doi: "10.5547/01956574.45.1.jgil"
 quartile: "Q1 (SJR 2024, Economics and Econometrics; Energy (misc.)) — note Q2 in 2023"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Paul Simshauser, Centre for Applied Energy Economics & Policy Research, Griffith University / EPRG Cambridge; Gilmore & Nolan at Iberdrola Australia (Gilmore also Griffith)"
 lineage: "Simshauser (Griffith/EPRG) applied-economics line on NEM entry costs (e.g., Simshauser 2020 Energy Journal 'On entry cost dynamics'). No advisor-student tie."
 streams: [S6_ancillary_products]

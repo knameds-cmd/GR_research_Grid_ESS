@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Smart Grid"
 volume_issue_pages: "9(2):1131-1140"
 doi: "10.1109/TSG.2016.2578950"
 quartile: "Q1 (SJR 2025, IEEE Trans. Smart Grid, SJR 4.363; Q1 in all years 2011-2025 per scimagojr.com)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Kirschen (Univ. of Washington, REAL lab) with ABB Corporate Research (Oudalov) and ETH Zurich Power Systems Lab (Andersson, Ulbig)"
 lineage: "Xu = UW EE PhD 2014-2018 (Xu CV); Kirschen senior author/supervisor (advisor relation inferred from co-authorship + UW group; CV does not name advisor). Oudalov (ABB) is a long-time BESS-economics author (Oudalov et al. 2007 sizing/PFC work)."
 streams: [S4_degradation_operation]

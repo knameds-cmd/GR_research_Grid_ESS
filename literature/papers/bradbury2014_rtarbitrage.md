@@ -7,6 +7,7 @@ journal: "Applied Energy"
 volume_issue_pages: "114:512-519"
 doi: "10.1016/j.apenergy.2013.10.010"
 quartile: "Q1 (SJR 2014 and 2024/2025, Energy (misc.); Management, Monitoring, Policy & Law; and others)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Duke University — Nicholas School of the Environment (Lincoln Pratson, Dalia Patiño-Echeverri)"
 lineage: "Duke energy-systems group; Bradbury (Duke PhD era; later Duke Energy Data Analytics Lab). Advisor ties not verified."
 streams: [S1_foundations_value]

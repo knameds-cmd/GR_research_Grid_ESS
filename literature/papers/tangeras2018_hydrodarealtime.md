@@ -7,6 +7,7 @@ journal: "The Journal of Industrial Economics"
 volume_issue_pages: "66(4):904-941"
 doi: "10.1111/joie.12186"
 quartile: "Q1 (SJR 2018 and 2025, Economics and Econometrics)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Tangerås (IFN Stockholm; EPRG Cambridge associate); Mauritzen (BI Norwegian Business School)"
 lineage: "IFN electricity-markets programme; Mauritzen earlier at NHH/IFN (see mauritzen2013_deadbattery). Advisor ties not verified."
 streams: [S8_empirical_econ]

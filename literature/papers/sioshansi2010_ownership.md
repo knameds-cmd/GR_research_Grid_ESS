@@ -7,6 +7,7 @@ journal: "The Energy Journal"
 volume_issue_pages: "31(2):173-198"
 doi: "10.5547/ISSN0195-6574-EJ-Vol31-No2-7"
 quartile: "Q1 (SJR 2010, Economics & Econometrics and Energy (misc.); journal Q1 2008-2022 & 2024, Q2 in 2023/2025)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Ramteen Sioshansi — Integrated Systems Engineering, The Ohio State University"
 lineage: "Single-author extension of sioshansi2009_pjmvalue (OSU/NREL line)."
 streams: [S1_foundations_value, S7_market_design]

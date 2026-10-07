@@ -40,6 +40,11 @@ Compiled 2026-10-06. Each anchor gives a full citation, what it standardised, an
    - Economics-first treatment of nodal pricing, hedging, market power and the role of storage as an intertemporal arbitrageur.
    - **Convention:** welfare-maximising dispatch with storage as intertemporal trade.
 
+6a. **Schmidt, O., Staffell, I. (2023).** *Monetizing Energy Storage: A Toolkit to Assess Future Cost and Value.* Oxford University Press. doi:10.1093/oso/9780192888174.001.0001 [added 2026-10-07; DOI from OUP/doi.org search results, not resolved via OpenAlex]
+   - Imperial CEP toolkit: experience-curve investment cost, LCOS, market value of storage services ("Market value: Making money"), system value, with the companion tool EnergyStorage.ninja.
+   - Methodological base of the 2026 Imperial GB papers (gale2026_balancingbatteries, landy2026_hybridstacking; see `WATCHLIST.md`).
+   - **Convention:** cost side (experience rates, LCOS) and value side (revenue stacking) assessed with one transparent, reproducible toolkit — the Staffell-line template for GB storage economics.
+
 ### A2. Decision-making under uncertainty for market agents
 
 7. **Conejo, A.J., Carrión, M., Morales, J.M. (2010).** *Decision Making Under Uncertainty in Electricity Markets.* Springer, Int. Series in OR & MS vol. 153. doi:10.1007/978-1-4419-7421-1 [✓OA]
@@ -206,6 +211,7 @@ Compiled 2026-10-06. Each anchor gives a full citation, what it standardised, an
 | LMP / FTR / ORDC market design | Schweppe 1988; Hogan 1992, 2013; Stoft 2002; Papavasiliou & Smeers 2017 |
 | Market value / cannibalisation | Hirth 2013 |
 | System value of storage | de Sisternes 2016; Mallapragada 2020; Sepulveda 2021; Braff 2016 |
+| GB storage revenue stacking (cost + value toolkit) | Staffell & Rustomji 2016; Schmidt & Staffell 2023 (book); Gale et al. 2026; Landy et al. 2026 |
 
 ## Items not verified (to re-check)
 

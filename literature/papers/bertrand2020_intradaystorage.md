@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Power Systems"
 volume_issue_pages: "35(3):2339-2350"
 doi: "10.1109/TPWRS.2019.2957246"
 quartile: "Q1 (SJR 2019-2025, Electrical & Electronic Eng. and Energy Eng. & Power Technology; SJR 2024 = 3.629)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Anthony Papavasiliou (CORE, UCLouvain; ENGIE Chair on Energy Economics and Energy Risk Management)"
 lineage: "Papavasiliou group (UCLouvain CORE; Papavasiliou = UC Berkeley PhD under S. Oren). Bertrand listed as IEEE Student Member at CORE, sole co-author with Papavasiliou (PhD-student relation consistent but not independently verified)."
 streams: [S5_rl_learning]

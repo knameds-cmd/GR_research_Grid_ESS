@@ -7,6 +7,7 @@ journal: "The RAND Journal of Economics"
 volume_issue_pages: "54(1):3-53"
 doi: "10.1111/1756-2171.12429"
 quartile: "Q1 (SJR 2023 and 2024, Economics and Econometrics)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Natalia Fabra (Universidad Carlos III de Madrid, EnergyEcoLab; CEPR) - ERC grant 772331"
 lineage: "Andrés-Cerezo (EUI at time of WP); advisor-student tie with Fabra NOT verified. Working-paper versions: Cambridge WP in Economics 20122 / EPRG (2020), CEPR DP 15444."
 streams: [S7_market_design]

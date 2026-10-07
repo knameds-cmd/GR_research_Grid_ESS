@@ -7,6 +7,7 @@ journal: "The Energy Journal"
 volume_issue_pages: "online first 9 Sep 2026; volume/issue/pages not yet assigned"
 doi: "10.1177/01956574261469461"
 quartile: "BORDERLINE: Q1 (SJR 2024, Economics and Econometrics; Energy misc.) but Q2 in SJR 2025 (and 2023). Energy Journal is on the coordinator's accepted list; flagged."
+quartile_basis: "nearest-year; rule=FAIL; SJR 2026 not yet published, nearest year 2025 = Q2 (Q1 in 2024)"
 group: "Kirkpatrick, Dept. of Economics, Michigan State University (environmental/energy econ)"
 lineage: "Not verified."
 streams: [S8_empirical_econ]

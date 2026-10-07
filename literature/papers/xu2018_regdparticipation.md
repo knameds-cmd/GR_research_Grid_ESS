@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Power Systems"
 volume_issue_pages: "33(6):6715-6725"
 doi: "10.1109/TPWRS.2018.2846774"
 quartile: "Q1 (SJR 2018, Electrical and Electronic Engineering; Energy Engineering and Power Technology)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Daniel Kirschen & Baosen Zhang, University of Washington EE"
 lineage: "Bolun Xu = Kirschen PhD (UW, 2018; widely documented, not re-verified here); Yuanyuan Shi = Baosen Zhang student (UW). Companion to shi2019_cycleagingpfp and xu2018_cycleagingcost."
 streams: [S6_ancillary_products]

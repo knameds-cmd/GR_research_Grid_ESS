@@ -7,6 +7,7 @@ journal: "Journal of Energy Storage"
 volume_issue_pages: "115:115428"
 doi: "10.1016/j.est.2025.115428"
 quartile: "Q1 (SJR 2025: Electrical & Electronic Eng.; Energy Eng. & Power Technology; Renewable Energy, Sustainability & Env.; SJR 2025 = 1.795)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Yaoyao Fiona Zhao (Dept. of Mechanical Engineering, McGill University)"
 lineage: "McGill Zhao lab (design/manufacturing & AI). Sage = McGill doctoral researcher, corresponding author Zhao (supervision not independently verified). NOTE: not one of the renowned power-systems groups listed in the archive criteria - included because it is the only Q1 journal benchmark found that systematically studies DRL design choices / reproducibility for battery dispatch."
 streams: [S5_rl_learning]

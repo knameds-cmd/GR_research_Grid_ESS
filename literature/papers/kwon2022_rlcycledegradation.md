@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Smart Grid"
 volume_issue_pages: "13(6):4909-4917"
 doi: "10.1109/TSG.2022.3180674"
 quartile: "Q1 (SJR 2022 and 2024/2025, Computer Science (miscellaneous); SJR 2024 = 4.608)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Hao Zhu (Dept. of ECE, The University of Texas at Austin)"
 lineage: "UT Austin Hao Zhu group (Zhu = UIUC/Minnesota lineage, G. Giannakis postdoc/PhD line - not checked here). Kwon listed as IEEE Student Member at UT Austin and sole co-author with Zhu (PhD-student relation consistent, not independently verified)."
 streams: [S5_rl_learning]

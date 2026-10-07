@@ -7,6 +7,7 @@ journal: "Applied Energy"
 volume_issue_pages: "190:147-164"
 doi: "10.1016/j.apenergy.2016.12.081"
 quartile: "Q1 (SJR 2025, Energy (misc.); Renewable Energy, Sustainability and the Environment)"
+quartile_basis: "pub-year; rule=pass; SJR 2017 Q1 for this journal recorded in greenwood2017_efrservicedesign"
 group: "Victor M. Zavala, Chemical & Biological Engineering, University of Wisconsin–Madison"
 lineage: "Zavala group (UW–Madison). Dowling = postdoc with Zavala at the time (paper affiliation), later faculty at Notre Dame (paper PDF hosted on dowlinglab.nd.edu). Kumar = Zavala group member."
 streams: [S2_stacking_cooptimization, S1_foundations_value]

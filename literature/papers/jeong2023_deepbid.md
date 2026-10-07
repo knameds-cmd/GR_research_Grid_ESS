@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Energy Markets, Policy and Regulation"
 volume_issue_pages: "1(2):85-96"
 doi: "10.1109/TEMPR.2023.3258409"
 quartile: "Q1 (SJR 2025: Economics & Econometrics; Energy (misc.); Management, Monitoring, Policy & Law; SJR 1.449). Journal launched 2023; SJR publishes quartiles only from its first ranked year (2025 shown) - quartile for 2023 not available."
+quartile_basis: "nearest-year; rule=pass; journal launched 2023, first SJR-ranked year 2025 = Q1"
 group: "Hongseok Kim (Sogang University, Dept. of Electronic Engineering) with Seung Wan Kim (Chungnam National University at time of publication; now KENTECH, SEND Lab)"
 lineage: "Sogang Hongseok Kim group; Jeong (Sogang / ETRI) is first author of the group's DRL-for-renewables line (DeepComp, Applied Energy 2021, with H. Kim). Seung Wan Kim co-author -> direct lineage to the KENTECH SEND Lab. Advisor-student relation Jeong-H. Kim consistent with affiliations, not independently verified."
 streams: [S5_rl_learning]

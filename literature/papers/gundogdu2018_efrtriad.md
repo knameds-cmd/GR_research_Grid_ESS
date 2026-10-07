@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Industrial Electronics"
 volume_issue_pages: "65(12):9509-9517"
 doi: "10.1109/TIE.2018.2818642"
 quartile: "Q1 (SJR 2018, Electrical and Electronic Engineering; Control and Systems Engineering)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "David Stone / Martin Foster / Dan Gladwin, Electrical Machines & Drives group, University of Sheffield (Willenhall 2 MW/1 MWh BESS)"
 lineage: "Gundogdu PhD thesis, University of Sheffield 2019 (White Rose eTheses id 24593) under the Stone/Foster/Gladwin group."
 streams: [S6_ancillary_products]

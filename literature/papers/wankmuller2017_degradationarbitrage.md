@@ -7,6 +7,7 @@ journal: "Journal of Energy Storage"
 volume_issue_pages: "10:56-66"
 doi: "10.1016/j.est.2016.12.004"
 quartile: "Q1 (SJR 2025, J. Energy Storage, SJR 1.795; Q1 Energy Eng. & Power Tech., EEE, Renewable Energy)"
+quartile_basis: "pub-year; rule=pass; SJR 2017 Q1 for this journal recorded in staffell2016_maxvalue"
 group: "Audun Botterud (Argonne National Laboratory / MIT LIDS) with Argonne battery group (Gallagher) and KIT"
 lineage: "Wankmüller = KIT student at Argonne (affiliations KIT + ANL); Botterud = senior author (ANL energy systems; MIT LIDS). Advisor relation not verified."
 streams: [S4_degradation_operation, S1_foundations_value]

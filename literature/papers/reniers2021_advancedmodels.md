@@ -7,6 +7,7 @@ journal: "Journal of Power Sources"
 volume_issue_pages: "487:229355"
 doi: "10.1016/j.jpowsour.2020.229355"
 quartile: "Q1 (SJR 2025, J. Power Sources, SJR 1.598; Q1 EEE, Energy Eng. & Power Tech., Phys. & Theor. Chem., Renewable Energy)"
+quartile_basis: "latest-only; rule=unchecked; SJR 2021 (publication year) not checked — only later years"
 group: "David Howey (Univ. of Oxford, Battery Intelligence Lab; Faraday Institution) with VITO/EnergyVille (Mulder)"
 lineage: "Reniers = Oxford DPhil 2019 (thesis cited as ref. [27] in the paper) supervised by Howey; co-funded by VITO/EIT InnoEnergy. Precursor: Reniers, Mulder, Ober-Blöbaum, Howey 2018 J. Power Sources 379 (optimal control with physics-based degradation, simulation only)."
 streams: [S4_degradation_operation]

@@ -7,6 +7,7 @@ journal: "INFORMS Journal on Computing"
 volume_issue_pages: "27(3):525-543"
 doi: "10.1287/ijoc.2015.0640"
 quartile: "Q1 (SJR 2024, INFORMS J. on Computing, SJR 1.439; Q1 in CS Applications, Information Systems, Mgmt Science & OR, Software)"
+quartile_basis: "latest-only; rule=unchecked; SJR 2015 (publication year) not checked — only later years"
 group: "Powell (CASTLE Lab, ORFE, Princeton)"
 lineage: "Both Princeton ORFE (OpenAlex). Jiang = Powell PhD student (Princeton); Monotone-ADP developed in Jiang & Powell (2015) Operations Research 'An approximate dynamic programming algorithm for monotone value functions'."
 streams: [S3_bidding_uncertainty]

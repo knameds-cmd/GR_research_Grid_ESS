@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Smart Grid"
 volume_issue_pages: "7(5):2359-2367"
 doi: "10.1109/TSG.2015.2424314"
 quartile: "Q1 (SJR 2025, IEEE Trans. Smart Grid, SJR 4.363; Q1 every year 2011-2025)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Chongqing Kang / Qixin Chen / Qing Xia (Tsinghua Univ., EE) with Pierre Pinson (DTU)"
 lineage: "G. He = Tsinghua PhD in Kang/Chen group (later CMU postdoc with Whitacre -> he2018_intertemporal). Advisor relation inferred from authorship/affiliation; not separately verified."
 streams: [S4_degradation_operation, S6_ancillary_products]

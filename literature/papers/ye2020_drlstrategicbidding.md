@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Smart Grid"
 volume_issue_pages: "11(2):1343-1355"
 doi: "10.1109/TSG.2019.2936142"
 quartile: "Q1 (SJR 2020 and 2024/2025, Computer Science (miscellaneous); SJR 2024 = 4.608)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Goran Strbac and Dimitrios Papadaskalopoulos (Control & Power Group, Imperial College London)"
 lineage: "Imperial Strbac/Papadaskalopoulos line on strategic bidding (bi-level/MPEC -> DRL). Ye and Qiu: Imperial-affiliated first/second authors who continue this line (e.g. Ye et al. multi-agent DRL local markets, TSG 2023; Qiu et al. MARL papers) - advisor relation consistent with co-authorship but not independently verified. Mingyang Sun: Imperial (later Zhejiang/Peking)."
 streams: [S5_rl_learning]

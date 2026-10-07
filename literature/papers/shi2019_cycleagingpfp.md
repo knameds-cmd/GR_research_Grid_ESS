@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Automatic Control"
 volume_issue_pages: "64(6):2324-2339"
 doi: "10.1109/TAC.2018.2867507"
 quartile: "Q1 (SJR 2025, IEEE Trans. Automatic Control, SJR 3.929; Q1 Control & Systems Eng., EEE, CS Applications)"
+quartile_basis: "latest-only; rule=unchecked; SJR 2019 (publication year) not checked — only later years"
 group: "Baosen Zhang & Daniel Kirschen (Univ. of Washington, EE)"
 lineage: "Shi, Xu, Tan = UW EE students (OpenAlex affiliations); Shi supervised by B. Zhang, Xu by Kirschen (advisor relations per UW groups; not separately verified here). Code: github.com/Yuanyuan-Shi/Cycle-based-Battery-Controller"
 streams: [S4_degradation_operation, S6_ancillary_products]

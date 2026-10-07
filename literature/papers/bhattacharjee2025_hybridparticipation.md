@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Power Systems"
 volume_issue_pages: "40(1):650-661"
 doi: "10.1109/TPWRS.2024.3397590"
 quartile: "Q1 (SJR 2024, Electrical & Electronic Engineering; Energy Engineering & Power Technology)"
+quartile_basis: "pub-year; rule=pass; SJR 2025 Q1 for this journal recorded in baker2024_transferablebidder"
 group: "Zareipour (U. Calgary ECE) with Sioshansi (CMU EPP/ECE)"
 lineage: "Bhattacharjee = PhD University of Calgary (stated in paper), now NYISO; Zareipour group. Sequel to bhattacharjee2022_soemanagement."
 streams: [S7_market_design]

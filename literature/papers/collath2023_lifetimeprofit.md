@@ -7,6 +7,7 @@ journal: "Applied Energy"
 volume_issue_pages: "348:121531"
 doi: "10.1016/j.apenergy.2023.121531"
 quartile: "Q1 (SJR 2025, Applied Energy, SJR 2.864)"
+quartile_basis: "latest-only; rule=unchecked; SJR 2023 (publication year) not checked — only later years"
 group: "Andreas Jossen (TUM Chair of Electrical Energy Storage Technology) & Holger Hesse (Kempten UAS / TUM)"
 lineage: "Collath = TUM EES doctoral researcher (EES alumni page); follows collath2022_agingreview; same group as schimpe2018_efficiency (SimSES digital-twin lineage)."
 streams: [S4_degradation_operation]

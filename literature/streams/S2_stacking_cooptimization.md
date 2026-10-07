@@ -100,6 +100,7 @@ Cross-stream papers that also stack services, held by other streams: staffell201
 6. **Uncertainty in prices and acceptance under multi-product rules.** Oracle bounds dominate. Only biggins2022 (acceptance), kazemi2017 (robust) and cheng2018 (SDP) treat uncertainty, and none does so with a multi-product rule set. That is an opening for SP/DRO or RL policies evaluated under each rule regime, linking to S3 and S5.
 7. **Degradation interacts with SoE rules** (perez2016, mirzaeialavijeh2025). No study separates the profit lost to regulatory SoE constraints from the profit lost to ageing-motivated SoC limits.
 8. **GB post-2021 response suite is missing from the optimisation literature in this stream.** Existing GB optimisation studies (moreno2015, biggins2022) predate the DC/DM/DR suite and its SoE rules. GB DC product papers in S6 (e.g., cao2024_dcvsefr) are simulation or control studies, not stacking optimisation.
+   - **2026-10-07 update:** `casella2024_ukbessmilp` (Q1, Renewable Energy 2024) now encodes GB dynamic frequency response services with DA/ID and imbalance in a MILP, and the preprint Xia et al. 2026 (`WATCHLIST.md` C3) adds EAC co-optimisation and SoE rules. Gap 1 (rules as the experimental variable) is unaffected.
 
 ## 6. Dropped or deferred candidates (and why)
 

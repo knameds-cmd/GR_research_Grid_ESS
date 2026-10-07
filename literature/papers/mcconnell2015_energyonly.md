@@ -7,6 +7,7 @@ journal: "Applied Energy"
 volume_issue_pages: "159:422-432"
 doi: "10.1016/j.apenergy.2015.09.006"
 quartile: "Q1 (SJR 2014/2016 and 2024/2025, Energy (misc.) and others)"
+quartile_basis: "bracketed; rule=pass; Q1 in SJR 2014 and 2016 (publication year 2015 itself not checked)"
 group: "Melbourne Energy Institute, University of Melbourne (Mike Sandiford, director); Australian-German College of Climate & Energy Transitions"
 lineage: "MEI group; McConnell later prominent NEM analyst (Climate & Energy College). No advisor ties claimed."
 streams: [S1_foundations_value, S7_market_design]

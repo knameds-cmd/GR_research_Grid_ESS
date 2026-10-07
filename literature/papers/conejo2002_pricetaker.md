@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Power Systems"
 volume_issue_pages: "17(4):1081-1088"
 doi: "10.1109/TPWRS.2002.804948"
 quartile: "Q1 (SJR 2024, IEEE Trans. Power Systems, SJR 3.629; Q1 Electrical & Electronic Eng. and Energy Eng. & Power Tech.)"
+quartile_basis: "latest-only; rule=unchecked; SJR 2002 (publication year) not checked — only later years"
 group: "Conejo (Univ. of Castilla-La Mancha, UCLM)"
 lineage: "Root of the UCLM/Conejo 'offering strategy' school (all three authors UCLM per OpenAlex). Later UCLM students/co-workers: Ruiz (ruiz2009_mpecoffer), Baringo (baringo2011_robustoffer), Morales (pandzic2013_vppoffer). Advisor-student ties to those authors are widely documented but not re-verified in this session."
 streams: [S3_bidding_uncertainty]

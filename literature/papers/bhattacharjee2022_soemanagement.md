@@ -7,6 +7,7 @@ journal: "IEEE Open Access Journal of Power and Energy"
 volume_issue_pages: "9:173-182"
 doi: "10.1109/OAJPE.2022.3174523"
 quartile: "Q1 (SJR 2022-2025, Electrical & Electronic Engineering; Energy Engineering & Power Technology)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Zareipour (U. Calgary ECE) with Sioshansi (Ohio State / CMU)"
 lineage: "Bhattacharjee = PhD University of Calgary (Zareipour group; affiliation stated in companion paper bhattacharjee2025_hybridparticipation), later NYISO. Sioshansi = Oren (Berkeley) PhD 2007."
 streams: [S7_market_design]

@@ -7,6 +7,7 @@ journal: "Energy Reports"
 volume_issue_pages: "13:1029-1040"
 doi: "10.1016/j.egyr.2024.12.057"
 quartile: "Q1 (SJR 2024, Energy (misc.); 2025 Q1 in EEE and Energy Eng.) — note Q2 in 2023"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Dirk Uwe Sauer, ISEA RWTH Aachen / JARA-Energy"
 lineage: "RWTH ISEA Sauer group; Koltermann, Figgener, Zurmühlen shared with koltermann2022_fcrbalancinggroup."
 streams: [S6_ancillary_products]

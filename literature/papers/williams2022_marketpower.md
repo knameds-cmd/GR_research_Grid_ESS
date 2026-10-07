@@ -7,6 +7,7 @@ journal: "Energy Policy"
 volume_issue_pages: "164:112872"
 doi: "10.1016/j.enpol.2022.112872"
 quartile: "Q1 (SJR 2022, Energy (misc.); Management, Monitoring, Policy & Law)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Richard Green (Imperial College Business School; EPSRC 'Energy Storage for Low Carbon Grids' programme)"
 lineage: "Green: supply-function equilibrium tradition (Green & Newbery 1992 JPE). Williams at Imperial Business School; PhD-student status under Green NOT verified."
 streams: [S7_market_design]

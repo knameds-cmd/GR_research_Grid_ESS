@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Energy Markets, Policy and Regulation"
 volume_issue_pages: "2(3):392-406"
 doi: "10.1109/TEMPR.2024.3372656"
 quartile: "Q1 (SJR 2025: Economics & Econometrics; Energy (misc.); Management, Monitoring, Policy & Law; SJR 1.449). Journal indexed 2023-; earlier-year quartile not published by SJR."
+quartile_basis: "nearest-year; rule=pass; journal launched 2023, first SJR-ranked year 2025 = Q1"
 group: "Hao Wang (Monash University, Dept. of Data Science & AI; ARC DECRA DE230100046)"
 lineage: "Monash energy-AI group of Hao Wang; first author Jinhao Li (Monash DSAI) co-authors repeatedly with Wang (advisor-student relation plausible but not independently verified). Changlong Wang = Monash Civil Eng. (energy systems)."
 streams: [S5_rl_learning]

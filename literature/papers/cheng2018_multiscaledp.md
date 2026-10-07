@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Smart Grid"
 volume_issue_pages: "9(3):1997-2005"
 doi: "10.1109/TSG.2016.2605141"
 quartile: "Q1 (SJR 2025, Computer Science (misc.))"
+quartile_basis: "pub-year; rule=pass; SJR 2018 Q1 for this journal recorded in he2016_pbrcyclelife"
 group: "Warren B. Powell, CASTLE Lab, ORFE, Princeton University"
 lineage: "Powell (Princeton ORFE) group. Bolong Cheng (Princeton EE, per OpenAlex affiliation) co-authored with Powell. Part of the Powell lineage on ADP for storage (e.g., Jiang & Powell, Salas & Powell); advisor tie not verified on a thesis page."
 streams: [S2_stacking_cooptimization]

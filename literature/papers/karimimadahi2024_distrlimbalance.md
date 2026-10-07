@@ -7,6 +7,7 @@ journal: "Journal of Energy Storage"
 volume_issue_pages: "104:114377"
 doi: "10.1016/j.est.2024.114377"
 quartile: "Q1 (SJR 2024: Electrical & Electronic Eng.; Energy Eng. & Power Technology; Renewable Energy, Sustainability & Env.; SJR 2024 = 1.760)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Chris Develder (IDLab, Ghent University - imec) with Bert Claessens (BEEBOP; IDLab)"
 lineage: "Ghent IDLab Develder group (AI for energy / demand response RL); Claessens = long-standing industrial RL-for-flexibility researcher (VITO/REstore lineage, not checked). Karimi Madahi = Ghent IDLab doctoral researcher (co-authorship; supervision not independently verified)."
 streams: [S5_rl_learning]

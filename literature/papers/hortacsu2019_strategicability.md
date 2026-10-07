@@ -7,6 +7,7 @@ journal: "American Economic Review"
 volume_issue_pages: "109(12):4302-4342"
 doi: "10.1257/aer.20172015"
 quartile: "Q1 (SJR 2019 and 2025, Economics and Econometrics)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Hortaçsu (U Chicago, NBER) and Puller (Texas A&M, NBER); Luco (Texas A&M); Zhu (Shanghai Lixin Univ.)"
 lineage: "Extends Hortaçsu & Puller 2008 RAND (ERCOT balancing-market bids vs ex-post best response). Advisor-student ties (e.g., Zhu) not verified."
 streams: [S8_empirical_econ]

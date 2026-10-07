@@ -7,6 +7,7 @@ journal: "Machine Learning"
 volume_issue_pages: "110(9):2335-2387"
 doi: "10.1007/s10994-021-06020-8"
 quartile: "Q1 (SJR 2021: Artificial Intelligence and Software, SJR 1.640; also Q1 2024/2025)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Damien Ernst and Bertrand Cornélusse (Montefiore Institute, University of Liège), with ENGIE Market Modeling (Brussels)"
 lineage: "Liège Ernst group - originators of fitted Q iteration (Ernst, Geurts & Wehenkel, JMLR 2005); Boukas, Théate, Bolland were Liège PhD students in the Ernst/Cornélusse group (co-authorship and affiliation; formal supervision not checked)."
 streams: [S5_rl_learning]

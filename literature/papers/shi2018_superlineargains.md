@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Power Systems"
 volume_issue_pages: "33(3):2882-2894"
 doi: "10.1109/TPWRS.2017.2749512"
 quartile: "Q1 (SJR 2025, Energy Engineering and Power Technology; Electrical and Electronic Engineering)"
+quartile_basis: "pub-year; rule=pass; SJR 2018 Q1 for this journal recorded in xu2018_regdparticipation"
 group: "Baosen Zhang (Univ. of Washington, EE) with Microsoft Research (Di Wang)"
 lineage: "UW EE power/energy group. Shi = B. Zhang PhD student; Bolun Xu = D. Kirschen PhD student at UW (later Columbia). Companion to xu2018 'Optimal battery participation in frequency regulation markets' (TPWRS 2018) from the same UW group."
 streams: [S2_stacking_cooptimization, S4_degradation_operation]

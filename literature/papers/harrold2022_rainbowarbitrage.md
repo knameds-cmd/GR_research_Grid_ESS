@@ -7,6 +7,7 @@ journal: "Energy"
 volume_issue_pages: "238:121958 (online 2021-09-08; volume dated Jan 2022)"
 doi: "10.1016/j.energy.2021.121958"
 quartile: "Q1 (SJR 2021/2022/2024/2025, incl. Energy Engineering & Power Technology and Electrical & Electronic Eng.; SJR 2022 = 1.989)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Zhong Fan (Keele University, School of Computing & Mathematics)"
 lineage: "Keele group of Zhong Fan; Harrold first author (Keele) - follows cao2020_drlarbitragedegradation (same group; Cao later at Luxembourg Institute of Science and Technology). Supervision not independently verified."
 streams: [S5_rl_learning]

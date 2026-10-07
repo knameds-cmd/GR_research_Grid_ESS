@@ -7,6 +7,7 @@ journal: "The Energy Journal"
 volume_issue_pages: "38(6):105-135"
 doi: "10.5547/01956574.38.6.apap"
 quartile: "Q1 (SJR 2017, Economics & Econometrics; Energy (misc.))"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Anthony Papavasiliou and Yves Smeers (UCLouvain CORE)"
 lineage: "Papavasiliou: co-author of S. Oren (Berkeley) on stochastic UC (RePEc reprint listing); PhD-advisor tie not verified here. Smeers: CORE equilibrium-modelling school."
 streams: [S7_market_design]

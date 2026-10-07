@@ -7,6 +7,7 @@ journal: "Energy Economics"
 volume_issue_pages: "31(2):269-277"
 doi: "10.1016/j.eneco.2008.10.005"
 quartile: "Q1 (SJR 2009 and 2023-2025, Economics & Econometrics; Energy (misc.))"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Ramteen Sioshansi (Ohio State, ISE) with NREL (Paul Denholm, Thomas Jenkin); Weiss (Point Carbon North America)"
 lineage: "Core of the Sioshansi–Denholm storage-valuation line (OSU/NREL). Continues Graves, Jenkin & Murphy 1999 (Jenkin co-author). Feeds sioshansi2010_ownership and sioshansi2014_welfareloss. Advisor-student ties not claimed."
 streams: [S1_foundations_value]

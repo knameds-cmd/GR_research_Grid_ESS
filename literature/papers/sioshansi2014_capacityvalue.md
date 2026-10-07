@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Power Systems"
 volume_issue_pages: "29(1):395-403"
 doi: "10.1109/TPWRS.2013.2279839"
 quartile: "Q1 (SJR 2014, Electrical & Electronic Engineering; Energy Engineering & Power Technology)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Sioshansi (Ohio State ISE) with Denholm (NREL)"
 lineage: "Sioshansi = Oren (Berkeley) PhD 2007 and NREL postdoc 2007-08 (CV) -> long-running Sioshansi-Denholm collaboration. Madaeni (then PG&E) co-authored several OSU capacity-value papers with Sioshansi; advisor tie NOT verified."
 streams: [S7_market_design]

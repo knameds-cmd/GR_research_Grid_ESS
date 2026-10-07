@@ -7,6 +7,7 @@ journal: "IEEE Transactions on Power Systems"
 volume_issue_pages: "31(1):786-797"
 doi: "10.1109/TPWRS.2015.2411556"
 quartile: "Q1 (SJR 2024, IEEE Trans. Power Systems, SJR 3.629; Q1 Electrical & Electronic Eng. and Energy Eng. & Power Tech.)"
+quartile_basis: "latest-only; rule=unchecked; SJR 2016 (publication year) not checked — only later years"
 group: "Mohsenian-Rad (UC Riverside)"
 lineage: "Single-author, UC Riverside (OpenAlex). Continues Mohsenian-Rad group's storage-market work (e.g., Akhavan-Hejazi & Mohsenian-Rad 2014, IEEE TSG — citation not verified this session; not in archive). Methodologically follows ruiz2009_mpecoffer."
 streams: [S3_bidding_uncertainty]

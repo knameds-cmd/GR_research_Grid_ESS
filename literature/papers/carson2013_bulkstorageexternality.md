@@ -7,6 +7,7 @@ journal: "Journal of Environmental Economics and Management"
 volume_issue_pages: "66(3):404-423"
 doi: "10.1016/j.jeem.2013.06.002"
 quartile: "Q1 (SJR 2013, Economics and Econometrics; Management, Monitoring, Policy and Law)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Carson (UC San Diego Economics); Novan (UC Davis ARE)"
 lineage: "Advisor-student ties not verified. Novan's later storage/renewables work links to Bushnell (UC Davis)."
 streams: [S8_empirical_econ]

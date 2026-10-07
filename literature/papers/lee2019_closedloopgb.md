@@ -7,6 +7,7 @@ journal: "Applied Energy"
 volume_issue_pages: "236:961-972"
 doi: "10.1016/j.apenergy.2018.12.044"
 quartile: "Q1 (SJR 2019, Energy Engineering and Power Technology)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "Solomon Brown, Dept. Chemical & Biological Engineering, University of Sheffield; with Niall Mac Dowell (Imperial College London, Centre for Environmental Policy)"
 lineage: "Brown (Sheffield) corresponding; Mac Dowell (Imperial) co-author. Lee/Homan PhD supervision by Brown not verified."
 streams: [S6_ancillary_products]

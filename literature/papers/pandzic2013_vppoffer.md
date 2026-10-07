@@ -7,6 +7,7 @@ journal: "Applied Energy"
 volume_issue_pages: "105:282-292"
 doi: "10.1016/j.apenergy.2012.12.077"
 quartile: "Q1 (SJR 2024, Applied Energy; Q1 in Building & Construction, Mechanical Eng., Energy (misc.), Management/Monitoring/Policy & Law)"
+quartile_basis: "latest-only; rule=unchecked; SJR 2013 (publication year) not checked — only later years"
 group: "Conejo (UCLM) with Morales (DTU) and Kuzle (Univ. of Zagreb)"
 lineage: "OpenAlex affiliations: Pandžić (Univ. of Washington at publication), Morales (DTU), Conejo (UCLM), Kuzle (Zagreb). Morales = former Conejo PhD student at UCLM (widely documented; not re-verified). Pandžić later joined Kirschen's UW group (affiliation consistent)."
 streams: [S3_bidding_uncertainty]

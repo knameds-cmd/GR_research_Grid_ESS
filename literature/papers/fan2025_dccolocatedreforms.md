@@ -7,6 +7,7 @@ journal: "CSEE Journal of Power and Energy Systems"
 volume_issue_pages: "11(1):340-351"
 doi: "10.17775/CSEEJPES.2023.01210"
 quartile: "Q1 (SJR 2025, Electrical and Electronic Engineering; Electronic, Optical and Magnetic Materials; Energy (misc.); Q1 every year 2022-2025; Q2 in 2021, Q4 in 2020)"
+quartile_basis: "pub-year; rule=pass; checked in this entry"
 group: "University of Strathclyde, Dept. Electronic & Electrical Engineering (Campos-Gaona, Fan); Offshore Renewable Energy Catapult (Nwobu)"
 lineage: "Strathclyde wind/power-electronics group; no advisor-student tie verified."
 streams: [S6_ancillary_products]
@@ -20,7 +21,7 @@ oa_link: "https://strathprints.strath.ac.uk/86798/"
 What BESS power/energy, energy-target (foot/headroom) and SoC limits maximise NPV of a wind-co-located BESS selling Dynamic Containment under the post-2021 GB reforms (EFA-block procurement, State-of-Energy rules, operational baselines)?
 
 ## 2. Setting & assumptions
-- DC: responds to |Δf| > 0.2 Hz (deadband ±0.2 Hz); Minimum Energy Requirement (MER) = 15 min full delivery in each direction; SoE rule: initial head/footroom ≥ MER at window start and ≥ 20% MER restored per 30-min SP via baselines; baseline ramp ≤ 5% of contracted DC/min; baseline amplitude ≤ 2.5% of DC capacity at first/last minutes; baseline submitted 1 h ahead (three SP latency); non-compliance = full payment deduction for the block; 4-h EFA windows; unit cap 100 MW.
+- DC: responds to |Δf| > 0.2 Hz (deadband ±0.2 Hz) [**correction 2026-10-07:** the NESO DC specification is deadband ±0.015 Hz, small linear delivery up to 5% at the ±0.2 Hz knee point, then linear to 100% at ±0.5 Hz (NESO DC service documents, e.g. neso.energy/document/173206). "±0.2 Hz" is either the paper's simplification or an extraction error — check the full text before reuse]; Minimum Energy Requirement (MER) = 15 min full delivery in each direction; SoE rule: initial head/footroom ≥ MER at window start and ≥ 20% MER restored per 30-min SP via baselines; baseline ramp ≤ 5% of contracted DC/min; baseline amplitude ≤ 2.5% of DC capacity at first/last minutes; baseline submitted 1 h ahead (three SP latency); non-compliance = full payment deduction for the block; 4-h EFA windows; unit cap 100 MW.
 - Price-taker; DC price assumed £8/MW/h (both LF/HF; soft-launch LF ~£17/MW/h cited); baselines priced at N2EX day-ahead; imbalance via Elexon SSP/SBP; BSUoS/TNUoS included; CfD £117.1/MWh for wind.
 - LMO Li-ion degradation (calendar + rainflow cycle), min SoC 20%, EoL at 80% capacity; 8% discount rate.
 - Configurations: non-power-exchange (NPE) and power-exchange (PE) with additional converter.
