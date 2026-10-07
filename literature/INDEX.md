@@ -1,6 +1,6 @@
 # 논문 아카이브 인덱스
 
-총 114편 (2026-10-07 갱신; 2026-10-06 110편 + 경쟁·영국 핵심 4편 추가). 한 논문이 여러 갈래에 걸치면 각 갈래 표에 모두 나옵니다. 이 파일은 `papers/*.md` 메타데이터에서 생성합니다.
+총 114편 (2026-10-07 생성). 한 논문이 여러 갈래에 걸치면 각 갈래 표에 모두 나옵니다. 이 파일은 `tools/gen_index.py`가 `papers/*.md` 메타데이터에서 생성하므로 직접 고치지 말고 논문 파일을 고친 뒤 다시 생성하세요.
 
 - 각 논문 파일: `papers/<id>.md` (YAML 메타데이터 + 11개 섹션: 질문, 가정, 제약, 모델, 데이터·가공, 정당화, 결과, 한계, 관련성, 계보, 검증기록)
 - 갈래별 종합: `streams/S*.md` (개관, 계보, 그룹, 요약표, 공백)
@@ -9,18 +9,18 @@
 
 ## 분위 판정 규칙 (2026-10-07 통일)
 
-**SJR(Scimago) 기준, 발행연도(권호 연도)의 분위. 발행연도 SJR이 아직 없거나(2026년 논문) 저널 창간 직후라 순위가 없으면 가장 가까운 연도를 쓴다. 저널이 여러 분야에 걸치면 가장 높은 분야의 분위를 쓴다.** 각 파일의 `quartile_basis` 필드에 판정 근거가 있습니다.
+**SJR(Scimago) 기준, 발행연도(권호 연도)의 분위. 발행연도 SJR이 아직 없거나(2026년 논문) 저널 창간 직후라 순위가 없으면 가장 가까운 연도를 쓴다. 발행연도 값을 확인하지 못했더라도 바로 앞뒤 해(±1년)가 모두 Q1로 확인되면 통과로 본다(bracketed). 저널이 여러 분야에 걸치면 가장 높은 분야의 분위를 쓴다.** 각 파일의 `quartile_basis` 필드에 판정 근거가 있습니다.
 
 | 표기 | 뜻 | 편수 |
 |---|---|---|
 | `Q1` | 발행연도 Q1 확인 (해당 파일 또는 같은 저널·같은 연도를 확인한 다른 아카이브 파일) | 82 |
-| `Q1~` | 가장 가까운 연도(발행연도 순위 없음) 또는 앞뒤 연도로 Q1 확인 | 5 |
-| `Q1?` | 이후 연도의 Q1만 확인, **발행연도 미확인** (SJR 사이트가 세션에서 막혀 재확인 못 함) | 24 |
-| `Q2!` | **규칙 미달**: 발행연도(또는 가장 가까운 연도) Q2 | 3 |
+| `Q1~` | 가장 가까운 연도(발행연도 순위 없음) 또는 앞뒤 해(±1년) 모두 Q1로 확인 | 7 |
+| `Q1?` | **발행연도(또는 가장 가까운 연도) 미확인** — 이후 연도만 확인했거나 전혀 확인 못 함 (SJR 사이트가 세션에서 막혀 재확인 못 함) | 22 |
+| `Q2!` | **규칙 미달**: 발행연도(또는 가장 가까운 연도) Q2 (`provisional` 표시는 분야별 확인이 덜 된 경우) | 3 |
 
 2026-10-06 독립 검증에서 표본 24편 서지·12개 저널 등급을 재확인했습니다. 이전 표기 `Q1*`(2026-10-06)는 위 4단계로 대체했습니다. `근거`: full = 전문(프리프린트·저자본 포함), partial = 일부 전문, abstract = 초록·메타데이터만(심층 필드는 "(from abstract)" 표시).
 
-근거 수준 분포: full 67편, partial 2편, abstract 45편
+근거 수준 분포: full 66편, partial 3편, abstract 45편
 
 ### 규칙 미달 `Q2!` — 남길지 결정 필요
 
@@ -30,7 +30,7 @@
 
 ### 발행연도 미확인 `Q1?` — SJR 접근 가능할 때 재확인
 
-[baringo2011_robustoffer](papers/baringo2011_robustoffer.md), [casella2024_ukbessmilp](papers/casella2024_ukbessmilp.md), [collath2023_lifetimeprofit](papers/collath2023_lifetimeprofit.md), [conejo2002_pricetaker](papers/conejo2002_pricetaker.md), [finnah2022_dpid](papers/finnah2022_dpid.md), [he2011_aggregatingvalues](papers/he2011_aggregatingvalues.md), [jiang2015_hourahead](papers/jiang2015_hourahead.md), [kazemi2017_jointenergyancillary](papers/kazemi2017_jointenergyancillary.md), [lamp2022_caisobatteryarbitrage](papers/lamp2022_caisobatteryarbitrage.md), [landy2026_hybridstacking](papers/landy2026_hybridstacking.md), [lohndorf2013_addp](papers/lohndorf2013_addp.md), [lohndorf2023_coordination](papers/lohndorf2023_coordination.md), [martins2021_ukbusinessmodels](papers/martins2021_ukbusinessmodels.md), [mohsenianrad2016_pricemaker](papers/mohsenianrad2016_pricemaker.md), [moreno2015_multiservicemilp](papers/moreno2015_multiservicemilp.md), [nasrolahpour2018_bilevel](papers/nasrolahpour2018_bilevel.md), [pandzic2013_vppoffer](papers/pandzic2013_vppoffer.md), [perez2016_degradationmultiservice](papers/perez2016_degradationmultiservice.md), [reniers2021_advancedmodels](papers/reniers2021_advancedmodels.md), [ruiz2009_mpecoffer](papers/ruiz2009_mpecoffer.md), [schimpe2018_efficiency](papers/schimpe2018_efficiency.md), [shi2019_cycleagingpfp](papers/shi2019_cycleagingpfp.md), [tabari2020_payforperformance](papers/tabari2020_payforperformance.md), [wang2017_lookahead](papers/wang2017_lookahead.md)
+[baringo2011_robustoffer](papers/baringo2011_robustoffer.md), [casella2024_ukbessmilp](papers/casella2024_ukbessmilp.md), [collath2023_lifetimeprofit](papers/collath2023_lifetimeprofit.md), [conejo2002_pricetaker](papers/conejo2002_pricetaker.md), [finnah2022_dpid](papers/finnah2022_dpid.md), [he2011_aggregatingvalues](papers/he2011_aggregatingvalues.md), [jiang2015_hourahead](papers/jiang2015_hourahead.md), [kazemi2017_jointenergyancillary](papers/kazemi2017_jointenergyancillary.md), [lamp2022_caisobatteryarbitrage](papers/lamp2022_caisobatteryarbitrage.md), [landy2026_hybridstacking](papers/landy2026_hybridstacking.md), [lohndorf2013_addp](papers/lohndorf2013_addp.md), [lohndorf2023_coordination](papers/lohndorf2023_coordination.md), [martins2021_ukbusinessmodels](papers/martins2021_ukbusinessmodels.md), [mohsenianrad2016_pricemaker](papers/mohsenianrad2016_pricemaker.md), [nasrolahpour2018_bilevel](papers/nasrolahpour2018_bilevel.md), [pandzic2013_vppoffer](papers/pandzic2013_vppoffer.md), [perez2016_degradationmultiservice](papers/perez2016_degradationmultiservice.md), [reniers2021_advancedmodels](papers/reniers2021_advancedmodels.md), [ruiz2009_mpecoffer](papers/ruiz2009_mpecoffer.md), [shi2019_cycleagingpfp](papers/shi2019_cycleagingpfp.md), [tabari2020_payforperformance](papers/tabari2020_payforperformance.md), [wang2017_lookahead](papers/wang2017_lookahead.md)
 
 ## S1 저장장치 가치·경제성 기초 (22편)
 
@@ -57,14 +57,14 @@
 | [xu2022_dynamicvaluation](papers/xu2022_dynamicvaluation.md) | 2022 | IEEE Transactions on Power Systems | Q1 | SDP/DP over state of health with piecewi | NYISO real-time arbitrage 2010-2020 (WEST, NORTH,  | full |
 | [mercier2023_eudaarbitrage](papers/mercier2023_eudaarbitrage.md) | 2023 | Energy Economics | Q1 | MILP | EU-28 + NO, CH, TR day-ahead hourly prices 2000-20 | abstract |
 | [antweiler2025_newmeritorder](papers/antweiler2025_newmeritorder.md) | 2025 | Energy Economics | Q1 | analytical long-run equilibrium + NLP nu | greenfield 100% wind+solar+storage (Li-ion battery | full |
-| [landy2026_hybridstacking](papers/landy2026_hybridstacking.md) ★경쟁 | 2026 | Energy & Environmental Science | Q1? | revenue-stacking optimisation with expli | UK case study (co-located vs hybridised renewables | abstract |
+| [landy2026_hybridstacking](papers/landy2026_hybridstacking.md) ★경쟁 | 2026 | Energy & Environmental Science | Q1? | LP/MILP (unverified; abstract says reven | UK case study (co-located vs hybridised renewables | abstract |
 
 ## S2 다중서비스 공동최적화(수익 스택) (18편)
 
 | id | 연도 | 저널 | Q | 방법 | 맥락 | 근거 |
 |---|---|---|---|---|---|---|
 | [he2011_aggregatingvalues](papers/he2011_aggregatingvalues.md) | 2011 | Energy Policy | Q1? | MILP | Belgium 2007 (one week): week-ahead generation-cos | full |
-| [moreno2015_multiservicemilp](papers/moreno2015_multiservicemilp.md) | 2015 | Applied Energy | Q1? | MILP | Great Britain: distribution-network congestion man | abstract |
+| [moreno2015_multiservicemilp](papers/moreno2015_multiservicemilp.md) | 2015 | Applied Energy | Q1~ | MILP | Great Britain: distribution-network congestion man | abstract |
 | [perez2016_degradationmultiservice](papers/perez2016_degradationmultiservice.md) | 2016 | IEEE Transactions on Sustainable Energy | Q1? | MILP | Great Britain: balancing-market services + DNO (di | abstract |
 | [staffell2016_maxvalue](papers/staffell2016_maxvalue.md) | 2016 | Journal of Energy Storage | Q2! | heuristic (greedy price-pairing) validat | GB 2013/14 half-hourly wholesale prices + STOR res | full |
 | [dowling2017_multiscalemarkets](papers/dowling2017_multiscalemarkets.md) | 2017 | Applied Energy | Q1 | MILP | CAISO 2015: day-ahead IFM (1 h), FMM (15 min), RTD | full |
@@ -79,8 +79,8 @@
 | [biggins2022_tradeornot](papers/biggins2022_tradeornot.md) | 2022 | Journal of Energy Storage | Q1 | MILP | GB: monthly Firm Frequency Response (dynamic FFR)  | full |
 | [casella2024_ukbessmilp](papers/casella2024_ukbessmilp.md) | 2024 | Renewable Energy | Q1? | MILP | GB: day-ahead and intraday markets, dynamic freque | abstract |
 | [mirzaeialavijeh2025_swedenfcrstacking](papers/mirzaeialavijeh2025_swedenfcrstacking.md) | 2025 | Applied Energy | Q1 | MILP | Sweden SE3: Nord Pool day-ahead + FCR-N, FCR-D up, | full |
-| [gale2026_balancingbatteries](papers/gale2026_balancingbatteries.md) ★경쟁 | 2026 | Journal of Energy Storage | Q1~ | co-optimisation (exact formulation not v | GB day-ahead wholesale + Balancing Mechanism (bids | abstract |
-| [landy2026_hybridstacking](papers/landy2026_hybridstacking.md) ★경쟁 | 2026 | Energy & Environmental Science | Q1? | revenue-stacking optimisation with expli | UK case study (co-located vs hybridised renewables | abstract |
+| [gale2026_balancingbatteries](papers/gale2026_balancingbatteries.md) ★경쟁 | 2026 | Journal of Energy Storage | Q1~ | LP/MILP (unverified; abstract says co-op | GB day-ahead wholesale + Balancing Mechanism (bids | abstract |
+| [landy2026_hybridstacking](papers/landy2026_hybridstacking.md) ★경쟁 | 2026 | Energy & Environmental Science | Q1? | LP/MILP (unverified; abstract says reven | UK case study (co-located vs hybridised renewables | abstract |
 
 ## S3 불확실성 하 입찰(SP/RO/SDP/가격결정자) (16편)
 
@@ -111,7 +111,7 @@
 | [perez2016_degradationmultiservice](papers/perez2016_degradationmultiservice.md) | 2016 | IEEE Transactions on Sustainable Energy | Q1? | MILP | Great Britain: balancing-market services + DNO (di | abstract |
 | [wankmuller2017_degradationarbitrage](papers/wankmuller2017_degradationarbitrage.md) | 2017 | Journal of Energy Storage | Q1 | LP/MILP arbitrage with degradation penal | MISO historical energy prices; price-taker arbitra | abstract |
 | [he2018_intertemporal](papers/he2018_intertemporal.md) | 2018 | Nature Energy | Q1 | Lagrangian decomposition (life-cycle pro | CAISO 2016: day-ahead energy arbitrage and frequen | full |
-| [schimpe2018_efficiency](papers/schimpe2018_efficiency.md) | 2018 | Applied Energy | Q1? | electro-thermal system simulation (compo | German Primary Control Reserve (FCR), Secondary Co | abstract |
+| [schimpe2018_efficiency](papers/schimpe2018_efficiency.md) | 2018 | Applied Energy | Q1~ | electro-thermal system simulation (compo | German Primary Control Reserve (FCR), Secondary Co | abstract |
 | [shi2018_superlineargains](papers/shi2018_superlineargains.md) | 2018 | IEEE Transactions on Power Systems | Q1 | SP | PJM RegD capacity payment + US C&I tariff (energy  | full |
 | [xu2018_cycleagingcost](papers/xu2018_cycleagingcost.md) | 2018 | IEEE Transactions on Power Systems | Q1 | MILP (piecewise-linear cycle-depth cost, | ISO-NE (SE-MASS zone) 2015, day-ahead hourly, real | full |
 | [xu2018_degradationmodel](papers/xu2018_degradationmodel.md) | 2018 | IEEE Transactions on Smart Grid | Q1 | semi-empirical aging model + rainflow cy | PJM frequency regulation (RegA/RegD-type signal) c | partial |
@@ -132,7 +132,7 @@
 | [bertrand2020_intradaystorage](papers/bertrand2020_intradaystorage.md) | 2020 | IEEE Transactions on Power Systems | Q1 | RL/DRL | German continuous intraday market (EPEX, hourly pr | full |
 | [cao2020_drlarbitragedegradation](papers/cao2020_drlarbitragedegradation.md) | 2020 | IEEE Transactions on Smart Grid | Q1 | RL/DRL | GB wholesale (hourly) energy arbitrage, price-take | full |
 | [ye2020_drlstrategicbidding](papers/ye2020_drlstrategicbidding.md) | 2020 | IEEE Transactions on Smart Grid | Q1 | RL/DRL | Stylised single-bus pool-based day-ahead energy ma | full |
-| [boukas2021_intradaydrl](papers/boukas2021_intradaydrl.md) | 2021 | Machine Learning | Q1 | RL/DRL | German EPEX continuous intraday (quarter-hourly pr | full |
+| [boukas2021_intradaydrl](papers/boukas2021_intradaydrl.md) | 2021 | Machine Learning | Q1 | RL/DRL | German EPEX continuous intraday (quarter-hourly pr | partial |
 | [harrold2022_rainbowarbitrage](papers/harrold2022_rainbowarbitrage.md) | 2022 | Energy | Q1 | RL/DRL | GB day-ahead wholesale prices as tariff for a camp | full |
 | [kwon2022_rlcycledegradation](papers/kwon2022_rlcycledegradation.md) | 2022 | IEEE Transactions on Smart Grid | Q1 | RL/DRL | ERCOT 5-min energy prices + PJM regulation signal  | full |
 | [sang2022_dfpricearbitrage](papers/sang2022_dfpricearbitrage.md) | 2022 | IEEE Transactions on Smart Grid | Q1 | MILP | PJM day-ahead hourly prices, price-taker ESS arbit | full |
@@ -145,7 +145,7 @@
 | [sage2025_drlbatterybenchmark](papers/sage2025_drlbatterybenchmark.md) | 2025 | Journal of Energy Storage | Q1 | RL/DRL | Battery arbitrage and load-following/renewable-uti | abstract |
 | [yi2025_perturbeddfl](papers/yi2025_perturbeddfl.md) | 2025 | IEEE Transactions on Smart Grid | Q1 | LP | NYISO hourly DA/RT prices (arbitrage); Queensland  | full |
 
-## S6 보조서비스 상품 설계와 배터리 (21편)
+## S6 보조서비스 상품 설계와 배터리 (20편)
 
 | id | 연도 | 저널 | Q | 방법 | 맥락 | 근거 |
 |---|---|---|---|---|---|---|
@@ -169,9 +169,8 @@
 | [celicortes2025_deterministicfreq](papers/celicortes2025_deterministicfreq.md) | 2025 | Energy Reports | Q1 | time-series decomposition (statistical)  | Continental Europe FCR (Germany); frequency data 2 | abstract |
 | [fan2025_dccolocatedreforms](papers/fan2025_dccolocatedreforms.md) | 2025 | CSEE Journal of Power and Energy Systems | Q1 | multi-year techno-economic simulation +  | GB Dynamic Containment LF/HF (EFA-block day-ahead  | full |
 | [mirzaeialavijeh2025_swedenfcrstacking](papers/mirzaeialavijeh2025_swedenfcrstacking.md) | 2025 | Applied Energy | Q1 | MILP | Sweden SE3: Nord Pool day-ahead + FCR-N, FCR-D up, | full |
-| [gale2026_balancingbatteries](papers/gale2026_balancingbatteries.md) ★경쟁 | 2026 | Journal of Energy Storage | Q1~ | co-optimisation (exact formulation not v | GB day-ahead wholesale + Balancing Mechanism (bids | abstract |
 
-## S7 저장장치 시장설계·규제 (23편)
+## S7 저장장치 시장설계·규제 (24편)
 
 | id | 연도 | 저널 | Q | 방법 | 맥락 | 근거 |
 |---|---|---|---|---|---|---|
@@ -197,9 +196,10 @@
 | [mercier2023_eudaarbitrage](papers/mercier2023_eudaarbitrage.md) | 2023 | Energy Economics | Q1 | MILP | EU-28 + NO, CH, TR day-ahead hourly prices 2000-20 | abstract |
 | [antweiler2025_newmeritorder](papers/antweiler2025_newmeritorder.md) | 2025 | Energy Economics | Q1 | analytical long-run equilibrium + NLP nu | greenfield 100% wind+solar+storage (Li-ion battery | full |
 | [bhattacharjee2025_hybridparticipation](papers/bhattacharjee2025_hybridparticipation.md) | 2025 | IEEE Transactions on Power Systems | Q1 | bilevel stochastic MPEC -> MILP | Alberta energy-only market (2015 data); US hybrid- | full |
-| [landy2026_hybridstacking](papers/landy2026_hybridstacking.md) ★경쟁 | 2026 | Energy & Environmental Science | Q1? | revenue-stacking optimisation with expli | UK case study (co-located vs hybridised renewables | abstract |
+| [gale2026_balancingbatteries](papers/gale2026_balancingbatteries.md) ★경쟁 | 2026 | Journal of Energy Storage | Q1~ | LP/MILP (unverified; abstract says co-op | GB day-ahead wholesale + Balancing Mechanism (bids | abstract |
+| [landy2026_hybridstacking](papers/landy2026_hybridstacking.md) ★경쟁 | 2026 | Energy & Environmental Science | Q1? | LP/MILP (unverified; abstract says reven | UK case study (co-located vs hybridised renewables | abstract |
 
-## S8 실증·계량경제 (13편)
+## S8 실증·계량경제 (12편)
 
 | id | 연도 | 저널 | Q | 방법 | 맥락 | 근거 |
 |---|---|---|---|---|---|---|
@@ -214,5 +214,4 @@
 | [rangarajan2023_batteryfcasdid](papers/rangarajan2023_batteryfcasdid.md) | 2023 | Energy Economics | Q1 | econometric (staggered difference-in-dif | Australia NEM, FCAS (regulation + contingency rais | abstract |
 | [brown2024_reliabilitybattery](papers/brown2024_reliabilitybattery.md) | 2024 | Journal of Public Economics | Q1 | econometric (event-study DiD + dynamic d | California residential solar and solar-plus-storag | full |
 | [butters2025_soakingsun](papers/butters2025_soakingsun.md) | 2025 | Econometrica | Q1 | econometric + SDP/DP (structural dynamic | CAISO (SP-15 hub), 5-min real-time + hourly day-ah | full |
-| [gale2026_balancingbatteries](papers/gale2026_balancingbatteries.md) ★경쟁 | 2026 | Journal of Energy Storage | Q1~ | co-optimisation (exact formulation not v | GB day-ahead wholesale + Balancing Mechanism (bids | abstract |
 | [kirkpatrick2026_batterycongestion](papers/kirkpatrick2026_batterycongestion.md) | 2026 | The Energy Journal | Q2! | econometric (high-dimensional FE DiD + d | CAISO day-ahead nodal LMPs, 757 nodes, 2009-2016;  | full |

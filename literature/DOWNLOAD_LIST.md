@@ -19,7 +19,7 @@
 | 5 | casella2024_ukbessmilp | Casella, La Fata, Suzzi, Barbero, Barilli (2024). The United Kingdom electricity market mechanism: A tool for a battery energy storage system optimal dispatching. *Renewable Energy* 231:120957. doi:10.1016/j.renene.2024.120957 | GB 규칙을 MILP 제약으로 넣은 Q1 선례. 우리 층 1의 직접 비교 대상 | abstract | SSRN 4628433 | 검색 |
 | 6 | martins2021_ukbusinessmodels | Martins, Miles (2021). A techno-economic assessment of battery business models in the UK electricity market. *Energy Policy* 148:111938. doi:10.1016/j.enpol.2020.111938 | 설계 초안 "먼저 읽을 6편". DC 이전 영국 사업모델의 기준선 | abstract | 아님 | 검색 |
 
-## 2순위 — 아카이브에 초록만 있는 영국 논문 (수치 인용 전에 전문 필요)
+## 2순위 — 초록만 정리된 영국 논문과 영국 프리프린트 (수치 인용 전에 전문 필요)
 
 | # | id | 서지 | 왜 필요한가 | 오픈액세스 | 서지 상태 |
 |---|---|---|---|---|---|

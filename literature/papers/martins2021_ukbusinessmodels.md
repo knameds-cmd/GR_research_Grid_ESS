@@ -6,14 +6,14 @@ year: 2021
 journal: "Energy Policy"
 volume_issue_pages: "148(Part B):111938"
 doi: "10.1016/j.enpol.2020.111938"
-quartile: "Q1 (SJR, journal-level: Energy Policy is Q1 in Energy (misc.) and Management, Monitoring, Policy & Law in the archive's checks for 2007 and 2024/2025; SJR 2021 itself not re-checked in this session)"
-quartile_basis: "latest-only; rule=unchecked; SJR 2021 (publication year) not checked — archive entries record Energy Policy Q1 for 2007 and 2024/2025"
+quartile: "Q1 (SJR, journal-level: Energy Policy is Q1 in Energy (misc.) and Management, Monitoring, Policy & Law in the archive's checks for 2007, 2018, 2022 and 2024/2025; SJR 2021 itself not re-checked in this session)"
+quartile_basis: "latest-only; rule=unchecked; SJR 2021 (publication year) not checked — archive entries record Energy Policy Q1 for 2007 (walawalkar2007), 2018 (sakti2018), 2022 (williams2022) and 2025 (he2011); no adjacent-year bracket on both sides"
 group: "John Miles (University of Cambridge, Engineering — affiliation believed, not verified in session)"
 lineage: "Not verified."
 streams: [S1_foundations_value, S2_stacking_cooptimization, S6_ancillary_products]
 market_context: "UK (GB) pre-DC era: wholesale arbitrage, Capacity Market auctions, frequency response and reserve (Fast Reserve, STOR), co-location with solar/wind"
 method_class: "LP (arbitrage) compared with a threshold cycling heuristic + techno-economic payback analysis"
-evidence_read: "abstract-level only (ADS / Semantic Scholar / search summaries; full text paywalled and publisher site blocked in session)"
+evidence_read: "abstract only (ADS / Semantic Scholar / search summaries; full text paywalled and publisher site blocked in session)"
 oa_link: ""
 ---
 

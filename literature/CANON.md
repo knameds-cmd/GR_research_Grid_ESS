@@ -42,7 +42,7 @@ Compiled 2026-10-06. Each anchor gives a full citation, what it standardised, an
 
 6a. **Schmidt, O., Staffell, I. (2023).** *Monetizing Energy Storage: A Toolkit to Assess Future Cost and Value.* Oxford University Press. doi:10.1093/oso/9780192888174.001.0001 [added 2026-10-07; DOI from OUP/doi.org search results, not resolved via OpenAlex]
    - Imperial CEP toolkit: experience-curve investment cost, LCOS, market value of storage services ("Market value: Making money"), system value, with the companion tool EnergyStorage.ninja.
-   - Methodological base of the 2026 Imperial GB papers (gale2026_balancingbatteries, landy2026_hybridstacking; see `WATCHLIST.md`).
+   - Likely methodological base (not verified — full texts not read) of the 2026 Imperial GB papers (gale2026_balancingbatteries, landy2026_hybridstacking; see `WATCHLIST.md`).
    - **Convention:** cost side (experience rates, LCOS) and value side (revenue stacking) assessed with one transparent, reproducible toolkit — the Staffell-line template for GB storage economics.
 
 ### A2. Decision-making under uncertainty for market agents

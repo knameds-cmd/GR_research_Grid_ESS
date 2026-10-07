@@ -11,9 +11,9 @@ quartile_basis: "latest-only; rule=unchecked; SJR 2024 (publication year) not ch
 group: "Not verified (Italian author team; SSRN preprint id 4628433)"
 lineage: "Not verified."
 streams: [S2_stacking_cooptimization, S6_ancillary_products]
-market_context: "GB: day-ahead and intraday markets, dynamic frequency response services (DC/DM/DR), imbalance settlement"
+market_context: "GB: day-ahead and intraday markets, dynamic frequency response services (DC/DM/DR inferred — abstract says only 'dynamic frequency response services'), imbalance settlement"
 method_class: "MILP"
-evidence_read: "abstract-level only (RePEc/SSRN/search summaries; publisher site blocked in session)"
+evidence_read: "abstract only (RePEc/SSRN/search summaries; publisher site blocked in session)"
 oa_link: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4628433"
 ---
 

@@ -12,8 +12,8 @@ group: "Iain Staffell, Centre for Environmental Policy, Imperial College London"
 lineage: "Staffell/Imperial CEP line (same group as gale2026_balancingbatteries). Landy supervision not verified."
 streams: [S1_foundations_value, S2_stacking_cooptimization, S7_market_design]
 market_context: "UK case study (co-located vs hybridised renewables + BESS, grid charging on/off, market stacking combinations) plus multi-region comparison (Australia, Nordics, US incl. Texas, Europe, Japan)"
-method_class: "revenue-stacking optimisation with explicit efficiency losses and degradation (exact formulation not verified)"
-evidence_read: "abstract-level only (search-engine summaries of the RSC page; publisher site blocked in session). Full text NOT read."
+method_class: "LP/MILP (unverified; abstract says revenue-stacking optimisation with efficiency losses and degradation)"
+evidence_read: "abstract only (search-engine summaries of the RSC page; publisher site blocked in session). Full text NOT read."
 oa_link: ""
 competitor: "C2 — cross-country, one-model study by the Staffell group (see literature/WATCHLIST.md)"
 ---

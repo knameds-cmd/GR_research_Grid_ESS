@@ -13,7 +13,7 @@ lineage: "Liège Ernst group - originators of fitted Q iteration (Ernst, Geurts 
 streams: [S5_rl_learning]
 market_context: "German EPEX continuous intraday (quarter-hourly products), pumped-hydro storage, price-taker liquidity taker"
 method_class: "RL/DRL"
-evidence_read: "full text partially (arXiv 2004.05940: sections 1-4 incl. MDP, algorithm, case-study setup); quantitative results section not retrieved -> results (from abstract)"
+evidence_read: "partial full text (arXiv 2004.05940: sections 1-4 incl. MDP, algorithm, case-study setup); quantitative results section not retrieved -> results (from abstract)"
 oa_link: "https://arxiv.org/abs/2004.05940"
 ---
 

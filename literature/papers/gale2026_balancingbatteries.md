@@ -6,14 +6,14 @@ year: 2026
 journal: "Journal of Energy Storage"
 volume_issue_pages: "166:122328"
 doi: "10.1016/j.est.2026.122328"
-quartile: "Q1 (SJR 2025 = nearest available year; SJR 2026 not yet published. J. Energy Storage Q1 in SJR 2024 and 2025 per biggins2022 / collath2022 entries)"
+quartile: "Q1 (SJR 2025 = nearest available year; SJR 2026 not yet published. J. Energy Storage Q1 per staffell2016_maxvalue (Q1 2017–2025) and collath2022_agingreview (SJR 2025))"
 quartile_basis: "nearest-year; rule=pass; SJR 2026 not yet published, nearest year 2025 = Q1 for J. Energy Storage (see staffell2016_maxvalue / collath2022_agingreview)"
 group: "Iain Staffell, Centre for Environmental Policy, Imperial College London (with O. Schmidt, N. Johnson)"
 lineage: "Staffell/Imperial CEP line: staffell2016_maxvalue -> Schmidt & Staffell 2023 (OUP book, CANON) -> this paper and landy2026_hybridstacking. Gale/O'Cinneide supervision ties not verified."
-streams: [S2_stacking_cooptimization, S6_ancillary_products, S8_empirical_econ]
+streams: [S2_stacking_cooptimization, S7_market_design]
 market_context: "GB day-ahead wholesale + Balancing Mechanism (bids/offers), skip rates; three years of half-hourly prices"
-method_class: "co-optimisation (exact formulation not verified; likely LP/MILP)"
-evidence_read: "abstract-level only (search-engine summaries of the ScienceDirect page and highlights; publisher site blocked in session). Full text NOT read."
+method_class: "LP/MILP (unverified; abstract says co-optimisation)"
+evidence_read: "abstract only (search-engine summaries of the ScienceDirect page and highlights; publisher site blocked in session). Full text NOT read."
 oa_link: ""
 competitor: "C1 — closest Q1 competitor (see literature/WATCHLIST.md and docs/01_next_actions.md §3)"
 ---

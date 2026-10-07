@@ -3,7 +3,7 @@ doc_id: gb_market_history_en
 title: "GB electricity market structure and grid-scale batteries, 2010 → Oct 2026 (with 1990–2009 pre-history)"
 compiled: 2026-10-07
 audience: "Claude / machine reading. Korean narrative version: GB_market_history_KO.md (same event IDs)."
-coverage: "~5 years before grid-scale battery entry (first GB grid-scale battery Dec 2014; commercial entry via the Aug 2016 EFR tender) to Oct 2026"
+coverage: "~5 years before grid-scale battery entry (early MW-scale DNO demonstrators c. 2013–2014, largest being UKPN SNS, Dec 2014; commercial entry via the Aug 2016 EFR tender) to Oct 2026"
 evidence: "Compiled from three parallel web-search passes (≈200 searches, snippet level only — no full documents opened; publisher, NESO, Ofgem and Elexon pages could not be fetched), plus repo data (data/README.md) and the literature archive. Every row carries a confidence tag."
 confidence_legend: "H = date/number seen in a primary-source snippet (gov.uk, legislation.gov.uk, Ofgem, NESO/ESO, Elexon, EMR Delivery Body, EC); M = reputable secondary (Modo Energy, Current±, Energy-Storage.News, Solar Power Portal, law firms, trade press); L = inferred, derived or conflicting"
 status: "Working reference. Items in §9 are unverified or conflicting. Re-check H/M items against primary documents before quoting numbers in a paper."
@@ -21,12 +21,12 @@ status: "Working reference. Items in §9 are unverified or conflicting. Re-check
 
 | regime | period | dominant battery revenue | defining rules | boundary events |
 |---|---|---|---|---|
-| R0 Pre-history | 1990–2009 | — (no grid-scale batteries) | Pool (1990) → NETA self-dispatch + BM + cash-out (2001) → BETTA (2005); STOR (2007) | E01–E04 |
-| R1 Decarbonisation design | 2010–2015 | — (demonstrators only) | EMR: CPF (2013), CfD, CM (2014), EPS; P305 single cash-out (2015) | E05–E14 |
-| R2 Contracted entry | 2016–2019 | EFR/FFR contracts + CM (high storage de-rating until Dec 2017) + embedded benefits/Triad | EFR tender (2016); CM de-rating cut (2017); P305 phase 2 (2018); wider BM access (2019); TCR decision (2019) | E15–E25 |
+| R0 Pre-history | 1990–2009 | — (no grid-scale batteries) | Pool (1990) → NETA self-dispatch + BM + cash-out (2001) → BETTA (2005); STOR (2007); P217A flagging (2009) | E01–E05 |
+| R1 Decarbonisation design | 2010–2015 | — (demonstrators only) | EMR: CPF (2013), CfD, CM (2014), EPS; P305 single cash-out (2015) | E06–E14d |
+| R2 Contracted entry | 2016 – Sep 2020 | EFR/FFR contracts + CM (high storage de-rating until Dec 2017) + embedded benefits/Triad | EFR tender (2016); CM de-rating cut (2017); P305 phase 2 (2018); wider BM access (2019); TCR decision (2019) | E15–E27 |
 | R3 DC scarcity boom | Oct 2020–2022 | Dynamic Containment (+FFR): ≈90% of revenue | DC launch at £17/MW/h cap (2020); DC-H, EPEX EFA-block auctions (2021); DM/DR (2022); licensing/planning/charging reforms | E26–E36 |
-| R4 Saturation & EAC | 2023–2024 | Collapse of frequency-response prices; shift to wholesale + BM | DC saturation (2023); EAC co-optimisation + negative prices (Nov 2023); OBP bulk dispatch (Dec 2023); BR, 30-min rule (Mar 2024); SoE rules (2024); QR (Dec 2024); skip-rate publication (Dec 2024) | E37–E50 |
-| R5 Merchant & dispatch reform | 2025 → Oct 2026 | Wholesale + BM ≈60%, ancillary ≈1/3, CM ≈10% (2-h battery, 12 m to Apr 2026; Modo, per design v0 — not re-verified) | QR to non-BM, BR into EAC (2025); GC0166; REMA keeps national pricing (Jul 2025); Gate 2 connections (Dec 2025); SR replaces STOR (Mar 2026); CM price collapse (Mar 2026); FPN requirement for DR services (Jul 2026); LDES cap-and-floor | E51–E70 |
+| R4 Saturation & EAC | 2023–2024 | Collapse of frequency-response prices; shift to wholesale + BM | DC saturation (2023); EAC co-optimisation + negative prices (Nov 2023); OBP bulk dispatch (Dec 2023); BR, 30-min rule (Mar 2024); SoE rules (2024); QR (Dec 2024); skip-rate publication (Dec 2024) | E37–E51 |
+| R5 Merchant & dispatch reform | 2025 → Oct 2026 | Wholesale + BM ≈60%, ancillary ≈1/3, CM ≈10% (rounded; 2-h battery, 12 m to Apr 2026; Modo, per design v0 — not re-verified) | QR to non-BM, BR into EAC (2025); GC0166; REMA keeps national pricing (Jul 2025); Gate 2 connections (Dec 2025); SR replaces STOR (Mar 2026); CM price collapse (Mar 2026); FPN requirement for DR services (Jul 2026); LDES cap-and-floor | E52–E70 |
 
 ## 2. Master timeline
 
@@ -34,7 +34,7 @@ status: "Working reference. Items in §9 are unverified or conflicting. Re-check
 |---|---|---|---|---|---|---|---|
 | E01 | 1990-04-01 | W | Privatisation; Electricity Pool starts (England & Wales) | Mandatory gross pool for plants ≥50 MW; CEGB split | Starting point of liberalised market | H | ofgem.gov.uk/sites/default/files/docs/1998/02/review-of-electricity-trading-arrangements-background-england-and-wales_0.pdf |
 | E02 | 2001-03-27 | W/B | NETA replaces the Pool | Bilateral trading + self-dispatch; Balancing Mechanism (BM); imbalance settlement under the BSC (Elexon) | BM + cash-out are the core of today's battery merchant revenue; SO procures ancillary services separately (no central energy–reserve co-optimisation) | H | elexon.co.uk/about/about-ELEXON/ |
-| E03 | 2005-04-01 | W | BETTA | NETA extended to Scotland → single GB market and price | Single national price (kept by REMA in 2025, E58) | H | elexon.co.uk |
+| E03 | 2005-04-01 | W | BETTA | NETA extended to Scotland → single GB market and price | Single national price (kept by REMA in 2025, E54) | H | elexon.co.uk |
 | E04 | 2007-04 | A | STOR replaces Standing Reserve | Tendered reserve (≈3 tenders/yr, ≥1.8 GW target) | Pre-battery reserve product; later a battery revenue stream | M | ofgem.gov.uk 2007 demand-side note; strathprints 37021 |
 | E05 | 2009-11-05 | B | P217A flagging live | System-management actions flagged/removed from cash-out (scope widened 2015) | Imbalance prices reflect energy balancing | H | elexon.co.uk P217 page |
 | E06 | 2010-12 | P | DECC EMR consultation | Proposes CfD FiT, Carbon Price Floor (CPF), EPS, capacity mechanism | Baseline year | M | mondaq 141896 |
@@ -45,19 +45,19 @@ status: "Working reference. Items in §9 are unverified or conflicting. Re-check
 | E11 | 2014-03 | P | Budget 2014 freezes CPS | Carbon Price Support capped at £18/tCO2 (2016–2020; later extended to 2021) | Caps the carbon component of spreads | M | carbonbrief budget-2014 |
 | E12 | 2014-05-15 | B | EBSCR final decision | Marginal pricing, single price, VoLL for demand control, reserve scarcity pricing — staged plan | Sharper, more marginal imbalance prices | H | ofgem.gov.uk EBSCR final policy decision |
 | E13 | 2014-08-01 | C | Electricity Capacity Regulations 2014 (SI 2014/2043) in force | Capacity agreements, payments, penalties; technology-neutral auctions | Opens CM revenue | H | legislation.gov.uk/uksi/2014/2043 |
-| E14a | 2014-12 (opened ~15 Dec) | F | UKPN Smarter Network Storage, Leighton Buzzard: 6 MW / 10 MWh | Network innovation funding (Ofgem LCNF) | **First GB grid-scale battery** (demonstrator) | M | pv-magazine 2014-12-15; innovation.ukpowernetworks.co.uk SNS |
+| E14a | 2014-12 (opened ~15 Dec) | F | UKPN Smarter Network Storage, Leighton Buzzard: 6 MW / 10 MWh | Network innovation funding (Ofgem LCNF) | Largest GB battery at the time; often cited as the first large grid-scale BESS. Earlier MW-scale DNO demonstrators existed c. 2013 (e.g. Northern Powergrid CLNR, SSE Orkney — not verified in this pass) | L | pv-magazine 2014-12-15; innovation.ukpowernetworks.co.uk SNS |
 | E14b | 2014-12-18 | C | First T-4 CM auction (2018/19) | Clears £19.40/kW/yr, ≈49.3 GW | Storage de-rated at ≈96% in early auctions | H | gov.uk provisional results 2014 |
 | E14c | 2015-02-26 | P | CfD Allocation Round 1 results | 27 contracts, >2 GW | Start of CfD-backed VRE → spreads, negative prices | H | gov.uk CfD AR1 outcome |
 | E14d | 2015-11-05 | B | **P305 phase 1** | Single cash-out price; PAR 500→50 MWh; VoLL £3,000/MWh for demand control; static Reserve Scarcity Price | Single price rewards "helpful" imbalance → basis of battery imbalance/merchant trading | H | elexon P305 guide; ofgem p305d |
 | E15 | 2016-08-26 | A | **EFR tender results** | 201 MW, 8 projects (7 companies), 4-year contracts, £7.00–11.97/MW/h, £65.95m; 61 of 64 bids were batteries; full response ≤1 s | First product written for batteries + bankable 4-yr contract → first commercial wave | M | solarpowerportal; KPMG EFR briefing; cms.law |
-| E16 | 2016 (Dec) | C | T-4 2020/21 | £22.50/kW/yr; storage de-rating 96.11% | Short-duration batteries over-credited | M | LCCC/EMR dashboards |
+| E16 | 2016 (Dec) | C | T-4 2020/21 | £22.50/kW/yr; storage de-rating 96.29% (repo data; trade press 96.11%) | Short-duration batteries over-credited | M | LCCC/EMR dashboards |
 | E17 | 2017-06-15 | N | Ofgem CMP264/265 (WACM4) decision | Embedded-benefit (Triad) payments to small embedded generation cut ≈£47/kW → ≈£3–7/kW, phased Apr 2018–2020/21 | Removes Triad income for distribution-connected batteries | H | ofgem.gov.uk CMP264/265 decision |
 | E18 | 2017-07 | P | Smart Systems and Flexibility Plan (BEIS/Ofgem) | 29 actions incl. storage licensing, double charging, planning | First official storage barrier-removal agenda | H (month) | gov.uk upgrading-our-energy-system July 2017 |
 | E19 | 2017-12 | C | **CM storage de-rating cut** | Duration-based de-rating (NG Duration-Limited Storage assessment, LCP): 0.5 h ≈96% → ≈21% | Ends over-crediting; duration becomes the CM value driver | M | cms-lawnow 2017/12; LCP case study |
 | E20 | 2018-02 | C | T-4 2021/22 (record low) | £8.40/kW/yr; 0.5 h storage 17.89% | CM revenue for 0.5–1 h batteries small | M | Burges Salmon |
 | E21 | 2018-11-01 | B | **P305 phase 2** | PAR 50→1 MWh (marginal); VoLL £6,000/MWh; dynamic LoLP/RSP | Spikier imbalance prices → higher arbitrage/imbalance value | H | elexon P305 PIR |
-| E22 | 2018-11-15 | C | EU General Court, Tempus v Commission | CM state-aid approval annulled → standstill (no auctions/payments) | CM income frozen ≈11 months | M | twobirds; fsr.eui.eu |
-| E23 | 2019-02-28 / 2019-12-11 | B | P344 (Virtual Lead Party, secondary BMUs) RID 28 Feb; Wider Access to BM live 11 Dec | Independent aggregators/owners can register BMUs without a supply licence; trade press: BM threshold effectively 100 MW → 1 MW | Small and aggregated batteries can earn in the BM | H (dates) / M (threshold) | elexon P344 guidance; wider-access release |
+| E22 | 2018-11-15 | C | EU General Court, Tempus v Commission | CM state-aid approval annulled → standstill: payments suspended; T-4 2022/23 postponed (replaced by T-3 2022/23, Jan 2020); a contingent T-1 2019/20 ran Jun 2019 | CM income frozen ≈11 months | M | twobirds; fsr.eui.eu |
+| E23 | 2019-02-28 / 2019-12-11 | B | P344 (Virtual Lead Party, secondary BMUs) RID 28 Feb; Wider Access to BM live 11 Dec | Independent aggregators/owners can register BMUs without a supply licence → voluntary BM access for ≥1 MW units via VLP/secondary BMUs (trade press: "threshold 100 MW → 1 MW"); mandatory BM participation thresholds for large stations (100/30/10 MW by TO area) unchanged | Small and aggregated batteries can earn in the BM | H (dates) / M (threshold) | elexon P344 guidance; wider-access release |
 | E24 | 2019-04-01 | P/N | NGESO legally separated from NGET; Wales removes storage from DNS "generating station" definition | SO independence; Welsh storage ≤350 MW consented locally | Groundwork for market-based balancing; easier consenting | H / M | ofgem gsr024; burges-salmon |
 | E25 | 2019-10-24 / 2019-11-21 | C/N | EC re-approves CM (standstill ends); **Ofgem TCR final decision** | CM restored (back-payments). TCR: residual network charges → fixed charges on "Final Demand" only; Triad residual ends | Storage is not Final Demand → escapes residual charges; Triad no longer a value driver | H / H | Hansard 2019-10-24; neso TCR page |
 | E26 | 2020-01 | A | Stability Pathfinder Phase 1 | 12 contracts, 12.5 GVA·s inertia, 6 yrs, £328m (synchronous condensers/flywheels; no batteries) | Inertia bought as a separate service | M | current-news |
@@ -101,7 +101,7 @@ status: "Working reference. Items in §9 are unverified or conflicting. Re-check
 | E59 | 2025 | F | Year outcome | Modo ≈£70k/MW/yr (monthly 47–88); fleet 6.8 GW / 11 GWh (Modo, GB) vs 7.5 GW (DESNZ, UK); BM revenue record £27k/MW/yr (Feb 2025) | Merchant era | M / H | modo monthly; DESNZ battery statistics |
 | E60 | 2026-03-11 | C | T-4 2029/30 £27.10/kW/yr; T-1 2026/27 £5/kW/yr | CM prices collapse; 4 h+ assets > half of de-rated battery prequalification | CM share of battery revenue falls; duration shift | M | modo T-4 2029/30; modo T-1 2026/27 |
 | E61 | 2026-03-31 | A | **Slow Reserve** live; STOR ends (last auction 30 Mar) | SR: full delivery ≤15 min, sustain ≥120 min; first auction 1,800 MW, gas ≈75%, batteries ≤313 MW | Long-energy reserve favours gas and ≥2 h batteries | H/M | neso STOR page; modo SR day one |
-| E62 | 2026-04 | P | DESNZ/Ofgem open letter on battery surplus; RNP Delivery Plan (21 Apr) | Gate 2 batteries 14.8 GW above 2030 range; options to restrain entry. RNP: BM threshold to 1 MW from 2027, FPN to match traded positions, aligned deadlines (decisions H2 2026) | Policy shifts from enabling to rationing battery entry; dispatch rules next | M | ofgem connections-reform-and-battery-capacity-update; gov.uk RNP plan |
+| E62 | 2026-04 | P | DESNZ/Ofgem open letter on battery surplus; RNP Delivery Plan (21 Apr) | Gate 2 batteries 14.8 GW above 2030 range; options to restrain entry. RNP: lower the *mandatory* BM participation threshold (towards 1 MW) in phases from 2027, FPN to match traded positions, aligned deadlines (decisions H2 2026) | Policy shifts from enabling to rationing battery entry; dispatch rules next | M | ofgem connections-reform-and-battery-capacity-update; gov.uk RNP plan |
 | E63 | 2026-04-17 | A | Optional Fast Reserve ends | — | — | H | neso fast reserve |
 | E64 | 2026-06 | A | Ofgem decision on NESO Dynamic Response Services amendments | 6 of 8 approved; tiered performance regime and unit suspension rejected | — | H | ofgem decision page |
 | E65 | 2026-06-26 | P | LDES Window 1 minded-to decision | 16 projects ≈7.65 GW, 8–22 h; 11 are Li-ion; final decision expected autumn 2026 | Li-ion ≥8 h qualifies for cap-and-floor | M | hilldickinson; energy-storage.news |
@@ -150,32 +150,32 @@ Caveats: Modo re-based and renamed its index ("ME BESS GB", 2025); some monthly 
 |---|---|---|---|---|---|
 | T-4 2018/19 | Dec 2014 | 19.40 | ≈96% (single storage factor) | negligible | M/H |
 | T-4 2019/20 | Dec 2015 | 18.00 | ≈96% | — | M |
-| T-4 2020/21 | Dec 2016 | 22.50 | 96.11% | large battery wins (not quantified) | M |
-| T-1 2018/19 | early 2018 | 6.00 | 0.5 h 21.34% (post-cut) | — | M |
-| T-4 2021/22 | Feb 2018 | 8.40 | 0.5 h 17.89% | 4.5 GW nameplate → <1.3 GW de-rated (both auctions) | M |
-| (standstill) | Nov 2018 – Oct 2019 | — | — | — | M/H |
+| T-4 2020/21 | Dec 2016 | 22.50 | 96.29% (repo; trade press 96.11%) | large battery wins (not quantified) | M |
+| T-1 2018/19 | early 2018 | 6.00 | 0.5 h 21.34% (post-cut; trade press — repo file lists a single "Storage" 0.9611 for this auction, check) | — | M |
+| T-4 2021/22 | Feb 2018 | 8.40 | 0.5 h 17.89% (trade press; repo lists 1 h 0.4041 for this auction, check) | 4.5 GW nameplate → <1.3 GW de-rated (both auctions) | M |
+| (standstill) | Nov 2018 – Oct 2019 | — | T-4 2022/23 factors published (2 h 0.567, repo) but the auction was not held | — | M/H |
 | T-1 2019/20 (replacement) | Jun 2019 | 0.77 | — | — | M |
-| T-3 2022/23 | Jan 2020 | 6.44 | — | — | M |
+| T-3 2022/23 | Jan 2020 | 6.44 | 2 h 0.425 (repo) | replaces the postponed T-4 2022/23 | M |
 | T-4 2023/24 | Mar 2020 | 15.97 (one source 15.40) | — | 117 MW | M/L |
 | T-4 2024/25 | Mar 2021 | 18.00 | — | 252 MW | M |
 | T-1 2021/22 | Mar 2021 | 45.00 | — | 114 MW | M |
 | T-1 2022/23 | Feb 2022 | 75.00 (cap) | — | — | M |
 | T-4 2025/26 | Feb 2022 | 30.59 | 2 h 0.397 (repo data) | ≈1 GW new-build batteries | M |
 | T-1 2023/24 | Feb 2023 | 60.00 | — | — | M |
-| T-4 2026/27 | Feb 2023 | 63.00 | ≈1 h 12%, 2 h 24% | 1.29 GW | M |
-| T-4 2027/28 | Feb 2024 | 65.00 (record) | 1 h 8%, 2 h 15% (repo: 0.154) | ≈1 GW new build | M |
+| T-4 2026/27 | Feb 2023 | 63.00 | 1 h 11.81%, 2 h 23.63% (repo) | 1.29 GW | M |
+| T-4 2027/28 | Feb 2024 | 65.00 (record) | 1 h 7.74%, 2 h 15.39% (repo) | ≈1 GW new build | M |
 | T-1 2024/25 | Feb 2024 | 35.79 | — | 655 MW | M |
 | T-4 2028/29 | Mar 2025 | 60.00 | scaled EFC: 1 h 10.47%, 2 h 20.94% | 1.78 GW | M |
 | T-1 2025/26 | Feb/Mar 2025 | 20.00 | 1 h 13.64%, 2 h 27.15% | 725 MW (record) | M |
-| T-4 2029/30 | Mar 2026 | **27.10** | 2 h 0.220 (repo data); 4 h 41.74% (L) | 1.2 GW de-rated; 4 h+ >½ of de-rated battery prequalification | M |
+| T-4 2029/30 | Mar 2026 | **27.10** | 1 h 10.99%, 2 h 21.98%, 4 h 43.96%, 8 h 87.77% (repo) | 1.2 GW de-rated; 4 h+ >½ of de-rated battery prequalification | M |
 | T-1 2026/27 | Mar 2026 | **5.00** | — | ≈1 GW prequalified | M |
 
-Repo cross-check (`data/raw/cm_derating_factors.csv`, `data/README.md` §2.2): 2 h de-rating 0.567 (T-4 2022/23) → 0.397 (2025/26) → 0.154 (2027/28) → 0.220 (2029/30).
+Repo cross-check (`data/raw/cm_derating_factors.csv`, `data/README.md` §2.2), 2 h de-rating: 0.567 (T-4 2022/23 — factors published, auction cancelled in the standstill) / 0.425 (T-3 2022/23, held Jan 2020) → 0.410 (T-4 2023/24) → 0.486 (T-4 2024/25) → 0.397 (T-4 2025/26) → 0.236 (T-4 2026/27) → 0.154 (T-4 2027/28) → 0.209 (T-4 2028/29, scaled EFC) → 0.220 (T-4 2029/30).
 
 ## 6. Repo data anchors (computed from `data/raw/`, see `data/README.md`)
 
 - EAC 2023-11-02 → 2026-10-06, 12 products, no gaps. Median clearing (£/MW/h): DCL 2.15, DCH 1.46, DML 5.05, DMH 0.11, DRL 10.94, DRH −5.66 (85% negative), PQR 3.46, PBR 2.14, PSR 2.16.
-- "Sell one product 24/7" annualised value (k£/MW/yr, FY2025): DCL 28.2, DML 54.4, DRL 124.0, PQR 38.8, PBR 35.6, PSR 96.6 — upper bounds only (volume caps, energy requirements).
+- "Sell one product 24/7" annualised value (k£/MW/yr, FY2025): DCL 28.2, DML 54.4, DRL 124.0, PQR 38.8, PBR 35.6 (29 Oct 2025 – Mar 2026 only); PSR n/a for FY2025 (only 2 h of data; FY2026 YTD 31.7) — upper bounds only (volume caps, energy requirements).
 - 2026-09 perfect-foresight arbitrage on MID, 2 h, £10/MWh throughput cost: ≈£74k/MW/yr; on imbalance price ≈£161k (not tradeable).
 
 ## 7. Analysis — which rules made GB batteries a business
@@ -188,8 +188,8 @@ Repo cross-check (`data/raw/cm_derating_factors.csv`, `data/README.md` §2.2): 2
 4. **Removing cost and permission barriers mattered as much as new revenue.** Licensing as generation (E29, E40), the TCR/Final Demand definition (E25, E31b), BSUoS on demand only (E36b), NSIP removal (E31a) and the EGL exclusion (E36d) removed double charges and consenting limits that would otherwise have cut margins and project size. Embedded-benefit cuts (E17) removed one early revenue source (Triad) at the same time.
 5. **Sharper scarcity pricing created the merchant base.** Single, marginal cash-out with VoLL £6,000/MWh (E14d, E21) plus wider BM access (E23) gave batteries a revenue stream that does not saturate as quickly as capped-volume response products.
 6. **Saturation ended the scarcity rent.** DC volume is set by system need (≈1–1.5 GW), not by supply. Once the fleet exceeded it (2,229 MW eligible vs 1,099 MW required for DCH in May 2023), clearing prices fell >90% (E37) → index −67% (E44). EAC co-optimisation and negative prices (E42) lowered response prices further.
-7. **Profitability now depends on dispatch access, not product scarcity.** Revenue moved to wholesale + BM (R5). The binding rules are BM access and control-room practice: OBP bulk dispatch (E43), 30-min rule (E45), skip-rate transparency (E50), GC0166 MDO/MDB/FSoE (E56, E66), FPN requirement (E67), BM threshold to 1 MW (E62).
-8. **Capacity accreditation steers duration.** Duration-based de-rating (E19) and scaled EFC (E52) cut 2 h credit from 0.567 to ≈0.22, while CM prices fell to £27.10 (T-4) and £5 (T-1) in 2026 (E60). Combined with SR's 2-hour sustain requirement (E61) and LDES cap-and-floor admitting ≥8 h Li-ion (E65), the rule set is pushing new builds from 1–2 h toward 4 h+.
+7. **Profitability now depends on dispatch access, not product scarcity.** Revenue moved to wholesale + BM (R5). The binding rules are BM access and control-room practice: OBP bulk dispatch (E43), 30-min rule (E45), skip-rate transparency (E50), GC0166 MDO/MDB/FSoE (E56, E66), FPN requirement (E67), planned cut of the mandatory BM participation threshold from 2027 (E62).
+8. **Capacity accreditation steers duration.** Duration-based de-rating (E19) and later EFC updates cut 2 h credit from ≈0.41–0.49 in the T-4 auctions actually held in 2020–21 (0.425 in the Jan 2020 T-3) to 0.154 (T-4 2027/28); scaled EFC (E52) partly restored it to ≈0.21–0.22 (2028/29–2029/30), while CM prices fell to £27.10 (T-4) and £5 (T-1) in 2026 (E60). Combined with SR's 2-hour sustain requirement (E61) and LDES cap-and-floor admitting ≥8 h Li-ion (E65), the rule set is pushing new builds from 1–2 h toward 4 h+.
 9. **Policy is turning from enabling to rationing.** Gate 2 (E53, E58) and the 2026 battery-surplus letter (E62) show that once entry is profitable and queues are long, the binding constraint becomes grid connection, not market rules.
 
 ### 7.2 Regime-dependent rule value (hypotheses to test)
@@ -203,19 +203,19 @@ Repo cross-check (`data/raw/cm_derating_factors.csv`, `data/README.md` §2.2): 2
 | Single marginal cash-out + VoLL | moderate | high (merchant base) | value grows as VRE volatility rises |
 | BM access & dispatch practice (wider access, 30-min rule, OBP, GC0166, FPN) | low–moderate | **high** (BM ≈ main growth lever; skip rate costs ≈7% profit per +10 pp per Gale 2026) | revenue base shifted to BM |
 | Network-charge rules (TCR, BSUoS, licensing) | high (cost removal) | high (sustained) | removes £/MWh costs on every cycle |
-| CM de-rating | moderate pre-2017 (over-credit), low after | low and falling (price collapse 2026) | duration-based accreditation |
-| Contract length (EFR 4-yr vs daily auctions) | high for entry finance (2016–19) | low (merchant/tolling instead) | bankability |
+| CM de-rating | n/a in R3 (R2: moderate pre-2017 over-credit, low after) | low and falling (price collapse 2026) | duration-based accreditation |
+| Contract length (EFR 4-yr vs daily auctions) | n/a in R3 (R2: high for entry finance) | low (merchant/tolling instead) | bankability |
 
 ### 7.3 Lessons stated cautiously (for the paper's discussion)
 
-- **Entry vs sustainability.** Scarce, purpose-built fast products with long contracts were the entry catalyst; long-run profitability rests on energy-market access rules (cash-out design, BM dispatch). This matches Landy et al. 2026 ("market access > location", `landy2026_hybridstacking`).
+- **Entry vs sustainability.** Scarce, purpose-built fast products with long contracts were the entry catalyst; long-run profitability rests on energy-market access rules (cash-out design, BM dispatch). This is loosely consistent with Landy et al. 2026 ("market access > location", `landy2026_hybridstacking`), whose "market access" means grid charging and multi-market stacking rather than cash-out or BM dispatch rules.
 - **Small ancillary markets saturate fast.** GB DC went from undersupplied (Oct 2020) to saturated (H1 2023) in ≈2.5 years with ≈2 GW of entry. Any late-adopter market with a capped fast-reserve requirement should expect the same.
-- **The price-taker assumption is regime-dependent.** It is defensible for one 50 MW battery in wholesale markets, but not for the fleet in DC after 2022 or in the BM after 2024 (Dalton & O'Sullivan 2026, WATCHLIST C4).
+- **The price-taker assumption is regime-dependent.** It is defensible for one 50 MW battery in wholesale markets, but not for the fleet in DC after 2022 (inference from saturation, E37) or in the BM after 2024 (Dalton & O'Sullivan 2026, WATCHLIST C4, preprint).
 - **Cost-side rules are part of "market design".** Counterfactuals should include charging/licensing rules, not only revenue products.
 
 ## 8. Mapping to the study design (`docs/01_next_actions.md`)
 
-- **Regime split for RQ2 (fixes M1):** simulate R3 (Sep 2021 – Oct 2023, EPEX-era DC/DM/DR data needed) and R4–R5 (Nov 2023 →, EAC data in repo). Report rule values per regime.
+- **Regime split for RQ2 (fixes M1):** simulate the pre-EAC window (late R3 + early R4: Sep 2021 – Oct 2023, EPEX-era DC/DM/DR data needed) and the EAC window (late R4 + R5: Nov 2023 →, EAC data in repo). Report rule values per regime.
 - **Event-study dates (M3 supplement):** E28 (2020-10-01), E34 (2021-09-16), E37 (H1 2023), E42 (2023-11-02), E43 (2023-12-13), E45 (2024-03-11), E46 (2024-03-12), E47 (2024 SoE), E50 (2024-12-03), E55 (2025-09-02), E57 (2025-10-29), E61 (2026-03-31), E66/E67 (Jul 2026).
 - **Candidate Shapley players (M4):** {fast-response suite exists; EAC co-optimisation/splitting; SoE rule; reserve products BR/QR; BM access/dispatch rules}. Treat CM de-rating and network charges as additive layers outside Shapley; duration (1 h/2 h/4 h) as a scenario dimension.
 - **Data gaps implied:** pre-EAC DC results (2020–23), pre-Oct-2025 BR auctions, 1-s frequency, unit-level EAC (`--units`), BOD/BOALF for battery BMUs, DA auction prices (paid; MID as proxy).
@@ -237,7 +237,7 @@ Repo cross-check (`data/raw/cm_derating_factors.csv`, `data/README.md` §2.2): 2
 13. Fleet totals 2016, 2018, 2019, 2021 (derived or conflicting).
 14. Modo revenue shares quoted in design v0 (87% FR 2020–22; 60/33/10 split for 12 m to Apr 2026) and BM skip rates 49% (H1 2025) → 38% (H1 2026) (ESS News, July 2026) — not re-verified in this pass.
 15. GB DA annual averages other than 2021–22; negative-price hours by year; DC price path (only point values: £17 cap 2020–21, £1.37 May 2023, £1.49/£2.90 Aug 2023).
-16. CM 2029/30 1 h and 2 h de-rating (repo data gives 2 h 0.220; search synthesis gave only 4 h 41.74% and 8 h 83.78%, L).
+16. ~~CM 2029/30 de-rating~~ — resolved from repo data (1 h 0.1099, 2 h 0.2198, 4 h 0.4396, 8 h 0.8777); the search-synthesis values 41.74% / 83.47% are the 2028/29 factors. Still open: T-1 2018/19 and T-4 2021/22 storage factors differ between trade press (0.5 h 21.34% / 17.89%) and the repo file (single 0.9611 / 1 h 0.4041) — check the EMR Delivery Body source.
 17. Events Jul–Oct 2026 beyond E66–E67 (final LDES awards, RNP balancing decisions, MHHS progress).
 
 ## 10. Academic anchors (for citations; see `literature/DOWNLOAD_LIST.md` §4)

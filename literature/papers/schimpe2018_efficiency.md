@@ -7,7 +7,7 @@ journal: "Applied Energy"
 volume_issue_pages: "210:211-229"
 doi: "10.1016/j.apenergy.2017.10.129"
 quartile: "Q1 (SJR 2025, Applied Energy, SJR 2.864; Q1 Energy (misc.), Mech. Eng., Building & Construction, Mgmt/Policy)"
-quartile_basis: "latest-only; rule=unchecked; SJR 2018 (publication year) not checked — only later years"
+quartile_basis: "bracketed; rule=pass; Applied Energy Q1 in SJR 2017 (greenwood2017_efrservicedesign) and 2019 (engels2019_fcrgermanytechnoeco); 2018 itself not checked"
 group: "Andreas Jossen & Holger Hesse (TUM Chair of Electrical Energy Storage Technology, EES) with NREL (Santhanagopalan, Saxon)"
 lineage: "Schimpe, Naumann, Truong = TUM EES doctoral researchers under Jossen (Schimpe listed as EES alumnus on epe.ed.tum.de); Hesse = EES group leader (later Kempten UAS). NREL report no. NREL/JA-5400-70546."
 streams: [S4_degradation_operation]

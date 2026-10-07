@@ -7,7 +7,7 @@ journal: "The Energy Journal"
 volume_issue_pages: "44(3):89-110"
 doi: "10.5547/01956574.44.2.yjia"
 quartile: "Q1 (SJR 2024 and 2022, Economics & Econometrics; Energy (misc.)) - NOTE: SJR 2023 (publication year) = Q2"
-quartile_basis: "pub-year; rule=FAIL; SJR 2023 (publication year) = Q2 in Economics & Econometrics"
+quartile_basis: "pub-year; rule=FAIL (provisional); SJR 2023 (publication year) = Q2 in Economics & Econometrics — archive entries record The Energy Journal as Q2 in 2023 and 2025 without separating categories; confirm the best category (Energy misc.) when SJR is reachable — if Q1 there, the rule passes"
 group: "Sioshansi (Ohio State ISE; now CMU)"
 lineage: "Jiang at OSU ISE with Sioshansi at time of writing; formal advisor tie NOT verified. Extends Hogan (1992) transmission-rent duality to intertemporal storage."
 streams: [S7_market_design]

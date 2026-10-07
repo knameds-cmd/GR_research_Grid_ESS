@@ -315,7 +315,7 @@ graph TD
   6. Schmidt, O., Staffell, I. (2023). *Monetizing Energy Storage: A Toolkit to Assess Future Cost and Value.* Oxford University Press. doi:10.1093/oso/9780192888174.001.0001 (book; see CANON 6a). [added 2026-10-07]
   7. Gale, E., Schmidt, O., O'Cinneide, A., Johnson, N., Staffell, I. (2026). Balancing with batteries: The impact of revenue stacking and skip rates on battery energy storage profitability in Great Britain. *J. Energy Storage* 166:122328. doi:10.1016/j.est.2026.122328. **Closest Q1 competitor (C1).** [added 2026-10-07; search-engine metadata]
   8. Landy, M., Schmidt, O., Johnson, N., Staffell, I. (2026). Maximising the economic value of renewable and battery storage hybrids with revenue stacking. *Energy Environ. Sci.* 19(13):4469–4494. doi:10.1039/d6ee00776g. **Cross-country one-model study (C2).** [added 2026-10-07; search-engine metadata]
-- **2026 note.** With items 6–8 the Staffell group is now the main academic producer of GB battery revenue studies. Our study sits in this lineage (Staffell & Rustomji 2016 → C1/C2). See `WATCHLIST.md`.
+- **2026 note.** With items 6–8 the Staffell group is now a leading academic producer of GB battery revenue studies. Our study sits in this lineage (Staffell & Rustomji 2016 → C1/C2). See `WATCHLIST.md`.
 
 ## 12. David Newbery & Richard Green — Cambridge EPRG (GB market design)
 
