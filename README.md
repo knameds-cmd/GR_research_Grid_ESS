@@ -8,6 +8,7 @@
 | --- | --- |
 | [`docs/00_research_design_v0.md`](docs/00_research_design_v0.md) | 연구 설계 초안 원본 (2026-10-05 회의 정리) |
 | [`docs/01_next_actions.md`](docs/01_next_actions.md) | 설계 검토, 경쟁 논문 확인 결과, 연구 방향 옵션, 업로드 점검표, 수정 일정 |
+| [`docs/02_study_guide_KO.md`](docs/02_study_guide_KO.md) | **연구자 학습 가이드**: 영국 시장 핵심 개념 11개, 논문 아카이브 읽는 법과 필독 16편, 주제 연결 지도(다리 16개), 연습·자가 점검 질문, 용어집 |
 | [`data/README.md`](data/README.md) | 받은 데이터 12개 파일 해설: 구조·기간·품질·연결 키, 첫 계산 결과, 할 수 있는 분석 |
 | [`data/recommendations.md`](data/recommendations.md) | 추가로 받을 데이터와 참고 데이터 (존재 확인한 데이터셋 이름·엔드포인트 포함) |
 | [`literature/INDEX.md`](literature/INDEX.md) | 논문 아카이브 색인 (114편, 8개 갈래, 분위 판정 규칙) |
