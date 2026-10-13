@@ -72,11 +72,12 @@ fi
 echo
 echo "===== 끝 $(date '+%Y-%m-%d %H:%M:%S') ====="
 du -sh data/raw 2>/dev/null
-BIG=$(find data/raw -type f -size +50M 2>/dev/null)
+BIG=$(find data/raw -type f -size +90M ! -name "*.csv" 2>/dev/null)
 if [ -n "$BIG" ]; then
-  echo "50MB가 넘는 파일 (upload_data.sh가 GitHub에는 올리지 않습니다):"
+  echo "90MB가 넘는 CSV 아닌 파일 (upload_data.sh가 GitHub에는 올리지 않습니다):"
   echo "$BIG" | sed 's/^/  /'
 fi
+echo "20MB가 넘는 CSV는 upload_data.sh가 압축(.csv.gz)해서 올립니다."
 if [ -n "$FAILED" ]; then
   echo "[!] 실패한 작업:$FAILED"
   echo "같은 명령(bash get_data.sh)을 다시 실행하면 받은 것은 건너뛰고 나머지만 받습니다."

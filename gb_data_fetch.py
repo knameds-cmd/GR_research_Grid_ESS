@@ -213,14 +213,15 @@ def fetch_prices(start, end, force=False):
 
 def fetch_neso_package(name, sub, force=False):
     """NESO 데이터셋의 자료를 모두 받는다. datastore 자료는 CSV로, 나머지 파일은 원본 형식 그대로.
-    자료 목록과 수정 시각은 _resources.json에 남기고, 수정 시각이 같은 자료는 다시 받지 않는다."""
+    자료 목록과 수정 시각은 _resources.json에 남기고, 수정 시각이 같은 자료는 다시 받지 않는다.
+    자료 하나가 실패해도 나머지는 계속 받고, 받은 것은 그때그때 목록에 적는다(다시 실행하면 실패한 것만 받음)."""
     print(f"NESO package {name}")
     pkg = get(f"{NESO}/package_show", {"id": name}).json()["result"]
     d = OUT / sub
     d.mkdir(exist_ok=True)
     mpath = d / "_resources.json"
     old = {r["id"]: r for r in json.loads(mpath.read_text())} if mpath.exists() else {}
-    manifest, used = [], set()
+    manifest, used, failed = [], set(), []
     for res in pkg["resources"]:
         base = re.sub(r"[^0-9a-z]+", "_", (res.get("name") or "").lower()).strip("_")[:80] or res["id"]
         if base in used:
@@ -234,15 +235,27 @@ def fetch_neso_package(name, sub, force=False):
         else:
             path = None  # 웹 페이지·PDF 등은 목록에만 남긴다
         stamp = res.get("last_modified") or res.get("metadata_modified")
-        if path and (force or not path.exists() or old.get(res["id"], {}).get("last_modified") != stamp):
-            if res.get("datastore_active"):
-                neso_all(res["id"]).to_csv(path, index=False)
-            else:
-                path.write_bytes(get(res["url"]).content)
+        entry = {"id": res["id"], "name": res.get("name"), "format": res.get("format"),
+                 "last_modified": stamp, "url": res.get("url"), "file": path.name if path else None}
+        # 목록에 기록이 없는데 파일이 있으면(지난 실행이 중간에 끊긴 경우) 받은 것으로 본다. 새로 받으려면 --force
+        stale = res["id"] in old and old[res["id"]].get("last_modified") != stamp
+        if path and (force or not path.exists() or stale):
+            try:
+                if res.get("datastore_active"):
+                    neso_all(res["id"]).to_csv(path, index=False)
+                else:
+                    path.write_bytes(get(res["url"], timeout=600).content)
+            except Exception as e:  # noqa: BLE001
+                print(f"  [!] {res.get('name')} 실패: {e}")
+                failed.append(res.get("name") or res["id"])
+                entry["last_modified"] = None  # 다음 실행 때 다시 받도록
             time.sleep(1.2)
-        manifest.append({"id": res["id"], "name": res.get("name"), "format": res.get("format"),
-                         "last_modified": stamp, "url": res.get("url"), "file": path.name if path else None})
+        manifest.append(entry)
+        mpath.write_text(json.dumps(manifest + [r for i, r in old.items() if i not in {m["id"] for m in manifest}],
+                                    indent=1, ensure_ascii=False))
     mpath.write_text(json.dumps(manifest, indent=1, ensure_ascii=False))
+    if failed:
+        raise RuntimeError(f"{name}: {len(failed)}개 자료 실패 ({', '.join(failed[:5])}). 다시 실행하면 이것만 받습니다.")
 
 
 def fetch_cm():

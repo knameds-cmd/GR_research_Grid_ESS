@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 # get_data.sh로 받은 data/raw/ 를 GitHub 작업 브랜치에 올립니다. 저장소 폴더에서:
 #   bash upload_data.sh
-# - 50MB 넘는 파일은 올리지 않습니다 (GitHub 한도). 이 컴퓨터의 .git/info/exclude에만 적어 둡니다.
+# - 20MB 넘는 CSV는 압축본(.csv.gz)을 만들어 그것을 올리고, 원본은 이 컴퓨터에만 둡니다.
+# - 압축해도 90MB가 넘는 파일은 올리지 않습니다 (GitHub 한도 100MB). 이 컴퓨터의 .git/info/exclude에만 적어 둡니다.
 # - 한 번에 1GB 넘게 올리려 하면 멈춥니다.
 # - cm_cmu.csv에 담당자 연락처 열이 남아 있으면 멈춥니다 (공개 저장소).
 set -u
 cd "$(dirname "$0")" || exit 1
 BRANCH=claude/cool-goodall-nubbzr
-LIMIT_MB=50
+COMPRESS_MB=20
+LIMIT_MB=90
 MAX_TOTAL_MB=1000
 
 CUR=$(git rev-parse --abbrev-ref HEAD) || exit 1
@@ -21,8 +23,21 @@ if [ -f data/raw/cm_cmu.csv ] && head -1 data/raw/cm_cmu.csv | grep -Eq 'Contact
   exit 1
 fi
 
+exclude() {
+  grep -qxF "/$1" .git/info/exclude 2>/dev/null || echo "/$1" >> .git/info/exclude
+}
+# 큰 CSV 압축 (이미 git에 올라가 있는 파일은 그대로 둠)
+find data/raw -type f -name "*.csv" -size +${COMPRESS_MB}M | while IFS= read -r f; do
+  git ls-files --error-unmatch "$f" >/dev/null 2>&1 && continue
+  if [ ! -f "$f.gz" ] || [ "$f" -nt "$f.gz" ]; then
+    echo "  압축: $f"
+    gzip -c -9 "$f" > "$f.gz.part" && mv "$f.gz.part" "$f.gz" || { rm -f "$f.gz.part"; echo "[!] 압축 실패: $f"; exit 1; }
+  fi
+  exclude "$f"
+done || exit 1
 find data/raw -type f -size +${LIMIT_MB}M | while IFS= read -r f; do
-  grep -qxF "/$f" .git/info/exclude 2>/dev/null || echo "/$f" >> .git/info/exclude
+  exclude "$f"
+  case "$f" in *.csv) [ -f "$f.gz" ] && continue ;; esac
   echo "  올리지 않음 (${LIMIT_MB}MB 초과): $f"
 done
 

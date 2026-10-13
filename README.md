@@ -47,7 +47,7 @@ git pull -q --ff-only origin claude/cool-goodall-nubbzr &&
 bash get_data.sh
 ```
 
-다 받은 뒤 GitHub에 올리기 (50MB 넘는 파일은 빼고 올립니다):
+다 받은 뒤 GitHub에 올리기 (20MB 넘는 CSV는 .csv.gz로 압축해 올리고, 압축해도 90MB가 넘는 파일은 뺍니다):
 
 ```bash
 cd ~/GR_research_Grid_ESS && bash upload_data.sh
