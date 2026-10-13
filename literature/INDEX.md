@@ -1,6 +1,6 @@
 # 논문 아카이브 인덱스
 
-총 114편 (2026-10-07 생성). 한 논문이 여러 갈래에 걸치면 각 갈래 표에 모두 나옵니다. 이 파일은 `tools/gen_index.py`가 `papers/*.md` 메타데이터에서 생성하므로 직접 고치지 말고 논문 파일을 고친 뒤 다시 생성하세요.
+총 114편 (2026-10-13 생성). 한 논문이 여러 갈래에 걸치면 각 갈래 표에 모두 나옵니다. 이 파일은 `tools/gen_index.py`가 `papers/*.md` 메타데이터에서 생성하므로 직접 고치지 말고 논문 파일을 고친 뒤 다시 생성하세요.
 
 - 각 논문 파일: `papers/<id>.md` (YAML 메타데이터 + 11개 섹션: 질문, 가정, 제약, 모델, 데이터·가공, 정당화, 결과, 한계, 관련성, 계보, 검증기록)
 - 갈래별 종합: `streams/S*.md` (개관, 계보, 그룹, 요약표, 공백)
@@ -20,7 +20,7 @@
 
 2026-10-06 독립 검증에서 표본 24편 서지·12개 저널 등급을 재확인했습니다. 이전 표기 `Q1*`(2026-10-06)는 위 4단계로 대체했습니다. `근거`: full = 전문(프리프린트·저자본 포함), partial = 일부 전문, abstract = 초록·메타데이터만(심층 필드는 "(from abstract)" 표시).
 
-근거 수준 분포: full 66편, partial 3편, abstract 45편
+근거 수준 분포: full 69편, partial 3편, abstract 42편
 
 ### 규칙 미달 `Q2!` — 남길지 결정 필요
 
@@ -52,12 +52,12 @@
 | [he2018_intertemporal](papers/he2018_intertemporal.md) | 2018 | Nature Energy | Q1 | Lagrangian decomposition (life-cycle pro | CAISO 2016: day-ahead energy arbitrage and frequen | full |
 | [schmidt2019_lcos](papers/schmidt2019_lcos.md) | 2019 | Joule | Q1 | techno-economic LCOS + Monte Carlo | generic application archetypes (12 applications: a | full |
 | [mallapragada2020_longrunvalue](papers/mallapragada2020_longrunvalue.md) | 2020 | Applied Energy | Q1 | LP (GenX capacity expansion, hourly, per | stylised U.S. Northeast and Texas systems, long-ru | abstract |
-| [martins2021_ukbusinessmodels](papers/martins2021_ukbusinessmodels.md) | 2021 | Energy Policy | Q1? | LP (arbitrage) compared with a threshold | UK (GB) pre-DC era: wholesale arbitrage, Capacity  | abstract |
+| [martins2021_ukbusinessmodels](papers/martins2021_ukbusinessmodels.md) | 2021 | Energy Policy | Q1? | LP | UK 2018 (pre-DC): DA (N2EX) and 'BM market' (Elexo | full |
 | [junge2022_efficientstorage](papers/junge2022_efficientstorage.md) | 2022 | The Energy Journal | Q1 | LP (welfare-maximising capacity expansio | theory + 'Texas-like' (ERCOT) deeply decarbonised  | full |
 | [xu2022_dynamicvaluation](papers/xu2022_dynamicvaluation.md) | 2022 | IEEE Transactions on Power Systems | Q1 | SDP/DP over state of health with piecewi | NYISO real-time arbitrage 2010-2020 (WEST, NORTH,  | full |
 | [mercier2023_eudaarbitrage](papers/mercier2023_eudaarbitrage.md) | 2023 | Energy Economics | Q1 | MILP | EU-28 + NO, CH, TR day-ahead hourly prices 2000-20 | abstract |
 | [antweiler2025_newmeritorder](papers/antweiler2025_newmeritorder.md) | 2025 | Energy Economics | Q1 | analytical long-run equilibrium + NLP nu | greenfield 100% wind+solar+storage (Li-ion battery | full |
-| [landy2026_hybridstacking](papers/landy2026_hybridstacking.md) ★경쟁 | 2026 | Energy & Environmental Science | Q1? | LP/MILP (unverified; abstract says reven | UK case study (co-located vs hybridised renewables | abstract |
+| [landy2026_hybridstacking](papers/landy2026_hybridstacking.md) ★경쟁 | 2026 | Energy & Environmental Science | Q1? | LP | UK case study (Lyneham solar farm; WS + BM + Dynam | full |
 
 ## S2 다중서비스 공동최적화(수익 스택) (18편)
 
@@ -75,12 +75,12 @@
 | [namor2019_multiservicecontrol](papers/namor2019_multiservicecontrol.md) | 2019 | IEEE Transactions on Smart Grid | Q1 | MPC | Swiss/ENTSO-E CE primary frequency regulation (dro | full |
 | [engels2020_fcrpeakshaving](papers/engels2020_fcrpeakshaving.md) | 2020 | IEEE Transactions on Smart Grid | Q1 | SDP/DP | Continental Europe FCR (symmetric, ±200 mHz, daily | full |
 | [englberger2020_dynamicstacking](papers/englberger2020_dynamicstacking.md) | 2020 | Cell Reports Physical Science | Q1~ | MILP | Germany: FCR (PCR) + peak shaving + self-consumpti | abstract |
-| [martins2021_ukbusinessmodels](papers/martins2021_ukbusinessmodels.md) | 2021 | Energy Policy | Q1? | LP (arbitrage) compared with a threshold | UK (GB) pre-DC era: wholesale arbitrage, Capacity  | abstract |
+| [martins2021_ukbusinessmodels](papers/martins2021_ukbusinessmodels.md) | 2021 | Energy Policy | Q1? | LP | UK 2018 (pre-DC): DA (N2EX) and 'BM market' (Elexo | full |
 | [biggins2022_tradeornot](papers/biggins2022_tradeornot.md) | 2022 | Journal of Energy Storage | Q1 | MILP | GB: monthly Firm Frequency Response (dynamic FFR)  | full |
 | [casella2024_ukbessmilp](papers/casella2024_ukbessmilp.md) | 2024 | Renewable Energy | Q1? | MILP | GB: day-ahead and intraday markets, dynamic freque | abstract |
 | [mirzaeialavijeh2025_swedenfcrstacking](papers/mirzaeialavijeh2025_swedenfcrstacking.md) | 2025 | Applied Energy | Q1 | MILP | Sweden SE3: Nord Pool day-ahead + FCR-N, FCR-D up, | full |
-| [gale2026_balancingbatteries](papers/gale2026_balancingbatteries.md) ★경쟁 | 2026 | Journal of Energy Storage | Q1~ | LP/MILP (unverified; abstract says co-op | GB day-ahead wholesale + Balancing Mechanism (bids | abstract |
-| [landy2026_hybridstacking](papers/landy2026_hybridstacking.md) ★경쟁 | 2026 | Energy & Environmental Science | Q1? | LP/MILP (unverified; abstract says reven | UK case study (co-located vs hybridised renewables | abstract |
+| [gale2026_balancingbatteries](papers/gale2026_balancingbatteries.md) ★경쟁 | 2026 | Journal of Energy Storage | Q1~ | LP | GB wholesale (Elexon MID used as the 'day-ahead' p | full |
+| [landy2026_hybridstacking](papers/landy2026_hybridstacking.md) ★경쟁 | 2026 | Energy & Environmental Science | Q1? | LP | UK case study (Lyneham solar farm; WS + BM + Dynam | full |
 
 ## S3 불확실성 하 입찰(SP/RO/SDP/가격결정자) (16편)
 
@@ -159,7 +159,7 @@
 | [lee2019_closedloopgb](papers/lee2019_closedloopgb.md) | 2019 | Applied Energy | Q1 | closed-loop swing-equation simulation (n | GB EFR (Service 2) and STOR reserve, 2015 vs 2025  | full |
 | [shi2019_cycleagingpfp](papers/shi2019_cycleagingpfp.md) | 2019 | IEEE Transactions on Automatic Control | Q1? | convex optimisation (subgradient, offlin | PJM pay-for-performance frequency regulation (RegD | full |
 | [engels2020_fcrpeakshaving](papers/engels2020_fcrpeakshaving.md) | 2020 | IEEE Transactions on Smart Grid | Q1 | SDP/DP | Continental Europe FCR (symmetric, ±200 mHz, daily | full |
-| [martins2021_ukbusinessmodels](papers/martins2021_ukbusinessmodels.md) | 2021 | Energy Policy | Q1? | LP (arbitrage) compared with a threshold | UK (GB) pre-DC era: wholesale arbitrage, Capacity  | abstract |
+| [martins2021_ukbusinessmodels](papers/martins2021_ukbusinessmodels.md) | 2021 | Energy Policy | Q1? | LP | UK 2018 (pre-DC): DA (N2EX) and 'BM market' (Elexo | full |
 | [biggins2022_tradeornot](papers/biggins2022_tradeornot.md) | 2022 | Journal of Energy Storage | Q1 | MILP | GB: monthly Firm Frequency Response (dynamic FFR)  | full |
 | [engelhardt2022_fcrnrecovery](papers/engelhardt2022_fcrnrecovery.md) | 2022 | Sustainable Energy, Grids and Networks | Q1 | multi-year time-series simulation of ene | Nordic FCR-N (and FCR-D context), DK2 / Energinet  | abstract |
 | [koltermann2022_fcrbalancinggroup](papers/koltermann2022_fcrbalancinggroup.md) | 2022 | International Journal of Electrical Power & Energy Systems | Q1 | simulation model validated with field da | German FCR + balancing-group settlement (reBAP imb | abstract |
@@ -196,8 +196,8 @@
 | [mercier2023_eudaarbitrage](papers/mercier2023_eudaarbitrage.md) | 2023 | Energy Economics | Q1 | MILP | EU-28 + NO, CH, TR day-ahead hourly prices 2000-20 | abstract |
 | [antweiler2025_newmeritorder](papers/antweiler2025_newmeritorder.md) | 2025 | Energy Economics | Q1 | analytical long-run equilibrium + NLP nu | greenfield 100% wind+solar+storage (Li-ion battery | full |
 | [bhattacharjee2025_hybridparticipation](papers/bhattacharjee2025_hybridparticipation.md) | 2025 | IEEE Transactions on Power Systems | Q1 | bilevel stochastic MPEC -> MILP | Alberta energy-only market (2015 data); US hybrid- | full |
-| [gale2026_balancingbatteries](papers/gale2026_balancingbatteries.md) ★경쟁 | 2026 | Journal of Energy Storage | Q1~ | LP/MILP (unverified; abstract says co-op | GB day-ahead wholesale + Balancing Mechanism (bids | abstract |
-| [landy2026_hybridstacking](papers/landy2026_hybridstacking.md) ★경쟁 | 2026 | Energy & Environmental Science | Q1? | LP/MILP (unverified; abstract says reven | UK case study (co-located vs hybridised renewables | abstract |
+| [gale2026_balancingbatteries](papers/gale2026_balancingbatteries.md) ★경쟁 | 2026 | Journal of Energy Storage | Q1~ | LP | GB wholesale (Elexon MID used as the 'day-ahead' p | full |
+| [landy2026_hybridstacking](papers/landy2026_hybridstacking.md) ★경쟁 | 2026 | Energy & Environmental Science | Q1? | LP | UK case study (Lyneham solar farm; WS + BM + Dynam | full |
 
 ## S8 실증·계량경제 (12편)
 

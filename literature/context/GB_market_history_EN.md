@@ -209,7 +209,7 @@ Repo cross-check (`data/raw/cm_derating_factors.csv`, `data/README.md` §2.2), 2
 ### 7.3 Lessons stated cautiously (for the paper's discussion)
 
 - **Entry vs sustainability.** Scarce, purpose-built fast products with long contracts were the entry catalyst; long-run profitability rests on energy-market access rules (cash-out design, BM dispatch). This is loosely consistent with Landy et al. 2026 ("market access > location", `landy2026_hybridstacking`), whose "market access" means grid charging and multi-market stacking rather than cash-out or BM dispatch rules.
-- **Small ancillary markets saturate fast.** GB DC went from undersupplied (Oct 2020) to saturated (H1 2023) in ≈2.5 years with ≈2 GW of entry. Any late-adopter market with a capped fast-reserve requirement should expect the same.
+- **Small ancillary markets saturate fast.** GB DC went from undersupplied (Oct 2020) to saturated (H1 2023) in ≈2.5 years with ≈2 GW of entry. Any late-adopter market with a capped fast-reserve requirement should expect the same. Corroborated in the literature: Landy et al. (2026) find DC adds only marginally to 2023 battery profits, and Martins & Miles (2021, 2018 data) already warned that the "shallow" ancillary markets would saturate.
 - **The price-taker assumption is regime-dependent.** It is defensible for one 50 MW battery in wholesale markets, but not for the fleet in DC after 2022 (inference from saturation, E37) or in the BM after 2024 (Dalton & O'Sullivan 2026, WATCHLIST C4, preprint).
 - **Cost-side rules are part of "market design".** Counterfactuals should include charging/licensing rules, not only revenue products.
 

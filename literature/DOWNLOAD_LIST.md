@@ -12,12 +12,12 @@
 
 | # | id | 서지 | 왜 필요한가 | 아카이브 | 오픈액세스 | 서지 상태 |
 |---|---|---|---|---|---|---|
-| 1 | gale2026_balancingbatteries | Gale, Schmidt, O'Cinneide, Johnson, Staffell (2026). Balancing with batteries… *J. Energy Storage* 166:122328. doi:10.1016/j.est.2026.122328 | 가장 가까운 Q1 경쟁 논문(C1). DA+BM, skip rate. 차별점 표 작성에 필수 | abstract | 아님 | 검색 |
-| 2 | landy2026_hybridstacking | Landy, Schmidt, Johnson, Staffell (2026). Maximising the economic value of renewable and battery storage hybrids with revenue stacking. *Energy Environ. Sci.* 19(13):4469–4494. doi:10.1039/d6ee00776g | 한 모델로 여러 나라 비교(C2). 북유럽 파트와의 공동 틀에도 영향 | abstract | 확인 필요 | 검색 |
+| 1 | gale2026_balancingbatteries ✅ 받음(2026-10-13) | Gale, Schmidt, O'Cinneide, Johnson, Staffell (2026). Balancing with batteries… *J. Energy Storage* 166:122328. doi:10.1016/j.est.2026.122328 | 가장 가까운 Q1 경쟁 논문(C1). DA+BM, skip rate. 차별점 표 작성에 필수 | abstract | 아님 | 검색 |
+| 2 | landy2026_hybridstacking ✅ 받음(본문만, 보충자료 SI는 아직) | Landy, Schmidt, Johnson, Staffell (2026). Maximising the economic value of renewable and battery storage hybrids with revenue stacking. *Energy Environ. Sci.* 19(13):4469–4494. doi:10.1039/d6ee00776g | 한 모델로 여러 나라 비교(C2). 북유럽 파트와의 공동 틀에도 영향 | abstract | 확인 필요 | 검색 |
 | 3 | (watchlist C3) | Xia, Schiele, Zhou, Kumtepeli, Howey, Savelli, Morstyn (2026). Lifetime profit-maximising co-optimisation of multi-service stacking for battery storage. arXiv:2609.03767 | EAC + SoE 규칙 + 열화 엔진. 우리 층 1·2와 같은 위치 | 없음 (WATCHLIST) | arXiv | 검색 |
 | 4 | (watchlist C4) | Dalton, O'Sullivan (2026). Decarbonising price formation: unit-level evidence on battery storage and the imbalance price in the GB Balancing Mechanism. arXiv:2608.29818 | BM 유닛 단위 실증. 가격 수용자 가정의 한계 근거 | 없음 (WATCHLIST) | arXiv | 검색 |
 | 5 | casella2024_ukbessmilp | Casella, La Fata, Suzzi, Barbero, Barilli (2024). The United Kingdom electricity market mechanism: A tool for a battery energy storage system optimal dispatching. *Renewable Energy* 231:120957. doi:10.1016/j.renene.2024.120957 | GB 규칙을 MILP 제약으로 넣은 Q1 선례. 우리 층 1의 직접 비교 대상 | abstract | SSRN 4628433 | 검색 |
-| 6 | martins2021_ukbusinessmodels | Martins, Miles (2021). A techno-economic assessment of battery business models in the UK electricity market. *Energy Policy* 148:111938. doi:10.1016/j.enpol.2020.111938 | 설계 초안 "먼저 읽을 6편". DC 이전 영국 사업모델의 기준선 | abstract | 아님 | 검색 |
+| 6 | martins2021_ukbusinessmodels ✅ 받음(2026-10-13) | Martins, Miles (2021). A techno-economic assessment of battery business models in the UK electricity market. *Energy Policy* 148:111938. doi:10.1016/j.enpol.2020.111938 | 설계 초안 "먼저 읽을 6편". DC 이전 영국 사업모델의 기준선 | abstract | 아님 | 검색 |
 
 ## 2순위 — 초록만 정리된 영국 논문과 영국 프리프린트 (수치 인용 전에 전문 필요)
 
@@ -54,6 +54,18 @@
 | 25 | Badesa, L., Teng, F., Strbac, G. (2019). Simultaneous scheduling of multiple frequency services in stochastic unit commitment. *IEEE TPWRS* 34(5):3858–3868. doi:10.1109/TPWRS.2019.2905037 | 여러 주파수 상품을 함께 조달하는 논리(EAC 공동최적화의 공학적 배경) | 기억 |
 
 `기억` 표시 항목은 받을 때 제목·권호·쪽·DOI를 출판사 페이지와 대조해 주세요. 하나라도 다르면 알려 주시면 고치겠습니다.
+
+## 5순위 — 2026-10-13 받은 논문의 참고문헌에서 새로 찾은 것
+
+| # | 서지 | 왜 필요한가 | 서지 상태 |
+|---|---|---|---|
+| 26 | Landy et al. (2026) **보충자료(SI) 부록 1–14** | 영국 BM·DC 가격 계열, 비용·파라미터 표 | 논문 페이지에서 받기 |
+| 27 | Pusceddu, E., Zakeri, B., Castagneto Gissey, G. (2021). Synergies between energy arbitrage and fast frequency response for battery energy storage systems. *Applied Energy* 283:116274. doi:10.1016/j.apenergy.2020.116274 | GB 차익거래 + FFR 겹치기 효과(+25%), 1.5–2h에서 최대. 영국 수익 스택의 빠진 Q1 논문 | Gale 참고문헌 [49] |
+| 28 | Hübscher, J., Hübner, T., Hug, G., Lété, Q., Koller, M. (2025). Impact of market design on battery trading strategies: a UK case study. IEEE EEM 2025. doi:10.1109/EEM64765.2025.11050105 | 도매 + 주파수 + BM + skip, 2023년 9개월. 학회 논문이라 경쟁 추적용 | Gale 참고문헌 [60] |
+| 29 | Biggins, F.A.V., Ejeh, J.O., Brown, S. (2022). Going, going, gone: optimising the bidding strategy for an energy storage aggregator and its value in supporting community energy storage. *Energy Reports* 8:10518–10532. doi:10.1016/j.egyr.2022.08.187 | 도매 + BM 입찰, 사업자 규모의 시장지배력 | Gale 참고문헌 [51] (분위 확인 필요) |
+| 30 | Liu, J., Wang, J., Cardinal, J. (2022). Evolution and reform of UK electricity market. *Renewable and Sustainable Energy Reviews* 161:112317. doi:10.1016/j.rser.2022.112317 | 영국 시장 변천사의 학술 근거 | Gale 참고문헌 [24] |
+| 31 | Joos, M., Staffell, I. (2018). Short-term integration costs of variable renewable energy: wind curtailment and balancing in Britain and Germany. *RSER* 86:45–65. doi:10.1016/j.rser.2018.01.009 | 밸런싱 비용 증가의 배경 | Gale 참고문헌 [26] |
+| 32 | Atherton, J., et al. (2023). British imbalance market paradox: variable renewable energy penetration in energy markets. *RSER* 185:113591. doi:10.1016/j.rser.2023.113591 | 영국 불균형 시장의 구조 | Gale 참고문헌 [28] |
 
 ## 받은 뒤 이쪽에서 할 일
 

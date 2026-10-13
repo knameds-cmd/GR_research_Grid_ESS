@@ -103,7 +103,7 @@ Nordic: Engelhardt 2022 (DK) ; Mirzaei Alavijeh 2025 (SE FCR-N/FCR-D, Chalmers)
 ## 6. Open gaps
 
 1. **No cross-market attribution study.** No Q1 paper runs a single battery or agent through GB DC/DM/DR, DE FCR/aFRR, Nordic FCR-N/D/FFR and NEM FCAS with the rule parameters toggled one at a time. This is the gap the user's study can fill.
-   - **2026-10-07 update:** `landy2026_hybridstacking` (abstract-level evidence) compares regions with one model, but at the level of market-access bundles (grid charging, market sets), not individual product-rule parameters. The gap as defined here (toggle rule parameters one at a time) still stands.
+   - **2026-10-07 update:** `landy2026_hybridstacking` (full text checked 2026-10-13: UK case includes DC only, which adds only marginally to 2023 profits; international part is wholesale-only) compares regions with one model, but at the level of market-access bundles (grid charging, market sets), not individual product-rule parameters. The gap as defined here (toggle rule parameters one at a time) still stands.
 2. **GB DM/DR and post-2023 rules are missing.** No verified Q1 paper models Dynamic Moderation/Regulation or the 2023–24 DC price collapse. fan2025 assumes £8/MW/h flat.
    - **2026-10-07 update:** partly closed (abstract-level evidence): `casella2024_ukbessmilp` (Q1?) models GB dynamic frequency response services; the preprint Xia et al. 2026 co-optimises a battery's stacking of EAC-procured DC/DM/DR with SoE rules (`WATCHLIST.md` C3). The 2023–24 price collapse is still not analysed in a Q1 paper.
 3. **aFRR with batteries (DE/EU PICASSO) and Nordic FFR are absent** from the verified set. No Q1 paper was found within this session's budget.

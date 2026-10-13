@@ -2,6 +2,8 @@
 
 작성 2026-10-05 · 기준 문서: [`00_research_design_v0.md`](00_research_design_v0.md) (10/5 설계 초안 원본)
 
+> **2026-10-13 추가**: 경쟁 논문 C1(Gale)·C2(Landy)와 Martins & Miles 본문을 읽고 `docs/03_competitor_analysis_KO.md`에 정리했습니다. 두 경쟁 논문 모두 EAC 이후 상품과 규칙별 귀속을 다루지 않습니다. M5는 수정했습니다(C1도 MID 사용).
+>
 > **2026-10-07 진행 상황**: 경쟁 논문을 아카이브와 `literature/WATCHLIST.md`에 반영했습니다. Q1 판정 기준은 "발행연도 SJR(없으면 가장 가까운 연도)"로 통일했습니다(`literature/INDEX.md`). 내려받을 논문 목록은 `literature/DOWNLOAD_LIST.md`, 영국 시장 변천사는 `literature/context/`에 있습니다. 시장 변천사 8장이 4장 M1(국면 분할)과 M4(Shapley 플레이어)의 구체안입니다.
 
 ## 0. 요약
@@ -39,8 +41,8 @@
 
 | # | 논문 | 상태 | 우리와 겹치는 부분 | 겹치지 않는 부분(우리 자리) |
 | --- | --- | --- | --- | --- |
-| C1 | Gale E, Schmidt O, O'Cinneide A, Johnson N, Staffell I (2026). *Balancing with batteries: The impact of revenue stacking and skip rates on battery energy storage profitability in Great Britain.* **J. Energy Storage 166** (2026.7). Imperial. [ScienceDirect pii S2352152X26019924](https://www.sciencedirect.com/science/article/pii/S2352152X26019924) | Q1 게재 | GB DA + BM 공동최적화, 3년치 30분 가격. BM 참여 시 수익이 차익거래 단독 대비 최대 +250%. skip rate 10%p 오를 때마다 이익 −7%(약 £12k/MW/yr). 우리 RQ2의 "skip rate 스위치"와 거의 같다. | 요약상으로는 EAC 보조서비스(DC/DM/DR/BR/QR)가 빠져 있고, 규칙별 기여도 분해가 없다. **본문 확인 필요.** |
-| C2 | Landy M, Schmidt O, Johnson N, Staffell I (2026). *Maximising the economic value of renewable and battery storage hybrids with revenue stacking.* **Energy Environ. Sci. 19(13):4469–4494.** Imperial. [RSC](https://pubs.rsc.org/ee/article/19/13/4469/1267155/Maximising-the-economic-value-of-renewable-and) | Q1 게재 | 여러 지역(영국·호주·북유럽·미국 등)에 같은 수익 스택 모델을 적용. 결론이 "수익성은 입지보다 **시장 접근과 운전 제약**에 더 좌우된다". 교수님의 국가 비교 구도와 결론 방향이 겹친다. | 초점이 재생에너지+배터리 하이브리드다. 독립형 배터리의 규칙별 반사실 분해와 국면(boom→collapse) 분석은 없는 것으로 보인다. **본문 확인 필요.** |
+| C1 | Gale E, Schmidt O, O'Cinneide A, Johnson N, Staffell I (2026). *Balancing with batteries: The impact of revenue stacking and skip rates on battery energy storage profitability in Great Britain.* **J. Energy Storage 166** (2026.7). Imperial. [ScienceDirect pii S2352152X26019924](https://www.sciencedirect.com/science/article/pii/S2352152X26019924) | Q1 게재 | GB DA + BM 공동최적화, 3년치 30분 가격. BM 참여 시 수익이 차익거래 단독 대비 최대 +250%. skip rate 10%p 오를 때마다 이익 −7%(약 £12k/MW/yr). 우리 RQ2의 "skip rate 스위치"와 거의 같다. | **본문 확인(2026-10-13)**: 도매(Elexon MID) + BM(정산가격·NIV 제약)만, 2020.7–2023.6. 주파수 응답·예비력·용량시장 없음, 규칙별 분해 없음. skip은 무작위 차단 몬테카를로. |
+| C2 | Landy M, Schmidt O, Johnson N, Staffell I (2026). *Maximising the economic value of renewable and battery storage hybrids with revenue stacking.* **Energy Environ. Sci. 19(13):4469–4494.** Imperial. [RSC](https://pubs.rsc.org/ee/article/19/13/4469/1267155/Maximising-the-economic-value-of-renewable-and) | Q1 게재 | 여러 지역(영국·호주·북유럽·미국 등)에 같은 수익 스택 모델을 적용. 결론이 "수익성은 입지보다 **시장 접근과 운전 제약**에 더 좌우된다". 교수님의 국가 비교 구도와 결론 방향이 겹친다. | **본문 확인(2026-10-13)**: 영국은 도매+BM+DC만(2023년 1년), 국가 비교는 도매만. 시장 접근을 묶음으로만 바꿈. 규칙별 반사실·국면 분석 없음. 2023년 DC 기여는 "미미". |
 | C3 | Xia Y, Schiele F, Zhou Y, Kumtepeli V, Howey D, Savelli I, Morstyn T (2026). *Lifetime Profit-Maximising Co-optimisation of Multi-Service Stacking for Battery Storage.* Oxford·Bocconi. [arXiv 2609.03767](https://arxiv.org/abs/2609.03767) | 프리프린트(2026.9) | GB EAC 동적 주파수 상품 + 도매 stacking, **SoE 준수 규칙 반영**, 롤링 호라이즌, 열화. 우리 층 1·2 엔진과 거의 같다. 열화 반영 시 수명 수익 +32%. | 규칙을 고정 환경으로 둔다(규칙 on/off 반사실 없음). BM·용량시장 비중이 낮은 것으로 보인다. |
 | C4 | Dalton R, O'Sullivan A (2026). *Decarbonising price formation: unit-level evidence on battery storage and the imbalance price in the GB Balancing Mechanism.* [arXiv 2608.29818](https://arxiv.org/abs/2608.29818) | 프리프린트(2026.8) | 2023–25년 BM 한계가격 결정 유닛을 유닛 단위로 재구성. 배터리 비중: bid 쪽 0.8%→36.2%, offer 쪽 3.2%→26.9%. **"개별 배터리는 가격 수용자지만 배터리 집단 전체는 BM 가격 형성에 영향을 준다"**. | 수익성·규칙 분석이 아니라 가격 형성 실증이다. 오히려 우리 가격 수용자 가정의 한계를 보여주는 근거라 4장 M3에서 인용한다. |
 | C5 | Nosratabadi SM, Savelli I, Kumtepeli V, Grunewald P, Aunedi M, Howey DA, Morstyn T (2024). *The Impact of Grid Storage on Balancing Costs and Carbon Emissions in Great Britain.* [arXiv 2410.07740](https://arxiv.org/abs/2410.07740) | 프리프린트(저널 게재 여부 확인 필요) | GB 저장장치가 밸런싱 비용에 주는 영향 | 사업자 수익성이 아니라 시스템 관점이다. |
@@ -85,7 +87,7 @@
 - 각 규칙을 끈 상태가 무엇인지 미리 정의해야 한다. 예: "공동최적화 off" = EFA 블록마다 서비스 하나만 선택. Shapley는 기준점(모든 규칙 off) 정의에 민감하므로 one-at-a-time과 leave-one-out 결과도 같이 보고한다. 방법론 근거로는 경제학의 Shapley 분해 문헌(Shorrocks 2013, *J. Econ. Inequality*)을 아카이브에서 확인한다.
 
 **M5. MID는 DA 경매가격이 아니다.**
-- Elexon MID(APX)는 결제구간별 단기(주로 일중) 거래의 거래량 가중 평균이다. N2EX MID는 거래량이 0인 구간이 많다. MID로 완전예측 차익거래를 돌리면 DA 기준과 수익이 달라지고, DA 가격을 쓴 C1과 바로 비교할 수 없다.
+- Elexon MID(APX)는 결제구간별 단기(주로 일중) 거래의 거래량 가중 평균이다. N2EX MID는 거래량이 0인 구간이 많다. MID로 완전예측 차익거래를 돌리면 DA 기준과 수익이 달라진다. [2026-10-13 수정: C1(Gale 2026)도 도매 가격으로 Elexon MID를 썼다(본문 §3.1, 참고문헌 [63]). 따라서 MID 기반 결과는 C1과 직접 비교할 수 있다. `docs/03_competitor_analysis_KO.md` 참고]
 - **수정안**: MID는 "단기 시장 가격", SSP/SBP는 "실시간 가격"으로 이름을 정확히 붙인다. 학교를 통해 EPEX/N2EX GB DA 결과를 받을 수 있는지 확인한다. 받을 수 있는 기간이 짧더라도 MID vs DA 차이로 견고성 점검을 한다.
 
 ### 작은 수정 (Minor)
