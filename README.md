@@ -28,12 +28,30 @@
 | `data/raw/` | 원자료 CSV (NESO EAC 경매, 용량시장 등록부, Elexon 2026-09 샘플). 약 33MB |
 | `data/processed/` | 가공본 (git 제외) |
 
-## 데이터 다시 받기
+## 데이터 받기
+
+스크립트가 두 개이고 받는 자료가 겹치지 않습니다. 둘 다 저장소 루트에서 실행합니다.
+
+**`gb_data_fetch.py`**: EAC 요약·유닛별 결과, EAC 이전 DC, skip rate, 용량시장 등록부, Elexon MID·정산가격과 2026-09 샘플(Lakeside 배터리). 결과는 `data/raw/`. 묶음과 기간 옵션은 `data/README.md` 6장.
 
 ```bash
 pip install requests pandas
-python3 gb_data_fetch.py          # EAC 요약 + 용량시장 + Elexon 2026-09 샘플 → data/raw/
-python3 gb_data_fetch.py --units  # 배터리 유닛별 EAC 결과까지 (수십만 행)
+python3 gb_data_fetch.py                                          # EAC 요약 + 용량시장 + Elexon 2026-09 샘플
+python3 gb_data_fetch.py --only units,dc,prices,skip --start 2021-09-01   # 유닛별 EAC, EAC 이전 DC, 가격 장기 시계열, skip rate
 ```
 
-NESO와 Elexon API는 키 없이 무료다. 일부 클라우드 환경은 네트워크 정책 때문에 이 API에 접근하지 못할 수 있다.
+**`neso_fetch.py`**: 위 스크립트에 없는 나머지 NESO 데이터 포털 자료를 묶음으로 정리해 두었습니다. 받은 파일은 `data/raw/neso/<데이터셋>/`, 받은 내역은 `data/raw/neso/MANIFEST.csv`에 남습니다.
+
+```bash
+python3 neso_fetch.py list                       # 묶음·데이터셋 목록
+python3 neso_fetch.py list core requirements     # 각 데이터셋의 파일·크기 확인
+python3 neso_fetch.py get core requirements --dry-run   # 받을 것 미리 보기
+python3 neso_fetch.py get core requirements      # 1순위: 2025.10 이전 BR, 상품별 필요량
+python3 neso_fetch.py get drivers costs obp history     # 설명변수(관성·수요·풍력), 망요금, OBP, FFR/EFR 보고서
+python3 neso_fetch.py get system-frequency-data --match 2023 --allow-large   # 1초 주파수 (큼, 기간 골라서)
+python3 neso_fetch.py search "dynamic moderation"       # 포털에서 다른 데이터셋 찾기 → get <이름>
+```
+
+데이터셋 이름을 못 찾으면 비슷한 이름을 보여 줍니다. 200 MB보다 큰 파일은 `--allow-large`를 붙여야 받습니다. 두 스크립트 모두 이미 받은 파일은 건너뛰므로 끊겨도 다시 실행하면 이어서 받습니다. 1초 주파수 폴더와 `.part` 파일은 git에서 제외되며, 100 MB가 넘는 파일은 GitHub에 올라가지 않으니 커밋하지 마세요.
+
+NESO와 Elexon API는 키 없이 무료입니다. 클라우드 세션에서는 네트워크 정책 때문에 접근이 막힐 수 있으니 본인 컴퓨터에서 실행하세요.

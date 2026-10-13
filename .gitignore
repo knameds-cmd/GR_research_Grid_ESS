@@ -16,3 +16,7 @@ __pycache__/
 
 # 출판사 PDF는 저작권 때문에 공개 저장소에 올리지 않음 (literature/DOWNLOAD_LIST.md 참고)
 literature/pdf/
+
+# neso_fetch.py: 1초 주파수 같은 대용량 원자료와 받다 만 파일은 올리지 않음 (GitHub는 100MB 넘는 파일을 거부)
+data/raw/neso/system-frequency-data/
+*.part
