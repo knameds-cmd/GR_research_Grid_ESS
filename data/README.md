@@ -1,6 +1,6 @@
 # 데이터 해설 (2026-10-06)
 
-> 원자료 CSV는 `data/raw/`에 있습니다. 공개 저장소이므로 `cm_cmu.csv`에서는 담당자 전화번호·이메일 두 열(`Secondary Trading Contact_Telephone`, `Secondary Trading Contact_Email`)을 뺐습니다. 원본은 NESO 포털에서 다시 받을 수 있습니다. 다시 받으려면 저장소 루트에서 `python3 gb_data_fetch.py`(결과는 `data/raw/`).
+> 원자료 CSV는 `data/raw/`에 있습니다. 공개 저장소이므로 `cm_cmu.csv`에서는 담당자 전화번호·이메일 두 열(`Secondary Trading Contact_Telephone`, `Secondary Trading Contact_Email`)을 뺐습니다. 원본은 NESO 포털에서 다시 받을 수 있습니다. 다시 받으려면 저장소 루트에서 `python3 gb_data_fetch.py`(결과는 `data/raw/`). 기간을 지정해 더 받는 방법은 6장. (`fetch_cm`을 다시 돌리면 위 두 열이 다시 생기니 커밋 전에 지우세요.)
 
 `data/raw/`의 12개 파일을 실제로 열어 구조·기간·품질을 확인한 결과입니다. 수치는 모두 이 파일들에서 직접 계산했습니다.
 
@@ -127,18 +127,39 @@ LP(가격수용자, 왕복효율 90%, 30분 단위)로 계산했습니다. 처�
 | 분석 | 지금 데이터로 가능? | 필요한 추가 데이터 |
 |---|---|---|
 | 보조서비스 가격·포화 추이 (2023.11~) | 가능 | — |
-| 대표 배터리 MILP (EAC + 도매 + 정산가격) | 9월 한 달만 가능 | MID·정산가격 기간 확장 (스크립트의 `start/end` 변경) |
-| 규칙 변화 전후 비교: QR 도입(2024-12), BR 공동경매 편입(2025-10), SR 도입(2026-03), DRL 물량 고정(480 MW), DC 물량 증가(2026-07 ~1,495 MW) | 가격·물량 차원은 가능 | 유닛 단위는 `--units` |
+| 대표 배터리 MILP (EAC + 도매 + 정산가격) | 9월 한 달만 가능 | MID·정산가격 기간 확장 (`--only prices`, 6장) |
+| 규칙 변화 전후 비교: QR 도입(2024-12), BR 공동경매 편입(2025-10), SR 도입(2026-03), DRL 물량 고정(480 MW), DC 물량 증가(2026-07 ~1,495 MW) | 가격·물량 차원은 가능 | 유닛 단위는 `--only units` |
 | CM 디레이팅 변화와 지속시간 선택 | 가능 | — |
-| 실제 배터리 230개의 서비스 배분 행동 | 불가 | `python3 gb_data_fetch.py --units` |
+| 실제 배터리 230개의 서비스 배분 행동 | 불가 | `python3 gb_data_fetch.py --only units` |
 | 실제 배터리 수익 재구성 (EAC + BM 정확, 도매 근사) | 1개 유닛·1개월 | 유닛별 Elexon PN/BOALF/현금흐름 반복 수집 |
 | SoC 드리프트·규칙 준수 시뮬레이션 | 불가 | NESO "System Frequency" (1초) 데이터셋 |
 
 ## 5. 아직 없는 것
 
-- **배터리 유닛별 EAC 결과**: `--units`로 받으면 됩니다(수십만 행).
-- **EAC 이전(2020.9–2023.10) DC/DM/DR 결과**, **2025년 10월 이전 BR 결과**: NESO 포털의 별도 데이터셋입니다.
+- **배터리 유닛별 EAC 결과**, **EAC 이전 DC 결과**, **2021.9 이후 MID·정산가격**, **skip rate**: 스크립트는 준비됐고 아직 받지 않았습니다(6장).
+- **2025년 10월 이전 BR 결과**: NESO `eac-br-auction-results`. 스크립트에 아직 없습니다.
 - **실제 DA 경매 가격**(N2EX/EPEX): 유료입니다. MID가 무료 대용입니다.
 - **배터리 MWh**: CM 지속시간 등급 + 우편번호 연결로 추정해야 합니다.
 - **비용 가정**(CAPEX, O&M): 데이터가 아니라 문헌에서 가져옵니다(`literature/papers/schmidt2019_lcos.md`).
 - **사적 계약**(톨링, 수익 하한): 공개되지 않습니다.
+
+## 6. 기간 지정 다운로드 (2026-10-13 추가)
+
+`gb_data_fetch.py`에 `--only`(받을 묶음)와 `--start`/`--end`(기간, 끝 날짜는 포함 안 함, 기본 오늘)를 넣었습니다. 지금 필요한 네 가지를 한 번에 받는 명령:
+
+```
+python3 gb_data_fetch.py --only units,dc,prices,skip --start 2021-09-01
+```
+
+| 묶음 | 받는 것 | 저장 위치 | 기간 적용 |
+|---|---|---|---|
+| `units` | EAC 유닛별 결과(기본 배터리만, `--all-tech`면 전체 기술) | `raw/eac_units/eac_unit_results_batteries_{FY2023,FY2024,FY2025,current}.csv.gz` | 기간과 겹치는 회계연도 resource를 통째로 |
+| `dc` | NESO `dynamic-containment-data`의 모든 자료(EAC 이전 DC 결과) | `raw/dc_pre_eac/` + 자료 목록 `_resources.json` | 없음(전체) |
+| `prices` | Elexon MID(APX·N2EX)와 정산가격 | `raw/elexon_mid/elexon_mid_YYYYMM.csv`, `raw/elexon_system_prices/elexon_system_prices_YYYYMM.csv` | 일 단위, 파일은 settlementDate 기준 월별. 시작 달은 1일부터. 기본 시작 2021-09-01 |
+| `skip` | NESO `skip-rates`의 모든 자료 | `raw/skip_rates/` + `_resources.json` | 없음(전체) |
+
+- **이어 받기**: 끝난 달·지난 회계연도 파일은 다시 받지 않고, NESO 데이터셋 자료는 `_resources.json`의 수정 시각이 같으면 건너뜁니다. 중간에 끊기면 같은 명령을 다시 실행하면 됩니다. 전부 다시 받으려면 `--force`.
+- **재시도**: 429·5xx·연결 끊김은 2·4·8·16초 간격으로 재시도합니다. 4xx와 프록시 차단은 바로 멈춥니다.
+- **예상 규모**: 가격은 2021-09 ~ 2026-10 약 62개월 × (MID 1회 + 정산가격 하루 1회) ≈ 1,900번 요청(15–20분), 파일 합계 약 30 MB. 유닛별 EAC는 회계연도마다 수십만 행이라 gzip으로 저장합니다.
+- **settlementDate 처리**: MID는 UTC 시각으로 조회하므로 앞뒤로 넓게 받은 뒤 영국 현지 날짜(settlementDate)로 잘라 월 파일 사이에 겹침·누락이 없게 했습니다. 서머타임 전환일은 46/50구간 그대로 둡니다.
+- **확인 못 한 것**: 2026-10-13 세션에서는 `api.neso.energy`와 `data.elexon.co.uk`가 환경 네트워크 정책에 막혀 실제 API로 돌려 보지 못했습니다(가짜 응답으로 로직만 검증). 특히 `dynamic-containment-data`·`skip-rates` 안의 자료 구성과 열 이름은 받은 뒤 1장 표에 추가해야 합니다.

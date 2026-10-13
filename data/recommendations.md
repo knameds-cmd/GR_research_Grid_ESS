@@ -59,3 +59,5 @@
 ## 우선순위
 
 1번 표의 앞 네 줄(유닛별 EAC, EAC 이전 DC, 이전 BR, 가격 장기 시계열)부터 받으면 됩니다.
+
+2026-10-13: 유닛별 EAC, EAC 이전 DC, 가격 장기 시계열, skip rate는 `python3 gb_data_fetch.py --only units,dc,prices,skip --start 2021-09-01`로 받을 수 있습니다(`data/README.md` 6장). 이전 BR은 아직 스크립트에 없습니다.
