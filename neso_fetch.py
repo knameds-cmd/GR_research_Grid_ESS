@@ -364,6 +364,7 @@ def cmd_get(args):
           + (f", gb_data_fetch.py 담당 {totals['elsewhere']}" if totals["elsewhere"] else ""))
     if totals["large"]:
         print("큰 파일은 --match 로 기간을 고른 뒤 --allow-large 를 붙여 받으세요.")
+    return 1 if totals["fail"] else 0
 
 
 def main(argv=None):
@@ -390,7 +391,7 @@ def main(argv=None):
 
     args = ap.parse_args(argv)
     try:
-        args.func(args)
+        return args.func(args) or 0
     except BrokenPipeError:  # e.g. output piped into `head`
         return 0
     except KeyboardInterrupt:

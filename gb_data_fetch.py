@@ -248,7 +248,10 @@ def fetch_neso_package(name, sub, force=False):
 def fetch_cm():
     print("Capacity Market register")
     for name, rid in CM.items():
-        neso_all(rid).to_csv(OUT / f"{name}.csv", index=False)
+        df = neso_all(rid)
+        # 공개 저장소라 담당자 전화번호·이메일 열은 저장하지 않는다
+        df = df.drop(columns=[c for c in df.columns if re.search(r"Contact_(Telephone|Email)", c)])
+        df.to_csv(OUT / f"{name}.csv", index=False)
 
 
 def fetch_elexon_sample(bm_unit="T_LKSDB-1", start=date(2026, 9, 1), end=date(2026, 10, 1)):

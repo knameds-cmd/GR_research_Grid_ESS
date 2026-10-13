@@ -1,6 +1,6 @@
 # 데이터 해설 (2026-10-06)
 
-> 원자료 CSV는 `data/raw/`에 있습니다. 공개 저장소이므로 `cm_cmu.csv`에서는 담당자 전화번호·이메일 두 열(`Secondary Trading Contact_Telephone`, `Secondary Trading Contact_Email`)을 뺐습니다. 원본은 NESO 포털에서 다시 받을 수 있습니다. 다시 받으려면 저장소 루트에서 `python3 gb_data_fetch.py`(결과는 `data/raw/`). 기간을 지정해 더 받는 방법은 6장. (`fetch_cm`을 다시 돌리면 위 두 열이 다시 생기니 커밋 전에 지우세요.)
+> 원자료 CSV는 `data/raw/`에 있습니다. 공개 저장소이므로 `cm_cmu.csv`에서는 담당자 전화번호·이메일 두 열(`Secondary Trading Contact_Telephone`, `Secondary Trading Contact_Email`)을 뺐습니다. 원본은 NESO 포털에서 다시 받을 수 있습니다. 다시 받으려면 저장소 루트에서 `python3 gb_data_fetch.py`(결과는 `data/raw/`). 기간을 지정해 더 받는 방법은 6장. (2026-10-13부터 `fetch_cm`이 이 두 열을 저장하지 않습니다.)
 >
 > **`gb_data_fetch.py`에 없는 NESO 데이터**(2025.10 이전 BR, 상품별 필요량, 수요·풍력 예측과 관성, 망요금, OBP, FFR/EFR 보고서, 1초 주파수)는 `python3 neso_fetch.py`로 받습니다(저장소 `README.md`의 "데이터 받기"). 결과는 `data/raw/neso/<데이터셋>/`, 받은 내역은 `data/raw/neso/MANIFEST.csv`.
 

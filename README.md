@@ -30,7 +30,25 @@
 
 ## 데이터 받기
 
-스크립트가 두 개이고 받는 자료가 겹치지 않습니다. 둘 다 저장소 루트에서 실행합니다.
+**가장 쉬운 방법 (Mac 터미널에 그대로 붙여넣기).** 홈 폴더에 저장소를 받고(이미 있으면 최신으로 바꾸고) 필요한 데이터를 모두 받습니다. 30분~1시간 걸리니 전원을 연결해 두세요. 진행 기록은 `get_data.log`에 남습니다.
+
+```bash
+cd ~ &&
+{ [ -d GR_research_Grid_ESS ] || git clone https://github.com/knameds-cmd/GR_research_Grid_ESS.git; } &&
+cd GR_research_Grid_ESS &&
+git fetch -q origin claude/cool-goodall-nubbzr &&
+git checkout -q claude/cool-goodall-nubbzr &&
+git pull -q --ff-only origin claude/cool-goodall-nubbzr &&
+bash get_data.sh
+```
+
+다 받은 뒤 GitHub에 올리기 (50MB 넘는 파일은 빼고 올립니다):
+
+```bash
+cd ~/GR_research_Grid_ESS && bash upload_data.sh
+```
+
+`get_data.sh`는 아래 두 스크립트를 차례로 실행합니다. 따로 실행할 때는 아래 명령을 쓰세요. 두 스크립트가 받는 자료는 겹치지 않고, 둘 다 저장소 루트에서 실행합니다.
 
 **`gb_data_fetch.py`**: EAC 요약·유닛별 결과, EAC 이전 DC, skip rate, 용량시장 등록부, Elexon MID·정산가격과 2026-09 샘플(Lakeside 배터리). 결과는 `data/raw/`. 묶음과 기간 옵션은 `data/README.md` 6장.
 
