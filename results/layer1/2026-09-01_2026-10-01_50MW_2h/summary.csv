@@ -1,0 +1,8 @@
+scenario,설명,total_gbp_per_mw_yr,wholesale_gbp_per_mw_yr,throughput_cost_gbp_per_mw_yr,cycles_per_day,solve_seconds,solver,binary_periods,simultaneous_periods,solution,mip_gap,DCL_gbp_per_mw_yr,DCH_gbp_per_mw_yr,DML_gbp_per_mw_yr,DMH_gbp_per_mw_yr,DRL_gbp_per_mw_yr,DRH_gbp_per_mw_yr,PBR_gbp_per_mw_yr,NBR_gbp_per_mw_yr,PQR_gbp_per_mw_yr,NQR_gbp_per_mw_yr,PSR_gbp_per_mw_yr,NSR_gbp_per_mw_yr
+wholesale,도매만,91309.0,92703.0,-1395.0,1.81,0.3,HiGHS,69,0,Optimal Solution Found,6.765302086201432e-05,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+response,도매 + DC/DM/DR,163156.0,8063.0,-563.0,0.54,16.6,HiGHS,70,0,Optimal Solution Found,0.0,2289.0,12241.0,50289.0,8148.0,78174.0,4516.0,0.0,0.0,0.0,0.0,0.0,0.0
+response_no_soe,response에서 SoE 규칙 끔,206545.0,47571.0,-977.0,1.11,3.0,HiGHS,69,0,Optimal Solution Found,0.0,1328.0,6620.0,43479.0,7220.0,89309.0,11995.0,0.0,0.0,0.0,0.0,0.0,0.0
+full,도매 + DC/DM/DR + BR/QR/SR (2026년 규칙),188755.0,26959.0,-788.0,0.86,6.9,HiGHS,69,0,Optimal Solution Found,0.0,2012.0,5604.0,27788.0,2248.0,62127.0,3461.0,7452.0,27.0,18624.0,29592.0,3649.0,0.0
+full_no_soe,full에서 SoE 규칙 끔,230567.0,57930.0,-1121.0,1.32,2.4,HiGHS,69,0,Optimal Solution Found,0.0,1157.0,2877.0,25836.0,2984.0,77460.0,11804.0,6433.0,20.0,14803.0,23606.0,6778.0,0.0
+full_no_split,full에서 상품 쪼개기 금지,188609.0,27438.0,-784.0,0.86,116.4,HiGHS,69,0,Optimal Solution Found,8.998813493050856e-05,2165.0,5015.0,27463.0,2183.0,61480.0,3862.0,7468.0,27.0,18739.0,29935.0,3619.0,0.0
+response_no_stack,response에서 상품 든 블록 도매 금지 (2020년 DC 초기 규칙),150832.0,15401.0,-410.0,0.45,900.4,HiGHS,69,0,Solution Found,0.0054345135918264,2086.0,8387.0,44318.0,4005.0,68408.0,8637.0,0.0,0.0,0.0,0.0,0.0,0.0

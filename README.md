@@ -9,6 +9,7 @@
 | [`docs/00_research_design_v0.md`](docs/00_research_design_v0.md) | 연구 설계 초안 원본 (2026-10-05 회의 정리) |
 | [`docs/01_next_actions.md`](docs/01_next_actions.md) | 설계 검토, 경쟁 논문 확인 결과, 연구 방향 옵션, 업로드 점검표, 수정 일정 |
 | [`docs/03_competitor_analysis_KO.md`](docs/03_competitor_analysis_KO.md) | **경쟁·선행 논문 3편 전문 분석**(Gale 2026, Landy 2026, Martins & Miles 2021): 그들이 한 것 / 안 한 것 / 우리가 다른 점, 설계에 반영할 것 |
+| [`docs/04_layer1_model_KO.md`](docs/04_layer1_model_KO.md) | **층 1 모델 해설**: 배터리 입장에서 본 영국 시장 구조와 각 규칙의 이유, 변수·제약 하나씩, 2026년 9월 첫 결과, 규칙 스위치와 Shapley 예시 |
 | [`docs/02_study_guide_KO.md`](docs/02_study_guide_KO.md) | **연구자 학습 가이드**: 영국 시장 핵심 개념 11개, 논문 아카이브 읽는 법과 필독 16편, 주제 연결 지도(다리 16개), 연습·자가 점검 질문, 용어집 |
 | [`data/README.md`](data/README.md) | 받은 데이터 12개 파일 해설: 구조·기간·품질·연결 키, 첫 계산 결과, 할 수 있는 분석 |
 | [`data/recommendations.md`](data/recommendations.md) | 추가로 받을 데이터와 참고 데이터 (존재 확인한 데이터셋 이름·엔드포인트 포함) |
@@ -27,6 +28,8 @@
 | `literature/` | 논문 아카이브(.md). `papers/`에 논문 1편당 파일 1개(가정·제약·모델·데이터 가공·정당화), `streams/`에 갈래별 종합, `GROUPS.md` 연구 그룹·사제 계보, `CANON.md` 교과서·랜드마크 리뷰 |
 | `data/raw/` | 원자료 CSV (NESO EAC 경매, 용량시장 등록부, Elexon 2026-09 샘플). 약 33MB |
 | `data/processed/` | 가공본 (git 제외) |
+| `model/` | 층 1 완전예측 MILP (`data.py` 입력, `layer1.py` 모델). 실행은 루트의 `run_layer1.py` |
+| `results/layer1/` | 모델 결과: 시나리오별 수익 `summary.csv`, 30분 운전 계획 `*_dispatch.csv` |
 
 ## 데이터 받기
 
