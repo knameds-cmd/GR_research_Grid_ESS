@@ -12,7 +12,9 @@
 제약 (규칙 스위치 Rules로 켜고 끔)
     에너지 수지      soc[t+1] = soc[t] + 0.5·(ηc·c[t] - d[t]/ηd) + 주파수 응답으로 평균적으로 드나드는 에너지
     출력 여유        위쪽: (d - c) + Σ up 상품 ≤ P,  아래쪽: (c - d) + Σ down 상품 ≤ P
-    SoE 규칙         구간 시작·끝 에너지가 위쪽 상품을 지속시간 동안 낼 만큼 남고, 아래쪽 상품을 받을 만큼 비어 있어야 함
+    SoE 규칙         (DC/DM/DR) 에너지가 위쪽 상품을 지속시간 동안 낼 만큼 남고, 아래쪽 상품을 받을 만큼 비어 있어야 함.
+                     모든 구간(every_period) / 블록 시작만(block_start) / 없음(off)
+    예비력 에너지     (BR/QR/SR) 상품 정의의 유지 시간만큼 같은 방식으로 확보 (SoE 스위치와 별개, 항상 적용)
     도매 겹치기 금지  (wholesale_stacking=False) 상품을 든 구간에는 도매 거래 0
     상품 쪼개기 금지  (splitting=False) 한 구간·한 방향에 상품 하나만
     물량 상한        (cap_by_cleared_volume) 그 구간 시장 전체 낙찰량보다 많이 팔 수 없음
@@ -47,7 +49,9 @@ class Battery:
 @dataclass
 class Rules:
     services: tuple = tuple(RESPONSE + RESERVE)  # 참여할 수 있는 상품
-    soe_rule: bool = True               # 2024년 SoE 규칙: 낙찰 물량만큼 에너지를 확보
+    soe_rule: str = "every_period"      # DC/DM/DR의 2024년 SoE 규칙. "every_period"(모든 30분, 보수적),
+                                        # "block_start"(블록 시작 시점만, 실제 규칙 문구에 가까움), "off"(에너지 확인 없음 = 상한)
+    reserve_energy: bool = True         # BR/QR/SR 유지 시간만큼 에너지 확보 (상품 정의라 기본으로 켬)
     wholesale_stacking: bool = True     # 상품을 든 구간에도 도매 거래 허용 (2021년 DC+BM 겹치기 허용 이후)
     splitting: bool = True              # 한 구간에 같은 방향 상품 여러 개로 쪼개 팔기 허용 (EAC 공동최적화)
     cap_by_cleared_volume: bool = True  # 시장 전체 낙찰량을 넘게 팔지 못함 (가격 수용자 가정의 보완)
@@ -103,6 +107,12 @@ def build(inp, bat: Battery, rules: Rules, relax=False, freq_sigma_hz=0.06, bina
     def side(t, direction):
         return [(p, rt[p][t]) for p in rt if PRODUCTS[p][0] == direction and t in rt[p]]
 
+    def block_starts(p, t):
+        return t == 0 or inp.window[p].iat[t] != inp.window[p].iat[t - 1]
+
+    if rules.soe_rule not in ("every_period", "block_start", "off"):
+        raise ValueError(f"soe_rule은 every_period, block_start, off 중 하나: {rules.soe_rule}")
+
     # 목적함수
     wholesale = pulp.lpSum(float(inp.wholesale.iat[t]) * (d[t] - c[t]) * dt for t in T)
     services = {p: pulp.lpSum(float(inp.price[p].iat[t]) * v * dt for t, v in rt[p].items()) for p in rt}
@@ -122,7 +132,8 @@ def build(inp, bat: Battery, rules: Rules, relax=False, freq_sigma_hz=0.06, bina
         # 에너지 수지: 충전은 손실만큼 덜 쌓이고, 방전은 손실만큼 더 빠진다
         m += soc[t + 1] == soc[t] + dt * (bat.eta_charge * (c[t] + fr_in) - (d[t] + fr_out) / bat.eta_discharge), \
             f"energy_{t}"
-        # 동시 충방전 금지 (음의 가격에서 손실로 에너지를 태워 돈을 받는 비현실적 해 방지)
+        # 동시 충방전 금지 (손실로 에너지를 태우는 비현실적 해 방지: 음의 가격에서 돈을 받으며 충전하거나,
+        # 아래쪽 상품을 들려고 저장 에너지를 억지로 줄이는 경우)
         m += c[t] <= P * u[t], f"mode_c_{t}"
         m += d[t] <= P * (1 - u[t]), f"mode_d_{t}"
 
@@ -130,13 +141,22 @@ def build(inp, bat: Battery, rules: Rules, relax=False, freq_sigma_hz=0.06, bina
         m += d[t] - c[t] + pulp.lpSum(v for _, v in up) <= P, f"headroom_up_{t}"
         m += c[t] - d[t] + pulp.lpSum(v for _, v in down) <= P, f"headroom_down_{t}"
 
-        if rules.soe_rule and (up or down):
-            need_up = pulp.lpSum(v * PRODUCTS[p][1] for p, v in up) / bat.eta_discharge
-            need_down = pulp.lpSum(v * PRODUCTS[p][1] for p, v in down) * bat.eta_charge
-            for k in (t, t + 1):  # 구간 시작과 끝 모두 (구간 안에서 에너지는 직선으로 변함)
-                m += soc[k] >= bat.soc_min * E + need_up, f"soe_up_{t}_{k - t}"
-                m += soc[k] <= bat.soc_max * E - need_down, f"soe_down_{t}_{k - t}"
-
+        # 에너지 확보: 위쪽 상품은 지속시간 동안 낼 에너지, 아래쪽 상품은 받을 빈 공간
+        for k in (t, t + 1):  # 구간 시작(k = t)과 끝(k = t + 1). 구간 안에서 에너지는 직선으로 변함
+            held = []
+            for p, v in up + down:
+                if p in RESERVE:
+                    if rules.reserve_energy:
+                        held.append((p, v))
+                elif rules.soe_rule == "every_period":
+                    held.append((p, v))
+                elif rules.soe_rule == "block_start" and k == t and block_starts(p, t):
+                    held.append((p, v))
+            need_up = pulp.lpSum(v * PRODUCTS[p][1] for p, v in held if PRODUCTS[p][0] == "up")
+            need_down = pulp.lpSum(v * PRODUCTS[p][1] for p, v in held if PRODUCTS[p][0] == "down")
+            if held:
+                m += soc[k] >= bat.soc_min * E + need_up / bat.eta_discharge, f"soe_up_{t}_{k - t}"
+                m += soc[k] <= bat.soc_max * E - need_down * bat.eta_charge, f"soe_down_{t}_{k - t}"
 
     if not rules.wholesale_stacking:
         # 상품을 든 구간에는 도매 거래 금지. 상품을 든다는 결정은 낙찰 구간(EFA 블록 또는 30분)마다 하나
@@ -206,6 +226,8 @@ def solve_exact(inp, bat, rules, freq_sigma_hz=0.06, max_rounds=5, **kw):
             break
         periods = b.terms["binary_periods"] | bad
     info.update(seconds=round(total, 1), binary_periods=len(b.terms["binary_periods"]), simultaneous=len(bad))
+    if bad:
+        info["warning"] = f"{max_rounds}번 다시 풀어도 동시 충방전 {len(bad)}구간이 남음"
     return b, info
 
 

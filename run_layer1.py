@@ -28,26 +28,33 @@ ROOT = Path(__file__).resolve().parent
 # 규칙 스위치 조합. 나중에 Shapley 분해는 이 스위치들을 켜고 끈 모든 조합으로 돌린다
 SCENARIOS = {
     "wholesale": ("도매만", Rules(services=())),
-    "response": ("도매 + DC/DM/DR", Rules(services=tuple(RESPONSE))),
-    "response_no_soe": ("response에서 SoE 규칙 끔", Rules(services=tuple(RESPONSE), soe_rule=False)),
-    "full": ("도매 + DC/DM/DR + BR/QR/SR (2026년 규칙)", Rules()),
-    "full_no_soe": ("full에서 SoE 규칙 끔", Rules(soe_rule=False)),
-    "full_no_split": ("full에서 상품 쪼개기 금지", Rules(splitting=False)),
-    "response_no_stack": ("response에서 상품 든 블록 도매 금지 (2020년 DC 초기 규칙)",
+    "response": ("도매 + DC/DM/DR (SoE 모든 구간)", Rules(services=tuple(RESPONSE))),
+    "response_soe_block_start": ("response에서 SoE를 블록 시작만 확인",
+                                 Rules(services=tuple(RESPONSE), soe_rule="block_start")),
+    "response_no_soe": ("response에서 SoE 확인 없음 (에너지 제한 없는 상한)",
+                        Rules(services=tuple(RESPONSE), soe_rule="off")),
+    "full": ("도매 + DC/DM/DR + BR/QR/SR (2026년 상품, SoE 모든 구간)", Rules()),
+    "full_soe_block_start": ("full에서 SoE를 블록 시작만 확인", Rules(soe_rule="block_start")),
+    "full_no_soe": ("full에서 DC/DM/DR SoE 확인 없음 (예비력 에너지는 유지)", Rules(soe_rule="off")),
+    "response_no_split": ("response에서 블록·방향당 DC/DM/DR 하나만 (양식화된 제한)",
+                          Rules(services=tuple(RESPONSE), splitting=False)),
+    "full_no_split": ("full에서 블록·방향당 DC/DM/DR 하나만 (양식화된 제한)", Rules(splitting=False)),
+    "response_no_stack": ("response에서 응답 상품 든 블록 도매 금지 (양식화된 제한)",
                           Rules(services=tuple(RESPONSE), wholesale_stacking=False)),
 }
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description="층 1 완전예측 MILP (해설: docs/04_layer1_model_KO.md)")
-    ap.add_argument("--start", default="2026-09-01", help="시작 (UTC, 포함)")
-    ap.add_argument("--end", default="2026-10-01", help="끝 (UTC, 포함 안 함)")
+    ap.add_argument("--start", default="2026-09-01", help="시작 EFA일 (포함). 전날 23:00 영국 현지시각에 시작")
+    ap.add_argument("--end", default="2026-10-01", help="끝 EFA일 (포함 안 함)")
     ap.add_argument("--power", type=float, default=50.0, help="정격 출력 MW")
     ap.add_argument("--duration", type=float, default=2.0, help="지속시간 h (용량 = 출력 × 지속시간)")
     ap.add_argument("--scenarios", nargs="+", default=list(SCENARIOS), choices=list(SCENARIOS))
     ap.add_argument("--relax", action="store_true", help="이진 변수를 풀어 LP로 풀기 (빠르지만 동시 충방전 허용)")
     ap.add_argument("--freq-sigma", type=float, default=0.06,
                     help="주파수 편차 표준편차 Hz (DC/DM/DR 응답 에너지 계산용, 0이면 무시). 1초 주파수로 보정 전 임시값")
+    ap.add_argument("--time-limit", type=float, default=600, help="시나리오당 계산 제한 초 (넘으면 근사해와 gap 표시)")
     ap.add_argument("--out", help="결과 폴더 (기본 results/layer1/...)")
     a = ap.parse_args(argv)
 
@@ -55,7 +62,8 @@ def main(argv=None):
     bat = replace(Battery(), power_mw=a.power, duration_h=a.duration)
     out = Path(a.out) if a.out else ROOT / "results" / "layer1" / f"{a.start}_{a.end}_{a.power:g}MW_{a.duration:g}h"
     out.mkdir(parents=True, exist_ok=True)
-    print(f"기간 {a.start} ~ {a.end} (UTC), {len(inp.index)}구간, 배터리 {a.power:g} MW / {bat.energy_mwh:g} MWh")
+    print(f"기간 EFA일 {a.start} ~ {a.end} (UTC {inp.index[0]:%m-%d %H:%M} 시작), {len(inp.index)}구간, "
+          f"배터리 {a.power:g} MW / {bat.energy_mwh:g} MWh")
     for note in inp.notes:
         print("  -", note)
 
@@ -64,9 +72,11 @@ def main(argv=None):
         label, rules = SCENARIOS[key]
         if a.relax:
             b = build(inp, bat, rules, relax=True, freq_sigma_hz=a.freq_sigma or None)
-            info = solve(b)
+            info = solve(b, time_limit=a.time_limit)
         else:
-            b, info = solve_exact(inp, bat, rules, freq_sigma_hz=a.freq_sigma or None)
+            b, info = solve_exact(inp, bat, rules, freq_sigma_hz=a.freq_sigma or None, time_limit=a.time_limit)
+        if info.get("warning"):
+            print(f"  [!] {key}: {info['warning']}")
         if info["status"] != "Optimal":
             print(f"[!] {key}: {info['status']}")
             continue

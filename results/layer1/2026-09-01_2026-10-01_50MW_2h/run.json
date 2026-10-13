@@ -15,15 +15,18 @@
   "relax": false,
   "freq_sigma_hz": 0.06,
   "notes": [
-    "MID 결측(거래량 0 또는 없음) 4구간은 선형 보간"
+    "MID 결측(거래량 0 또는 없음) 8구간은 선형 보간"
   ],
   "scenarios": {
-    "wholesale": "Rules(services=(), soe_rule=True, wholesale_stacking=True, splitting=True, cap_by_cleared_volume=True)",
-    "response": "Rules(services=('DCL', 'DCH', 'DML', 'DMH', 'DRL', 'DRH'), soe_rule=True, wholesale_stacking=True, splitting=True, cap_by_cleared_volume=True)",
-    "response_no_soe": "Rules(services=('DCL', 'DCH', 'DML', 'DMH', 'DRL', 'DRH'), soe_rule=False, wholesale_stacking=True, splitting=True, cap_by_cleared_volume=True)",
-    "full": "Rules(services=('DCL', 'DCH', 'DML', 'DMH', 'DRL', 'DRH', 'PBR', 'NBR', 'PQR', 'NQR', 'PSR', 'NSR'), soe_rule=True, wholesale_stacking=True, splitting=True, cap_by_cleared_volume=True)",
-    "full_no_soe": "Rules(services=('DCL', 'DCH', 'DML', 'DMH', 'DRL', 'DRH', 'PBR', 'NBR', 'PQR', 'NQR', 'PSR', 'NSR'), soe_rule=False, wholesale_stacking=True, splitting=True, cap_by_cleared_volume=True)",
-    "full_no_split": "Rules(services=('DCL', 'DCH', 'DML', 'DMH', 'DRL', 'DRH', 'PBR', 'NBR', 'PQR', 'NQR', 'PSR', 'NSR'), soe_rule=True, wholesale_stacking=True, splitting=False, cap_by_cleared_volume=True)",
-    "response_no_stack": "Rules(services=('DCL', 'DCH', 'DML', 'DMH', 'DRL', 'DRH'), soe_rule=True, wholesale_stacking=False, splitting=True, cap_by_cleared_volume=True)"
+    "wholesale": "Rules(services=(), soe_rule='every_period', reserve_energy=True, wholesale_stacking=True, splitting=True, cap_by_cleared_volume=True)",
+    "response": "Rules(services=('DCL', 'DCH', 'DML', 'DMH', 'DRL', 'DRH'), soe_rule='every_period', reserve_energy=True, wholesale_stacking=True, splitting=True, cap_by_cleared_volume=True)",
+    "response_soe_block_start": "Rules(services=('DCL', 'DCH', 'DML', 'DMH', 'DRL', 'DRH'), soe_rule='block_start', reserve_energy=True, wholesale_stacking=True, splitting=True, cap_by_cleared_volume=True)",
+    "response_no_soe": "Rules(services=('DCL', 'DCH', 'DML', 'DMH', 'DRL', 'DRH'), soe_rule='off', reserve_energy=True, wholesale_stacking=True, splitting=True, cap_by_cleared_volume=True)",
+    "full": "Rules(services=('DCL', 'DCH', 'DML', 'DMH', 'DRL', 'DRH', 'PBR', 'NBR', 'PQR', 'NQR', 'PSR', 'NSR'), soe_rule='every_period', reserve_energy=True, wholesale_stacking=True, splitting=True, cap_by_cleared_volume=True)",
+    "full_soe_block_start": "Rules(services=('DCL', 'DCH', 'DML', 'DMH', 'DRL', 'DRH', 'PBR', 'NBR', 'PQR', 'NQR', 'PSR', 'NSR'), soe_rule='block_start', reserve_energy=True, wholesale_stacking=True, splitting=True, cap_by_cleared_volume=True)",
+    "full_no_soe": "Rules(services=('DCL', 'DCH', 'DML', 'DMH', 'DRL', 'DRH', 'PBR', 'NBR', 'PQR', 'NQR', 'PSR', 'NSR'), soe_rule='off', reserve_energy=True, wholesale_stacking=True, splitting=True, cap_by_cleared_volume=True)",
+    "response_no_split": "Rules(services=('DCL', 'DCH', 'DML', 'DMH', 'DRL', 'DRH'), soe_rule='every_period', reserve_energy=True, wholesale_stacking=True, splitting=False, cap_by_cleared_volume=True)",
+    "full_no_split": "Rules(services=('DCL', 'DCH', 'DML', 'DMH', 'DRL', 'DRH', 'PBR', 'NBR', 'PQR', 'NQR', 'PSR', 'NSR'), soe_rule='every_period', reserve_energy=True, wholesale_stacking=True, splitting=False, cap_by_cleared_volume=True)",
+    "response_no_stack": "Rules(services=('DCL', 'DCH', 'DML', 'DMH', 'DRL', 'DRH'), soe_rule='every_period', reserve_energy=True, wholesale_stacking=False, splitting=True, cap_by_cleared_volume=True)"
   }
 }

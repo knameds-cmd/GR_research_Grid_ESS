@@ -7,6 +7,8 @@
 - EAC 가격: data/raw/eac_results_summary.csv. 시각은 UTC다(여름에 EFA 블록이 22시에 시작하는 것으로 확인).
   DC/DM/DR은 4시간 EFA 블록, BR/QR/SR은 30분 단위로 낙찰된다.
 모든 시각은 UTC로 다룬다. 서머타임 날의 3시간·5시간 블록도 낙찰 결과의 시작·끝 시각을 그대로 써서 맞춘다.
+기간은 EFA 날짜로 받는다: "2026-09-01"은 8월 31일 23:00(영국 현지시각)에 시작하는 EFA일이다.
+그래야 첫·마지막 블록이 잘리지 않고, 달을 이어 붙일 때 한 블록이 두 물량을 갖지 않는다.
 """
 from dataclasses import dataclass
 from pathlib import Path
@@ -63,19 +65,26 @@ class Inputs:
     notes: list
 
 
+def efa_day_start(day):
+    """EFA일 day의 시작 시각(UTC): 전날 23:00 영국 현지시각."""
+    local = pd.Timestamp(day) - pd.Timedelta(days=1) + pd.Timedelta(hours=23)
+    return local.tz_localize("Europe/London").tz_convert("UTC")
+
+
 def sp_index(start, end):
-    return pd.date_range(pd.Timestamp(start, tz="UTC"), pd.Timestamp(end, tz="UTC"), freq="30min", inclusive="left")
+    return pd.date_range(efa_day_start(start), efa_day_start(end), freq="30min", inclusive="left")
 
 
 def load_wholesale(idx):
-    files = sorted(RAW.glob("elexon_mid_*.csv")) + sorted((RAW / "elexon_mid").glob("elexon_mid_*.csv"))
+    # 장기 계열(elexon_mid/)을 먼저, 샘플을 나중에: 같은 시각이 겹치면 장기 계열 값을 쓴다
+    files = sorted((RAW / "elexon_mid").glob("elexon_mid_*.csv")) + sorted(RAW.glob("elexon_mid_*.csv"))
     if not files:
         raise FileNotFoundError("MID 파일이 없습니다. 먼저 python3 gb_data_fetch.py --only prices 로 받으세요.")
     df = pd.concat([pd.read_csv(f, usecols=["startTime", "dataProvider", "price", "volume"]) for f in files])
-    df = df[df["dataProvider"] == "APXMIDP"].copy()
+    df = df[(df["dataProvider"] == "APXMIDP") & (df["volume"] > 0)].copy()  # 거래량 0인 가격(0으로 찍힘)은 버림
     df["t"] = pd.to_datetime(df["startTime"], utc=True)
     df = df.drop_duplicates("t").set_index("t").sort_index()
-    s = df["price"].where(df["volume"] > 0).reindex(idx)
+    s = df["price"].reindex(idx)
     n_missing = int(s.isna().sum())
     if n_missing > len(idx) * 0.05:
         raise ValueError(f"MID가 {len(idx)}구간 중 {n_missing}구간 비어 있습니다. 기간을 확인하거나 가격을 더 받으세요.")
