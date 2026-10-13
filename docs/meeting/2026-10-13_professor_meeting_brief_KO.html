@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>영국 계통용 배터리와 시장 규칙 — 연구 진행 보고</title>
+<style>
+@font-face { font-family: "Nanum"; src: url("fonts/NanumGothic.ttf"); font-weight: 400; }
+@font-face { font-family: "Nanum"; src: url("fonts/NanumGothicBold.ttf"); font-weight: 700; }
+@font-face { font-family: "Nanum"; src: url("fonts/NanumGothicExtraBold.ttf"); font-weight: 800; }
+:root {
+  --ink: #1d232b; --muted: #5a6573; --rule: #d5dbe3; --accent: #1f4e79; --accent-soft: #eef3f9;
+  --warn-soft: #fbf4e6; --warn: #8a5a00; --good-soft: #edf6ef;
+}
+@page { size: A4; margin: 17mm 16mm 18mm 16mm; }
+* { box-sizing: border-box; }
+html, body { background: #fff; color: var(--ink); }
+body { font-family: "Nanum", sans-serif; font-size: 9.6pt; line-height: 1.58; margin: 0; word-break: keep-all; overflow-wrap: anywhere; }
+h1 { font-size: 18pt; font-weight: 800; margin: 0 0 4pt; color: var(--accent); line-height: 1.3; }
+h2 { font-size: 13pt; font-weight: 800; color: var(--accent); margin: 16pt 0 6pt; padding-bottom: 3pt; border-bottom: 1.5pt solid var(--accent); break-after: avoid; }
+h3 { font-size: 10.6pt; font-weight: 700; margin: 11pt 0 4pt; break-after: avoid; }
+p { margin: 0 0 6pt; }
+ul, ol { margin: 0 0 6pt; padding-left: 15pt; }
+li { margin-bottom: 2.5pt; }
+.sub { color: var(--muted); font-size: 9.4pt; margin-bottom: 10pt; }
+.box { border: 1pt solid var(--rule); border-left: 3.5pt solid var(--accent); background: var(--accent-soft); padding: 8pt 10pt; margin: 6pt 0 9pt; break-inside: avoid; }
+.box.warn { border-left-color: #c58a1c; background: var(--warn-soft); }
+.box.good { border-left-color: #3d8b55; background: var(--good-soft); }
+.box h3 { margin-top: 0; }
+.box ul { margin-bottom: 0; }
+table { width: 100%; border-collapse: collapse; margin: 4pt 0 9pt; font-size: 8.7pt; line-height: 1.45; break-inside: auto; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th, td { border: 0.6pt solid var(--rule); padding: 3.2pt 5pt; vertical-align: top; text-align: left; }
+th { background: #f2f5f8; font-weight: 700; }
+td.n, th.n { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.k { font-weight: 700; }
+.small { font-size: 8.4pt; color: var(--muted); }
+.eq { font-family: "Nanum", sans-serif; background: #f6f8fa; border: 0.6pt solid var(--rule); padding: 5pt 8pt; margin: 4pt 0 8pt; font-size: 9pt; }
+.pb { break-before: page; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10pt; }
+.tag { display: inline-block; font-size: 7.8pt; padding: 0 4pt; border: 0.6pt solid var(--rule); border-radius: 2pt; color: var(--muted); margin-left: 3pt; }
+.qa dt { font-weight: 700; margin-top: 6pt; }
+.qa dd { margin: 1pt 0 0 0; }
+</style>
+</head>
+<body>
+
+<h1>영국 계통용 배터리는 어떤 시장 규칙 덕분에 돈을 버는가</h1>
+<div class="sub">연구 진행 보고 · 2026년 10월 13일 · Dongseok · 저장소 <span class="k">GR_research_Grid_ESS</span></div>
+
+<div class="box">
+<h3>한 장 요약</h3>
+<ul>
+<li><span class="k">연구 질문</span>: 영국(GB) 전력시장의 어떤 상품 규칙이 계통용 배터리를 수익 사업으로 만들었고, 각 규칙은 수익과 운전 전략을 얼마나 바꾸는가.</li>
+<li><span class="k">왜 영국인가</span>: 2020년 DC 도입 → 2021–22년 호황 → 2023년 보조서비스 가격 붕괴 → EAC 경매·도매·BM 중심으로 재편. 규칙이 바뀌는 시점이 뚜렷해 규칙과 수익의 관계를 보기 좋은 자연실험이다.</li>
+<li><span class="k">방법</span>: 배터리 한 대의 운전을 최적화하는 모델(MILP)에 시장 규칙을 스위치로 넣고, 규칙을 켜고 끈 조합의 수익 차이를 Shapley 값으로 규칙마다 나눈다. 이 상한을 공개 자료로 재구성한 실제 배터리 수익과 비교한다.</li>
+<li><span class="k">지금까지 한 것</span>: 논문 114편 아카이브(Q1 기준, 계보 정리), 영국 시장 변천사(사건 70여 개), 공개 데이터 수집 도구, <span class="k">층 1 모델 완성과 첫 결과</span>(2026년 9월).</li>
+<li><span class="k">첫 결과</span>(50 MW·2시간, 가격을 다 안다고 할 때의 상한): 도매만 £91k → 주파수 응답 추가 £163k → 예비력까지 £189k/MW/yr. SoE 규칙의 비용은 10–16%(상한).</li>
+<li><span class="k">선행 연구와의 차이</span>: 가장 가까운 Q1 논문 두 편(Gale 외 2026, Landy 외 2026, Imperial)은 EAC 이후 상품과 규칙 귀속을 다루지 않으며, 둘 다 결론에서 "수익을 특정 시장 규칙에 귀속하는 실증 연구가 필요하다"고 적었다.</li>
+<li><span class="k">여쭐 것</span>: 연구 방향(규칙 귀속 + 실현 수익), 국면 분할(호황기 포함), 일정 (6장).</li>
+</ul>
+</div>
+
+<h2>1. 연구 주제와 알아보려는 것</h2>
+
+<h3>1.1 주제</h3>
+<p>10월 5일 회의에서 좁힌 주제는 "계통용 배터리가 어떤 시장 메커니즘 덕분에 수익을 내게 되었나"이고, 나는 영국을 맡는다. 주제의 중심은 시장설계이고, 입찰·운전 전략은 그 안의 한 층으로 들어간다.</p>
+
+<h3>1.2 연구 질문</h3>
+<table>
+<thead><tr><th style="width:9%">RQ</th><th>질문</th><th style="width:33%">방법</th></tr></thead>
+<tbody>
+<tr><td class="k">RQ1</td><td>영국 배터리 수익 구성은 2020–2026년 어떻게 변했고, 각 국면을 만든 제도 변화는 무엇인가?</td><td>공개 자료로 수익 구성 분해 + 제도 연표</td></tr>
+<tr><td class="k">RQ2</td><td>개별 규칙(빠른 응답 상품, EAC 공동최적화, SoE 규칙, 예비력 상품, BM 접근 규칙)은 대표 배터리 수익에 각각 얼마나 기여했나? 국면마다 다른가?</td><td>규칙 on/off 반사실 시뮬레이션 + Shapley 분해</td></tr>
+<tr><td class="k">RQ3</td><td>규칙이 바뀌면 최적 입찰·운전 전략(상품 배분, 사이클, 저장 에너지 관리)은 어떻게 바뀌나?</td><td>완전예측 모델(상한) vs 롤링 호라이즌 모델(예측 기반)</td></tr>
+</tbody>
+</table>
+<p class="small">한국 시사점은 영국 결과가 나온 뒤 정리한다(이번 단계 범위 밖).</p>
+
+<h3>1.3 어떻게 알아보나: 두 축으로 논문 1편</h3>
+<div class="two">
+<div class="box">
+<h3>축 1. 규칙 귀속 (교수님 주제)</h3>
+<ul>
+<li>같은 배터리·같은 가격에서 규칙만 바꿔 수익을 다시 계산한다.</li>
+<li>규칙 5개를 켜고 끈 32개 조합 → Shapley 값으로 규칙별 몫을 나눈다. 순서에 따라 몫이 달라지는 문제를 모든 순서의 평균으로 해결한다.</li>
+<li>국면마다(호황기, EAC 이후) 따로 계산해 규칙의 가치가 어떻게 바뀌었는지 본다.</li>
+</ul>
+</div>
+<div class="box">
+<h3>축 2. 실현 수익 지수 (공개 자료)</h3>
+<ul>
+<li>실제 배터리별 수익을 공개 자료만으로 재구성한다: EAC 유닛별 낙찰 + BM 채택 기록 + 도매 근사.</li>
+<li>모델 상한과의 차이 = "남겨진 가치"(정보 부족, BM 미채택 등).</li>
+<li>유료 지수(Modo)를 대신하는 공개 기준이자 모델 검증 기준이 된다.</li>
+</ul>
+</div>
+</div>
+
+<h3>1.4 설계에서 미리 정한 것</h3>
+<ul>
+<li><span class="k">국면을 나눈다</span>: "규칙이 산업을 만들었나"는 2020–22년 질문인데, EAC 이후(2023.11~)만 보면 DC의 기여가 작게 나와 역사와 맞지 않는다. 호황기(2021–2023.10)와 EAC 이후를 같은 모델로 따로 분해하고, 규칙의 가치가 포화와 함께 어떻게 줄었는지를 결과로 삼는다.</li>
+<li><span class="k">무엇을 추정하는지 밝힌다</span>: 가격을 고정한 반사실의 답은 "오늘 가격에서 규칙 X에 접근하는 것이 배터리 한 대에 주는 가치"이지 "규칙이 없던 세계의 수익"이 아니다. 배터리 집단은 가격에 영향을 준다는 실증(Dalton & O'Sullivan 2026)이 있어, 산업 수준 주장은 따로 근거를 둔다.</li>
+<li><span class="k">자산 속성은 플레이어가 아니다</span>: 지속시간(1·2·4시간)은 규칙이 아니므로 시나리오로 따로 돌린다. 용량시장·망요금은 운전과 거의 독립이라 분해 밖에서 더한다.</li>
+</ul>
+
+<h2>2. 영국 전력시장과 그 안에서 배터리가 하는 일</h2>
+
+<h3>2.1 기본 구조</h3>
+<ul>
+<li><span class="k">자기급전 + 30분 정산</span>: 2001년 NETA 이후 발전사가 스스로 운전 계획을 정하고 당사자끼리 거래한다. 실시간 1시간 전(게이트 마감) 이후에는 계통 운영자 NESO가 BM(Balancing Mechanism)으로 수급을 맞춘다. 계획과 실제의 차이는 30분마다 단일 불균형 가격으로 정산된다.</li>
+<li><span class="k">보조서비스는 별도 상품</span>: 미국 ISO처럼 에너지와 예비력을 한 시장에서 같이 최적화하지 않고, NESO가 주파수 응답·예비력을 따로 산다. 그래서 배터리가 "대기 수수료"를 분명한 가격으로 받을 수 있었다.</li>
+</ul>
+
+<h3>2.2 배터리가 파는 두 가지</h3>
+<table>
+<thead><tr><th style="width:16%"></th><th>에너지 (MWh)</th><th>용량 대기 (MW·시간)</th></tr></thead>
+<tbody>
+<tr><td class="k">무엇</td><td>실제로 흘려보낸 전기</td><td>"필요하면 즉시 내겠다"는 약속</td></tr>
+<tr><td class="k">어디서</td><td>도매시장(하루전 경매, 일중 거래), BM</td><td>NESO의 EAC 경매 (DC/DM/DR, BR/QR/SR), 용량시장</td></tr>
+<tr><td class="k">돈 받는 법</td><td>MWh × £/MWh</td><td>MW × 시간 × £/MW/h (쓰이지 않아도 받음)</td></tr>
+<tr><td class="k">긴장</td><td colspan="2">대기를 팔면 출력 여유와 저장 에너지를 비워 둬야 하므로 도매에 쓸 몫이 줄어든다. 배터리는 30분마다 이 배분을 정한다.</td></tr>
+</tbody>
+</table>
+
+<h3>2.3 하루의 시장 순서</h3>
+<table>
+<thead><tr><th style="width:18%">시점</th><th>무엇이 일어나나</th><th style="width:16%">배터리가 파는 것</th></tr></thead>
+<tbody>
+<tr><td>D-1 오전</td><td>하루전 시간 단위 경매 (EPEX·N2EX)</td><td>에너지</td></tr>
+<tr><td>D-1 14:00</td><td><span class="k">EAC 경매 마감</span>: DC/DM/DR는 4시간 EFA 블록, BR/QR/SR는 30분 단위. 공동최적화, 가격 균일(pay-as-clear), 음의 가격 허용</td><td>용량 대기</td></tr>
+<tr><td>D-1 오후 ~ 당일</td><td>하루전 30분 경매, 일중 연속거래 (Elexon MID = 단기 거래의 거래량 가중 평균)</td><td>에너지</td></tr>
+<tr><td>실시간 1시간 전</td><td>게이트 마감 → BM: NESO가 offer/bid를 골라 채택, 자기 입찰가를 받음(pay-as-bid)</td><td>조정</td></tr>
+<tr><td>사후</td><td>30분마다 불균형 정산</td><td>—</td></tr>
+</tbody>
+</table>
+<p class="small">하루전 경매의 정확한 마감 시각은 확인 중이다. 롤링 호라이즌 모델(층 2)은 이 순서를 그대로 따라야 한다.</p>
+
+<h3>2.4 배터리 수익원과 각 상품이 생긴 이유</h3>
+<table>
+<thead><tr><th style="width:15%">수익원</th><th style="width:28%">무엇</th><th>왜 생겼나 · 배터리에 주는 의미</th></tr></thead>
+<tbody>
+<tr><td class="k">도매 차익거래</td><td>싸게 충전, 비싸게 방전</td><td>재생에너지가 늘며 가격 변동성이 커져 가치가 커짐</td></tr>
+<tr><td class="k">DC / DM / DR</td><td>주파수가 벗어나면 1~10초 안에 자동 응답. DC 사고 후, DM 사고 전, DR 평상시 조정. 각각 L(올리기)·H(내리기)</td><td>풍력·태양광은 관성이 거의 없어 주파수가 빨리 흔들림 → 빠른 응답 필요. 1초 응답은 사실상 배터리만 가능해 <span class="k">2020년 DC가 배터리 붐의 출발점</span>이 됨</td></tr>
+<tr><td class="k">BR / QR / SR</td><td>NESO가 지시하면 수 분 안에 출력을 바꿔 30분~2시간 유지</td><td>BM에서 발전기를 미리 돌려 두던 비싼 방식을 대신해 예비력을 따로 삼(2024–26 도입). 새 대기 수익</td></tr>
+<tr><td class="k">BM</td><td>실시간 조정 시장</td><td>NETA 구조의 핵심. 지금 수익의 큰 축이지만 채택 여부(skip)가 제어실 판단에 달림</td></tr>
+<tr><td class="k">용량시장</td><td>겨울 공급력에 연간 £/kW</td><td>2014년 도입. 지속시간이 짧을수록 인정 비율(디레이팅)이 낮음</td></tr>
+</tbody>
+</table>
+
+<h3>2.5 국면: 규칙과 수익이 함께 바뀌었다</h3>
+<table>
+<thead><tr><th style="width:17%">국면</th><th>무슨 규칙이 생겼나</th><th style="width:34%">배터리 수익</th></tr></thead>
+<tbody>
+<tr><td>2016–2020 진입기</td><td>EFR(2016, 배터리용 첫 상품, 4년 계약), FFR</td><td>첫 상업용 배터리 물결</td></tr>
+<tr><td>2020.10–2022 호황기</td><td>DC 도입(처음 상한가 £17/MW/h ≈ 연 £150k/MW), DC+BM 겹치기 허용(2021), DM·DR(2022)</td><td>주파수 응답이 수익의 약 90%</td></tr>
+<tr><td>2023–2024 포화·EAC</td><td>배터리가 DC 필요량을 넘어서 가격 90% 이상 하락, EAC(2023.11), BR·30분 규칙(2024.3), SoE 규칙(2024), QR(2024.12)</td><td>2024년 지수 약 £50k/MW/yr, 설비 4.7 GW</td></tr>
+<tr><td>2025– 상업·급전 개혁</td><td>QR 비BM 개방(2025.9), BR의 EAC 편입(2025.10), SR(2026.3), GC0166(BM 에너지 한계 신고)</td><td>도매+BM 약 60%, 보조서비스 약 1/3, 용량시장 약 10%</td></tr>
+</tbody>
+</table>
+<p class="small">수익 수치는 Modo 지수 기반(설계 초안 인용, 재확인 전). 상세는 저장소 <span class="k">literature/context/GB_market_history_KO.md</span>.</p>
+
+<h3>2.6 배터리의 하루 (모델 결과, 2026년 9월 16일, 영국시각)</h3>
+<table>
+<thead><tr><th style="width:12%">EFA 블록</th><th style="width:22%">블록 내내 든 응답 상품</th><th>도매</th><th class="n" style="width:17%">저장 에너지</th></tr></thead>
+<tbody>
+<tr><td>23–03시</td><td>DML 25 MW</td><td>밤에 50 MW 충전 (£118–124/MWh)</td><td class="n">13 → 86 MWh</td></tr>
+<tr><td>03–07시</td><td><span class="k">DRL 50 MW</span> (이날 최고 £29.8/MW/h)</td><td>DRL로 빠진 에너지를 블록 안에서 한 번 충전해 메움</td><td class="n">86 → 91</td></tr>
+<tr><td>07–11시</td><td>DCH 39 MW</td><td><span class="k">아침 고점에 39~50 MW 방전</span> (£174–189)</td><td class="n">91 → 34</td></tr>
+<tr><td>11–15시</td><td>DML 50 MW</td><td>낮에 충전 (£137–145)</td><td class="n">34 → 86</td></tr>
+<tr><td>19–23시</td><td>DCH 43 + DML 7 MW</td><td><span class="k">저녁 고점에 43 MW 방전</span> (£185–192)</td><td class="n">61 → 27</td></tr>
+</tbody>
+</table>
+<p>방전하는 동안에는 "방전을 멈추는 것"만으로 출력을 내릴 수 있으므로 아래쪽 상품(DCH)을 같이 든다. 싸게 충전·비싸게 방전하는 도매 거래와 대기 상품이 겹쳐 돌아가는 것이 "수익 스택"이다.</p>
+
+<h2>3. 모델링: 어떻게 했고 왜 그렇게 했나</h2>
+
+<h3>3.1 전체 구조</h3>
+<table>
+<thead><tr><th style="width:15%">층</th><th>무엇</th><th style="width:22%">재는 것</th><th style="width:15%">상태</th></tr></thead>
+<tbody>
+<tr><td class="k">층 1</td><td>완전예측 MILP: 도매 + EAC 상품(DC/DM/DR, BR/QR/SR)</td><td>수익의 상한</td><td>완성 (1개월)</td></tr>
+<tr><td class="k">층 2</td><td>롤링 호라이즌: D-1 14:00에 EAC 입찰을 모른 채 확정하고 남은 용량으로 도매</td><td>정보의 가치</td><td>11월</td></tr>
+<tr><td class="k">BM 층</td><td>비슷한 배터리의 실제 BM 수익 → 채택 확률 모형</td><td>skip의 영향</td><td>11월 초</td></tr>
+<tr><td class="k">규칙 분해</td><td>규칙 스위치 조합 32개 → Shapley</td><td>RQ2</td><td>11월 중순</td></tr>
+<tr><td class="k">재무 층</td><td>연간 수익 vs 연간화 비용, 용량시장 더하기</td><td>수익성</td><td>11월 말</td></tr>
+</tbody>
+</table>
+
+<h3>3.2 층 1 모델</h3>
+<p>배터리 한 대(기본 50 MW / 100 MWh)가 한 달 동안 30분마다 무엇을 할지 정한다. 가격은 모두 안다고 놓는다(완전예측).</p>
+<div class="eq">
+<span class="k">결정</span>: 30분마다 충전 c, 방전 d, 저장 에너지 soc · 낙찰 구간마다 상품별 판매 MW r<br>
+<span class="k">목적</span>: 최대화 &nbsp; Σ MID × (d − c) × ½h &nbsp;+&nbsp; Σ 낙찰가 × r × ½h &nbsp;−&nbsp; £0.5/MWh × (c + d) × ½h
+</div>
+<table>
+<thead><tr><th style="width:17%">제약</th><th style="width:38%">내용</th><th>왜 필요한가</th></tr></thead>
+<tbody>
+<tr><td class="k">에너지 수지</td><td>soc' = soc + ½(0.95c − d/0.95) + 응답으로 드나드는 에너지</td><td>충전·방전 때 각각 5% 손실(왕복효율 90.25%)</td></tr>
+<tr><td class="k">출력 여유</td><td>(d − c) + Σ 위쪽 상품 ≤ P, &nbsp;(c − d) + Σ 아래쪽 상품 ≤ P</td><td>응답 상품은 "지금 출력에서 올리거나 내릴 수 있는 폭"을 파는 것. 30 MW 방전 중이면 위로 20 MW, 아래로 80 MW</td></tr>
+<tr><td class="k">에너지 확보</td><td>약속한 MW × 지속시간(DC 15분, DM 30분, DR 60분, BR 30분, QR 15분, SR 2시간)만큼 에너지·빈 공간 유지</td><td>2024년 SoE 규칙과 예비력 상품 정의. DRL 40 MW를 들려면 42 MWh를 늘 남겨야 함</td></tr>
+<tr><td class="k">응답 에너지</td><td>주파수 편차를 정규분포(σ = 0.06 Hz, 임시값)로 놓고 평균 응답량 계산. DR은 1 MW·1시간에 약 0.09 MWh</td><td>DR은 작은 편차에도 계속 움직여 DRL만 팔면 배터리가 빔 → 도매에서 다시 사야 함</td></tr>
+<tr><td class="k">블록 고정</td><td>DC/DM/DR은 4시간 EFA 블록 동안 같은 MW</td><td>상품 규칙</td></tr>
+<tr><td class="k">동시 충방전 금지</td><td>이진 변수 (필요한 구간에만 두고, 위반이 나오면 추가해 다시 풂)</td><td>음의 가격에서 손실로 에너지를 태우며 돈을 받는 비현실적 해 방지</td></tr>
+<tr><td class="k">물량 상한</td><td>판매량 ≤ 그 구간 시장 전체 낙찰량</td><td>시장이 0.1 MW만 샀는데 50 MW를 팔 수는 없음</td></tr>
+<tr><td class="k">규칙 스위치</td><td>참여 상품, SoE 규칙(모든 구간 / 블록 시작만 / 없음), 겹치기, 쪼개기</td><td>규칙 귀속(RQ2)의 단위</td></tr>
+</tbody>
+</table>
+
+<h3>3.3 설계 선택과 근거</h3>
+<table>
+<thead><tr><th style="width:18%">선택</th><th>이유</th><th style="width:27%">같은 선택을 한 선행 연구</th></tr></thead>
+<tbody>
+<tr><td class="k">완전예측</td><td>상한을 먼저 정해야 정보 부족(층 2)과 BM 미채택으로 잃는 몫을 잴 수 있다</td><td>Staffell &amp; Rustomji 2016, Gale 외 2026</td></tr>
+<tr><td class="k">가격 수용자</td><td>50 MW 한 대는 시장 가격을 거의 못 움직인다. 집단 효과는 해석에서 따로 다룬다</td><td>대부분의 수익 스택 연구</td></tr>
+<tr><td class="k">MILP</td><td>동시 충방전 금지와 규칙 스위치가 예/아니오 결정이라 이진 변수가 필요하다</td><td>Moreno·Moreira·Strbac 2015 (영국 다중서비스 MILP 원형)</td></tr>
+<tr><td class="k">30분 단위</td><td>영국 정산 단위이자 MID·예비력 상품의 단위</td><td>Gale 외 2026</td></tr>
+<tr><td class="k">도매가격 = MID</td><td>무료·공개. 하루전 경매 가격은 유료. 가장 가까운 경쟁 논문도 MID를 써서 바로 비교 가능</td><td>Gale 외 2026</td></tr>
+<tr><td class="k">효율·열화 비용</td><td>95% × 95%, 처리량 £0.5/MWh. 경쟁 논문과 같게 두어 도매만 결과를 맞춰 볼 수 있다</td><td>Gale 외 2026</td></tr>
+<tr><td class="k">50 MW · 2시간</td><td>2024년 신규 설비의 약 2/3가 2시간. 1·4시간은 시나리오로</td><td>—</td></tr>
+<tr><td class="k">도구</td><td>Python, PuLP + HiGHS(무료 솔버). 1개월 계산이 대부분 수 초~2분(겹치기 금지 스위치는 10분 제한에 걸림)</td><td>—</td></tr>
+</tbody>
+</table>
+
+<h3>3.4 데이터 (모두 공개·무료)</h3>
+<table>
+<thead><tr><th style="width:26%">자료</th><th>내용</th><th style="width:22%">쓰는 곳</th></tr></thead>
+<tbody>
+<tr><td>NESO EAC 경매 결과</td><td>상품별 낙찰가·낙찰량 2023.11–2026.10 (받음)</td><td>층 1 가격</td></tr>
+<tr><td>EAC 유닛별 결과</td><td>배터리 유닛별 낙찰 물량·가격</td><td>실현 수익 지수</td></tr>
+<tr><td>EAC 이전 DC 결과</td><td>2020–2023.10 EPEX 시절 낙찰</td><td>호황기 국면</td></tr>
+<tr><td>Elexon MID·정산가격</td><td>30분 도매·불균형 가격 2021.9–</td><td>층 1 도매, BM 층</td></tr>
+<tr><td>Elexon BM 유닛 기록</td><td>계획(PN), 채택(BOALF), 입찰(BOD)</td><td>BM 층, 실현 수익</td></tr>
+<tr><td>NESO skip rate, 1초 주파수</td><td>BM 미채택 비율(2024.12–), 주파수</td><td>BM 층, 응답 에너지 보정</td></tr>
+<tr><td>용량시장 등록부</td><td>배터리 지속시간별 디레이팅·계약</td><td>재무 층</td></tr>
+</tbody>
+</table>
+<p class="small">수집 스크립트(gb_data_fetch.py, neso_fetch.py)로 받으며, 지금 2021년 이후 장기 자료를 내려받는 중이다.</p>
+
+<h3>3.5 검증</h3>
+<ul>
+<li>별도 검토자가 모든 결과 파일에서 제약(출력 여유, 에너지 확보, 에너지 수지, 블록 고정, 물량 상한, 동시 충방전 없음)을 다시 계산했고, 수익 합계를 파운드 단위까지 재현했다. 시간대(UTC·EFA 블록·서머타임) 처리도 확인했다.</li>
+<li>다음 검증: 도매만 결과를 Gale 외 2026과 Staffell &amp; Rustomji 2016 알고리즘에 맞춰 보기, 실현 수익 지수와 비교.</li>
+</ul>
+
+<h2>4. 첫 결과 (2026년 9월, 50 MW / 100 MWh)</h2>
+<table>
+<thead><tr><th>시나리오</th><th class="n">수익 (£/MW/yr)</th><th class="n">사이클/일</th><th>읽는 법</th></tr></thead>
+<tbody>
+<tr><td>도매만</td><td class="n">91k</td><td class="n">1.81</td><td>차익거래만</td></tr>
+<tr><td>도매 + DC/DM/DR</td><td class="n">163k</td><td class="n">0.55</td><td>주파수 응답이 수익을 크게 늘림</td></tr>
+<tr><td><span class="k">도매 + DC/DM/DR + BR/QR/SR</span> (2026년 상품)</td><td class="n"><span class="k">189k</span></td><td class="n">0.86</td><td>예비력이 +26k</td></tr>
+<tr><td>위에서 SoE를 블록 시작만 확인</td><td class="n">202k</td><td class="n">1.09</td><td rowspan="2">SoE 규칙 비용 −10% ~ −16%의 범위를 정하는 두 끝</td></tr>
+<tr><td>위에서 SoE 확인 없음 (에너지 제한 없는 상한)</td><td class="n">226k</td><td class="n">1.19</td></tr>
+<tr><td>DC/DM/DR 쪼개기 금지 (블록·방향당 하나)</td><td class="n">162k</td><td class="n">0.56</td><td>응답만 기준 −1k: 거의 0</td></tr>
+<tr><td>응답 상품 든 블록 도매 금지</td><td class="n">151k</td><td class="n">0.44</td><td>응답만 기준 −12k (−8%)</td></tr>
+</tbody>
+</table>
+
+<div class="box warn">
+<h3>이 숫자는 상한이다</h3>
+<ul>
+<li>가격을 미리 안다(완전예측) → 층 2가 차이를 잰다.</li>
+<li>배터리 한 대가 늘 가장 좋은 상품을 따낸다고 놓았다. 9월 DRL 시장 전체 낙찰량은 약 480 MW인데 영국 배터리는 수 GW다 → 실현 수익 지수와 비교한다.</li>
+<li>임시값 두 개: 주파수 표준편차 σ = 0.06 Hz, "응답으로 낸 에너지는 정산에서 중립 처리된다"는 가정(원문 확인 전). DR 수익이 둘 다에 민감하다.</li>
+<li>참고로 2024년 영국 배터리 수익 지수는 약 £50k/MW/yr(기간이 달라 직접 비교는 아님). 논문에서 쓸 것은 절대값이 아니라 <span class="k">규칙을 바꿨을 때의 차이</span>와 <span class="k">실제 수익과의 간격</span>이다.</li>
+</ul>
+</div>
+
+<h3>첫 결과에서 보이는 것</h3>
+<ol>
+<li><span class="k">주파수 응답으로 드나드는 에너지는 1차 효과다.</span> 이것을 빼면 9월 수익이 £243k, 넣으면 £189k다. 1초 주파수로 σ를 보정하고 정산 방식을 원문으로 확인하는 일이 우선순위가 높아졌다.</li>
+<li><span class="k">SoE 규칙의 비용은 범위로만 말할 수 있다</span>(−10 ~ −16%). 비교 기준인 "확인 없음"은 2024년 이전 규칙이 아니라 에너지 제한이 아예 없는 배터리이므로, 실제 비용은 이보다 작다. 2024년 이전 상태를 제대로 그리는 기준을 새로 만든다.</li>
+<li><span class="k">쪼개기 금지의 효과가 거의 0인 것은 완전예측에서는 당연하다.</span> 가격을 다 아는 배터리는 블록마다 가장 좋은 상품에 몰면 된다. EAC 공동최적화의 진짜 효과("가격을 모른 채 MW를 경매별로 미리 나누지 않아도 됨")는 완전예측이 처음부터 없애 버리므로, 이 규칙은 층 2(가격 불확실성)나 EAC 이전·이후 가격 비교로 재야 한다. <span class="k">Shapley 플레이어 정의를 이렇게 고친다.</span></li>
+</ol>
+
+<h3>Shapley 분해 예시 (두 규칙)</h3>
+<p>R = 예비력 상품 있음, S = SoE 규칙 있음. 출발점은 "응답 상품만, SoE 확인 없음"(£206.5k).</p>
+<table>
+<thead><tr><th>조합</th><th class="n">수익 (£k/MW/yr)</th><th>계산</th></tr></thead>
+<tbody>
+<tr><td>둘 다 없음</td><td class="n">206.5</td><td rowspan="4">R = ½[(225.6 − 206.5) + (188.7 − 163.1)] = <span class="k">+22.4</span><br>S = ½[(163.1 − 206.5) + (188.7 − 225.6)] = <span class="k">−40.2</span><br>합 −17.8 = 188.7 − 206.5 (전체 변화와 정확히 같음)</td></tr>
+<tr><td>R만</td><td class="n">225.6</td></tr>
+<tr><td>S만</td><td class="n">163.1</td></tr>
+<tr><td>둘 다 (2026년)</td><td class="n">188.7</td></tr>
+</tbody>
+</table>
+<p class="small">예비력의 효과가 SoE 규칙이 있을 때(25.6) 더 크다. 규칙끼리 상호작용이 있어서 하나씩 켜는 비교 대신 Shapley를 쓴다. 계산 방법을 보이기 위한 예이고, S의 출발점이 "에너지 제한 없음"이라 S의 크기는 과장되어 있다.</p>
+
+<h2>5. 레퍼런스 논문: 무엇이 비슷하고 무엇이 다른가</h2>
+
+<h3>5.1 계보</h3>
+<p>이 연구는 Imperial College(Staffell 그룹)의 배터리 수익 최적화 계보 위에 있다: Staffell &amp; Rustomji 2016(영국 배터리 차익거래 가치) → Schmidt &amp; Staffell 2023(저장장치 수익화 교과서, OUP) → Gale 외 2026, Landy 외 2026. 운전 모델은 Strbac 그룹의 다중서비스 MILP(Moreno 외 2015)를, "상품 사양이 배터리 수익을 좌우한다"는 가설은 Greenwood 외 2017(Newcastle, 배터리용 주파수 상품 설계)을 잇는다. 아카이브의 논문 114편은 모두 이 기준(Q1, 검증된 연구 그룹)으로 골랐다.</p>
+
+<h3>5.2 가까운 연구 비교</h3>
+<table>
+<thead><tr><th style="width:19%">논문</th><th style="width:27%">한 것</th><th style="width:22%">비슷한 점</th><th>다른 점 (우리 자리)</th></tr></thead>
+<tbody>
+<tr><td><span class="k">Gale 외 2026</span><br><span class="small">J. Energy Storage 166, Imperial · 가장 가까운 경쟁</span></td><td>도매 + BM을 겹치면 얼마나 더 버나. 2020.7–2023.6, 100 MW/1h, LP. 도매만 £47k → 도매+BM £166k(+252%). skip 10%p당 약 −£12k</td><td>영국, 30분, MID, 완전예측, 효율·열화 가정이 같음 (그래서 결과를 맞춰 볼 수 있음)</td><td>주파수 응답·예비력·용량시장 없음. EAC 이전 기간만. skip을 무작위 비율로 둠. <span class="k">규칙 반사실·귀속 없음</span></td></tr>
+<tr><td><span class="k">Landy 외 2026</span><br><span class="small">Energy Environ. Sci. 19(13), Imperial</span></td><td>재생에너지+배터리 결합의 가치. 영국(2023, 도매+BM+DC) + 45개 시장(도매만) 비교. 4시간이 최적, 독립형 배터리 NPV 최고</td><td>여러 나라에 같은 모델 적용(교수님 국가 비교 구도와 비슷). "시장 접근이 입지보다 중요"</td><td>영국 보조서비스는 DC 하나뿐, 한 해만. 국가 비교는 도매만이라 시장설계 비교가 아님. 시장 접근을 묶음으로만 바꿈 → 우리는 <span class="k">개별 규칙 단위, 여러 국면</span></td></tr>
+<tr><td><span class="k">Martins &amp; Miles 2021</span><br><span class="small">Energy Policy 148, Cambridge</span></td><td>2018년 영국 배터리 사업모델 평가(차익거래, STOR, Fast Reserve, FFR, 용량시장). 회수기간 3.3·5.7년</td><td>여러 수익원을 함께 봄, 용량시장 포함</td><td>DC 이전(2018) 기준선. 규칙 귀속 없음 → 우리 호황기 이전 비교점</td></tr>
+<tr><td><span class="k">Xia 외 2026</span><br><span class="small">arXiv 2609.03767, Oxford · 프리프린트, 초록 기준</span></td><td>EAC 주파수 상품 + 도매 공동최적화, SoE 규칙, 롤링 호라이즌, 열화</td><td><span class="k">우리 층 1·2 엔진과 거의 같음</span></td><td>규칙을 고정 환경으로 둠(반사실 없음), BM·용량시장 비중 낮음. <span class="k">본문 확인이 가장 급함</span></td></tr>
+<tr><td><span class="k">Dalton &amp; O'Sullivan 2026</span><br><span class="small">arXiv 2608.29818 · 프리프린트</span></td><td>2023–25년 BM 한계가격을 정한 유닛을 재구성. 배터리 비중 bid 0.8%→36.2%, offer 3.2%→26.9%</td><td>영국 BM, 배터리</td><td>수익성이 아니라 가격 형성. 오히려 우리 가격 수용자 가정의 한계를 보여 주는 근거로 인용</td></tr>
+</tbody>
+</table>
+
+<div class="box good">
+<h3>우리 연구의 자리</h3>
+<ul>
+<li>EAC 이후 상품 전체(DC/DM/DR, BR/QR/SR)와 SoE 규칙을 넣은 영국 배터리 수익 모델</li>
+<li>규칙을 켜고 끄는 반사실 + Shapley로 <span class="k">수익을 규칙에 귀속</span>, 호황기와 EAC 이후를 비교</li>
+<li>공개 자료만으로 만든 실현 수익 지수로 모델 상한과의 간격을 측정</li>
+</ul>
+<p style="margin:5pt 0 0">Gale 외 2026의 결론 문장 — "skip rate와 가격 포착을 특정 시장 조건과 규칙에 귀속할 수 있는 실증 연구가 필요하다" — 이 이 자리를 그대로 가리킨다.</p>
+</div>
+
+<h2>6. 일정과 여쭐 것</h2>
+<table>
+<thead><tr><th style="width:18%">기간</th><th>할 일</th><th style="width:30%">끝났다는 기준</th></tr></thead>
+<tbody>
+<tr><td>~10/19</td><td>층 1 뼈대 <span class="k">(앞당겨 완료)</span>, 계보·선행 사례표, 관련연구 초안</td><td>관련연구 초안</td></tr>
+<tr><td>10/20–11/2</td><td>장기 자료로 층 1을 2023.11–2026.9 월별 실행, 배터리 유닛 매핑표, 실현 수익 지수 첫 버전</td><td>1년치 상한 수익, 실현 수익과의 첫 비교</td></tr>
+<tr><td>11/3–11/9</td><td>BM 층(비슷한 배터리의 실제 BM 수익), 호황기 자료 정리, <span class="k">중간 보고</span></td><td>실현 수익 vs 상한 비교 그림</td></tr>
+<tr><td>11/10–11/23</td><td>규칙 스위치 5개 + Shapley (국면 × 지속시간), 롤링 호라이즌</td><td>국면별 규칙 기여도 그림 (핵심 결과)</td></tr>
+<tr><td>11/24–12/10</td><td>연간화 재무 지표, 견고성 점검(MID vs 하루전 가격, σ, 열화), 논문 초안</td><td>초안 + 데이터 부록</td></tr>
+</tbody>
+</table>
+
+<div class="box">
+<h3>교수님께 여쭐 것</h3>
+<ol>
+<li><span class="k">방향</span>: 규칙 귀속(축 1) + 공개 자료 실현 수익 지수(축 2)로 논문 1편을 만드는 것이 괜찮은지.</li>
+<li><span class="k">국면 분할</span>: 호황기(2021–2023.10)를 포함해 EAC 이후와 비교하는 구성이 괜찮은지. 호황기는 자료 형식이 달라 추가 작업이 든다.</li>
+<li><span class="k">자료</span>: 학교를 통해 영국 하루전 경매 가격(EPEX/N2EX)을 받을 수 있는지. MID와의 견고성 점검에만 필요하다.</li>
+<li><span class="k">북유럽 파트와 공유</span>: 배터리 제원·비용·열화 가정·재무 지표를 같은 템플릿으로 맞추고 규칙만 국가별로 바꾸는 방식이 괜찮은지.</li>
+</ol>
+</div>
+
+<h2>부록 A. 논의에서 나올 만한 쟁점</h2>
+<dl class="qa">
+<dt>£189k/MW/yr는 너무 높지 않나?</dt>
+<dd>맞다. 가격을 다 알고 늘 가장 좋은 상품을 따내는 배터리 한 대의 상한이다. 실제 평균(2024년 약 £50k)과의 차이 자체가 축 2에서 잴 "남겨진 가치"이고, 논문의 결과는 절대값이 아니라 규칙을 바꿨을 때의 차이다.</dd>
+<dt>Gale 외 2026과 뭐가 다른가?</dt>
+<dd>Gale은 도매+BM만, EAC 이전 기간만 보고 skip을 무작위 비율로 넣었다. 우리는 EAC 이후 상품 전체와 SoE 규칙을 넣고, 규칙을 켜고 끄며 수익을 규칙에 나눈다. Gale도 결론에서 그런 연구가 필요하다고 적었다. 가정(MID, 효율, 열화 비용)은 일부러 같게 두어 결과를 맞춰 볼 수 있다.</dd>
+<dt>왜 MID를 쓰나? 하루전 가격이 아니지 않나?</dt>
+<dd>MID는 단기 거래의 가중 평균이고 하루전 경매 가격은 유료다. Gale도 MID를 썼다. 하루전 가격을 받을 수 있으면 견고성 점검으로 비교한다.</dd>
+<dt>가격 수용자 가정은 괜찮나?</dt>
+<dd>배터리 한 대에는 괜찮지만 집단은 가격에 영향을 준다(Dalton &amp; O'Sullivan 2026). 그래서 추정 대상을 "오늘 가격에서 규칙 접근이 배터리 한 대에 주는 가치"로 밝히고, 시장 낙찰량 상한을 두며, 산업 수준 주장은 실현 수익과 규칙 변경 시점 전후 비교로 보강한다.</dd>
+<dt>BM은 왜 아직 모델에 없나?</dt>
+<dd>BM 수익은 가격보다 채택 여부(skip)에 달려 있고, 채택은 NESO 제어실 판단이다. 정산가격으로 거래한다고 놓으면 큰 상한이 된다(Gale 방식). 먼저 비슷한 배터리가 실제로 받은 BM 수익을 넣고, 그다음 채택 기록(BOALF·BOD)으로 채택 확률 모형을 만든다.</dd>
+<dt>Shapley를 왜 쓰나?</dt>
+<dd>규칙의 효과는 다른 규칙이 있느냐에 따라 달라진다(예: 예비력의 가치는 SoE 규칙이 있을 때 더 크다). 하나씩 켜는 순서에 따라 몫이 달라지므로, 모든 순서의 평균인 Shapley 값을 쓰면 합이 전체 변화와 정확히 같고 순서 문제가 없다. 기준점에 민감하므로 하나씩 켜기·하나씩 빼기 결과도 같이 보고한다.</dd>
+<dt>SoE 규칙이 뭔가?</dt>
+<dd>2024년부터 DC/DM/DR을 낙찰받은 배터리는 약속한 MW를 정해진 시간(15·30·60분) 동안 낼 에너지를 블록 시작 시점에 갖고 있어야 한다. 상품을 겹쳐 팔다가 에너지가 바닥나 약속을 못 지키는 배터리가 생겨서 만들어졌다.</dd>
+<dt>한국은?</dt>
+<dd>영국 결과(어떤 규칙이 얼마나 기여했나)가 나온 뒤, 그 규칙을 한국 제도에 대응시키는 순서로 정리한다.</dd>
+</dl>
+
+<h2>부록 B. 용어</h2>
+<table>
+<thead><tr><th style="width:20%">용어</th><th>뜻</th></tr></thead>
+<tbody>
+<tr><td>NESO</td><td>영국 계통 운영자 (예전 National Grid ESO)</td></tr>
+<tr><td>BM</td><td>Balancing Mechanism. 게이트 마감 이후 NESO가 offer/bid를 채택해 수급을 맞추는 시장</td></tr>
+<tr><td>EAC</td><td>Enduring Auction Capability. 응답·예비력 상품을 함께 사는 D-1 경매 (2023.11~)</td></tr>
+<tr><td>DC / DM / DR</td><td>Dynamic Containment / Moderation / Regulation. 주파수 응답 상품 (사고 후 / 사고 전 / 평상시). L은 출력 올리기, H는 내리기</td></tr>
+<tr><td>BR / QR / SR</td><td>Balancing / Quick / Slow Reserve. NESO 지시형 예비력. P는 올리기, N은 내리기</td></tr>
+<tr><td>EFA 블록</td><td>하루를 4시간씩 6개로 나눈 거래 단위 (23시 시작, 영국시각)</td></tr>
+<tr><td>SoE 규칙</td><td>State of Energy. 약속한 응답을 낼 에너지를 확보하라는 규칙 (2024)</td></tr>
+<tr><td>MID</td><td>Market Index Data. Elexon이 공개하는 30분 단기 거래 가격</td></tr>
+<tr><td>skip rate</td><td>BM에서 더 싼데도 채택되지 않은 물량의 비율 (NESO 공개, 2024.12~)</td></tr>
+<tr><td>스택 / 쪼개기</td><td>스택: 한 MW가 여러 시장에서 돈을 받음. 쪼개기: MW를 여러 상품에 나눠 팖</td></tr>
+<tr><td>완전예측 / 롤링 호라이즌</td><td>가격을 다 안다고 놓고 푸는 방식 / 그때까지 아는 정보로 하루씩 풀어 나가는 방식</td></tr>
+<tr><td>MILP</td><td>정수(예/아니오) 변수를 포함한 선형 최적화</td></tr>
+<tr><td>Shapley 값</td><td>여러 요인의 몫을 모든 순서의 평균 기여로 나누는 방법</td></tr>
+</tbody>
+</table>
+
+</body>
+</html>
