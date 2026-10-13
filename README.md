@@ -9,6 +9,7 @@
 | [`docs/00_research_design_v0.md`](docs/00_research_design_v0.md) | 연구 설계 초안 원본 (2026-10-05 회의 정리) |
 | [`docs/01_next_actions.md`](docs/01_next_actions.md) | 설계 검토, 경쟁 논문 확인 결과, 연구 방향 옵션, 업로드 점검표, 수정 일정 |
 | [`docs/03_competitor_analysis_KO.md`](docs/03_competitor_analysis_KO.md) | **경쟁·선행 논문 3편 전문 분석**(Gale 2026, Landy 2026, Martins & Miles 2021): 그들이 한 것 / 안 한 것 / 우리가 다른 점, 설계에 반영할 것 |
+| [`docs/meeting/2026-10-13_research_meeting_EN.pptx`](docs/meeting/2026-10-13_research_meeting_EN.pptx) | 연구 미팅용 영어 슬라이드 3장: 연구 주제와 목표, GB 시장 국면(Phase), 모델링 선택과 근거 |
 | [`docs/meeting/2026-10-13_professor_meeting_brief_KO.pdf`](docs/meeting/2026-10-13_professor_meeting_brief_KO.pdf) | 교수님 미팅용 연구 진행 보고 (9쪽): 연구 질문과 방향, 영국 시장과 배터리, 모델링과 근거, 첫 결과, 선행 연구 비교, 일정, 예상 쟁점 |
 | [`docs/04_layer1_model_KO.md`](docs/04_layer1_model_KO.md) | **층 1 모델 해설**: 배터리 입장에서 본 영국 시장 구조와 각 규칙의 이유, 변수·제약 하나씩, 2026년 9월 첫 결과, 규칙 스위치와 Shapley 예시 |
 | [`docs/02_study_guide_KO.md`](docs/02_study_guide_KO.md) | **연구자 학습 가이드**: 영국 시장 핵심 개념 11개, 논문 아카이브 읽는 법과 필독 16편, 주제 연결 지도(다리 16개), 연습·자가 점검 질문, 용어집 |
