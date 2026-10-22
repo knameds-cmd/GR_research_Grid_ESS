@@ -2,6 +2,8 @@
 
 작성 2026-10-05 · 기준 문서: [`00_research_design_v0.md`](00_research_design_v0.md) (10/5 설계 초안 원본)
 
+> **2026-10-23**: 7장(일정)과 8장(정해야 할 것)은 [`06_project_roadmap_KO.md`](06_project_roadmap_KO.md)로 대체했습니다. 방법론 판단은 [`05_method_assessment_KO.md`](05_method_assessment_KO.md)에 있습니다. 이 문서의 3~5장(경쟁 논문, M1~M5, O1~O5)은 그대로 유효합니다.
+
 > **2026-10-13 추가**: 경쟁 논문 C1(Gale)·C2(Landy)와 Martins & Miles 본문을 읽고 `docs/03_competitor_analysis_KO.md`에 정리했습니다. 두 경쟁 논문 모두 EAC 이후 상품과 규칙별 귀속을 다루지 않습니다. M5는 수정했습니다(C1도 MID 사용).
 >
 > **2026-10-07 진행 상황**: 경쟁 논문을 아카이브와 `literature/WATCHLIST.md`에 반영했습니다. Q1 판정 기준은 "발행연도 SJR(없으면 가장 가까운 연도)"로 통일했습니다(`literature/INDEX.md`). 내려받을 논문 목록은 `literature/DOWNLOAD_LIST.md`, 영국 시장 변천사는 `literature/context/`에 있습니다. 시장 변천사 8장이 4장 M1(국면 분할)과 M4(Shapley 플레이어)의 구체안입니다.

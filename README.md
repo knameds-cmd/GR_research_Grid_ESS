@@ -2,10 +2,19 @@
 
 영국(GB) 시장의 어떤 상품 규칙이 계통용 배터리를 수익 사업으로 만들었고, 각 규칙이 수익성과 입찰·운전 전략을 얼마나 바꾸는지 분석한다.
 
+## 처음이라면 여기부터
+
+1. **[`docs/06_project_roadmap_KO.md`](docs/06_project_roadmap_KO.md)**: 지금 상태, 정해야 할 것, 파악할 것, 할 일, 12/10까지 일정 (2026-10-23)
+2. **[`docs/05_method_assessment_KO.md`](docs/05_method_assessment_KO.md)**: 규칙 스위치·국면 분할이 유효한지, 장주기 ESS와 위치 정보를 어디까지 다룰 수 있는지, 오류를 어떻게 다룰지에 대한 판단
+
+> **현재 `model/`과 `results/layer1/`은 프로토타입입니다.** 다시 설계해 만들 예정이므로 결과 수치는 인용하지 마세요(05 문서 7장).
+
 ## 문서
 
 | 파일 | 내용 |
 | --- | --- |
+| [`docs/06_project_roadmap_KO.md`](docs/06_project_roadmap_KO.md) | **로드맵**: 결정 D1~D7, 학습할 개념, 재확인할 사실, 있는/없는 데이터, 단계별 할 일과 완료 기준, 위험, 축소안 |
+| [`docs/05_method_assessment_KO.md`](docs/05_method_assessment_KO.md) | **방법론 판단**: 수익성의 네 단계, 규칙 스위치와 국면 분할의 유효 조건, 장주기 ESS, 선로·위치 모델링, 규칙·상황 귀속과 오류 |
 | [`docs/00_research_design_v0.md`](docs/00_research_design_v0.md) | 연구 설계 초안 원본 (2026-10-05 회의 정리) |
 | [`docs/01_next_actions.md`](docs/01_next_actions.md) | 설계 검토, 경쟁 논문 확인 결과, 연구 방향 옵션, 업로드 점검표, 수정 일정 |
 | [`docs/03_competitor_analysis_KO.md`](docs/03_competitor_analysis_KO.md) | **경쟁·선행 논문 3편 전문 분석**(Gale 2026, Landy 2026, Martins & Miles 2021): 그들이 한 것 / 안 한 것 / 우리가 다른 점, 설계에 반영할 것 |
@@ -30,8 +39,8 @@
 | `literature/` | 논문 아카이브(.md). `papers/`에 논문 1편당 파일 1개(가정·제약·모델·데이터 가공·정당화), `streams/`에 갈래별 종합, `GROUPS.md` 연구 그룹·사제 계보, `CANON.md` 교과서·랜드마크 리뷰 |
 | `data/raw/` | 원자료 CSV (NESO EAC 경매, 용량시장 등록부, Elexon 2026-09 샘플). 약 33MB |
 | `data/processed/` | 가공본 (git 제외) |
-| `model/` | 층 1 완전예측 MILP (`data.py` 입력, `layer1.py` 모델). 실행은 루트의 `run_layer1.py` |
-| `results/layer1/` | 모델 결과: 시나리오별 수익 `summary.csv`, 30분 운전 계획 `*_dispatch.csv` |
+| `model/` | **(프로토타입)** 층 1 완전예측 MILP (`data.py` 입력, `layer1.py` 모델). 실행은 루트의 `run_layer1.py`. 재구축 예정 |
+| `results/layer1/` | **(프로토타입)** 모델 결과: 시나리오별 수익 `summary.csv`, 30분 운전 계획 `*_dispatch.csv` |
 
 ## 데이터 받기
 
