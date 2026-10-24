@@ -2,12 +2,19 @@
 Elexon Insights에서 BM 현금흐름·PN·BOALF·가격을 월 단위 parquet로 받는다.
 
     .venv/bin/python -m gbess.fetch.elexon cashflows --start 2016-01 --end 2026-10
+    .venv/bin/python -m gbess.fetch.elexon volumes --start 2016-09 --end 2026-10
     .venv/bin/python -m gbess.fetch.elexon pn --units psh --start 2016-01 --end 2026-10
     .venv/bin/python -m gbess.fetch.elexon boalf --units psh --start 2016-01 --end 2026-10
     .venv/bin/python -m gbess.fetch.elexon prices --start 2018-01 --end 2021-09
 
 - cashflows: 날짜·방향(bid/offer)마다 한 번 호출하면 그날 BM에 참여한 모든 유닛의 결제구간별 현금흐름이 나온다.
   유닛별 쌍(pair) 내역은 버리고 결제구간 합계(totalCashflow)만 남긴다.
+- volumes: 같은 방식으로 전 유닛의 결제구간별 BM 지시 물량(MWh). dataType 네 종류 중 Original과 Tagged만 남긴다.
+  **정산 금액과 짝인 것은 Tagged다.** 2026-09-01 Cruachan(T_CRUA-2)을 BOD 입찰 단가와 대조하면 현금흐름 = Tagged × 단가
+  (bid −5.34 £/MWh 구간에서 현금흐름 ÷ Tagged = −5.3, 단가 0인 구간은 현금흐름 0인데 Original은 0으로 나옴).
+  Tagged 합계는 BOALF로 복원한 지시 물량과도 맞는다(2026-09 Cruachan bid 78,654 vs 78,502 MWh).
+- mels, mils: 유닛별 최대 출력·최대 입력 한도(가용 출력). 같은 구간을 여러 번 고쳐 내므로 notificationTime이 함께 있다.
+  쓸 때는 마지막 통보값을 고른다 (gbess.data.availability).
 - pn, boalf: --units로 고른 유닛만. 한 호출에 여러 유닛을 넣고, 하루씩 끊어 받는다.
 - prices: MID(APX만)와 정산가격. 기존 gb_data_fetch.py의 CSV와 같은 열을 parquet로 저장.
 결과: data/raw/elexon/<dataset>/<dataset>_YYYYMM.parquet. 받은 달마다 MANIFEST.csv에 행 수·sha256을 남긴다.
@@ -82,6 +89,19 @@ def fetch_cashflows(m):
     return pd.DataFrame(rows)
 
 
+def fetch_volumes(m):
+    rows = []
+    for d in days_of(m):
+        for side in ("bid", "offer"):
+            for x in get(f"/balancing/settlement/indicative/volumes/all/{side}/{d}"):
+                if x.get("dataType") not in ("Original", "Tagged"):
+                    continue
+                x.pop("pairVolumes", None)
+                x["side"] = side
+                rows.append(x)
+    return pd.DataFrame(rows)
+
+
 def fetch_unit_stream(dataset, units, m):
     rows = []
     for d in days_of(m):
@@ -122,9 +142,27 @@ def write(dataset, m, df, partial):
     print(f"  {path.relative_to(ROOT)}: {len(df):,}행{' (진행 중인 달)' if partial else ''}", flush=True)
 
 
+def rebuild_manifest(dataset):
+    """병렬로 받으면 MANIFEST 행이 서로 덮일 수 있다. 파일에서 행 수와 sha256을 다시 계산해 그 데이터셋 행을 새로 쓴다."""
+    man = OUT / "MANIFEST.csv"
+    old = pd.read_csv(man) if man.exists() else pd.DataFrame()
+    rows = []
+    for f in sorted((OUT / dataset).glob(f"{dataset}_*.parquet")):
+        ym = f.stem.split("_")[-1]
+        prev = old[old["path"] == str(f.relative_to(ROOT))] if len(old) else old
+        rows.append({"downloaded_utc": prev["downloaded_utc"].iat[0] if len(prev) else
+                     datetime.fromtimestamp(f.stat().st_mtime, timezone.utc).isoformat(timespec="seconds"),
+                     "dataset": dataset, "month": f"{ym[:4]}-{ym[4:]}", "rows": len(pd.read_parquet(f)),
+                     "partial": bool(prev["partial"].iat[0]) if len(prev) else False,
+                     "sha256": hashlib.sha256(f.read_bytes()).hexdigest(), "path": str(f.relative_to(ROOT))})
+    keep = old[old["dataset"] != dataset] if len(old) else old
+    pd.concat([keep, pd.DataFrame(rows)], ignore_index=True).to_csv(man, index=False)
+    print(f"MANIFEST {dataset}: {len(rows)}개 파일")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("what", choices=["cashflows", "pn", "boalf", "prices"])
+    ap.add_argument("what", choices=["cashflows", "volumes", "pn", "boalf", "mels", "mils", "prices", "manifest"])
     ap.add_argument("--start", required=True, help="YYYY-MM")
     ap.add_argument("--end", required=True, help="YYYY-MM (포함 안 함)")
     ap.add_argument("--units", help=f"유닛 묶음({', '.join(UNIT_SETS)}) 또는 쉼표로 구분한 Elexon 유닛 이름")
@@ -132,11 +170,16 @@ def main(argv=None):
     ap.add_argument("--force", action="store_true")
     a = ap.parse_args(argv)
 
+    if a.what == "manifest":   # 예: manifest --start x --end x --units bm_volumes (--units 자리에 데이터셋 이름)
+        rebuild_manifest(a.units)
+        return 0
     today = date.today()
     for m in months(a.start, a.end):
         partial = m.year == today.year and m.month == today.month
         if a.what == "cashflows":
             names = ["bm_cashflows"]
+        elif a.what == "volumes":
+            names = ["bm_volumes"]
         elif a.what == "prices":
             names = ["mid", "system_prices"]
         else:
@@ -148,6 +191,8 @@ def main(argv=None):
         print(f"{a.what} {m:%Y-%m}", flush=True)
         if a.what == "cashflows":
             write(names[0], m, fetch_cashflows(m), partial)
+        elif a.what == "volumes":
+            write(names[0], m, fetch_volumes(m), partial)
         elif a.what == "prices":
             dfs, _ = fetch_prices(m)
             for n in names:

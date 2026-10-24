@@ -46,20 +46,30 @@ technologies:
   # 기존 양수발전 (실증층 검증용). 저장 용량은 흔히 인용되는 값이며 1차 자료 확인 필요
   dinorwig:
     params:
-      p_dis_mw: {value: 1920, status: sourced, source: "Elexon BMU 등록부 T_DINO-1..6 generationCapacity 합"}
-      p_ch_mw: {value: 1786, status: sourced, source: "Elexon BMU 등록부 demandCapacity 합"}
-      e_mwh: {value: 10400, status: placeholder, source: "약 9.1 GWh 방전 에너지로 흔히 인용 → 9100/eta_dis. 확인 필요"}
-      eta_ch: {value: 0.87, status: data_estimate, source: "2025 지시 반영 발전/양수 0.758"}
-      eta_dis: {value: 0.87, status: data_estimate, source: "위와 같음"}
-      var_cost: {value: 1.0, status: placeholder, source: ""}
+      p_dis_mw: {value: 1728, status: sourced, source: "6 × 288 MW (First Hydro analysts' presentation 2005, literature/sources/psh/PSH_SOURCES.md §5.1). Elexon 등록 출력 합 1,920 MW는 등록값"}
+      p_ch_mw: {value: 1650, status: sourced, source: "6 × 275 MW 양수 (같은 자료). 2025년 MIL은 유닛당 −287 MW로 통보됨"}
+      e_mwh: {value: 10430, status: sourced, source: "저장 약 9 GWh(같은 자료, 방전 기준) ÷ eta_dis 0.863"}
+      eta_ch: {value: 0.863, status: sourced, source: "왕복효율 74~75%(같은 자료) → √0.745. 이 저장소 2025 지시 반영 발전/양수 0.758과 일치"}
+      eta_dis: {value: 0.863, status: sourced, source: "위와 같음"}
+      var_cost: {value: 1.0, status: placeholder, source: "가변 O&M £/MWh"}
       pump_units: {value: 6, status: sourced, source: "6기"}
 
   ffestiniog:
     params:
-      p_dis_mw: {value: 360, status: sourced, source: "Elexon BMU 등록부 T_FFES-1..4 합"}
-      p_ch_mw: {value: 300, status: sourced, source: "Elexon BMU 등록부 demandCapacity 합"}
-      e_mwh: {value: 1500, status: placeholder, source: "약 1.3 GWh로 흔히 인용. 확인 필요"}
-      eta_ch: {value: 0.866, status: data_estimate, source: "2025 지시 반영 발전/양수 0.750"}
-      eta_dis: {value: 0.866, status: data_estimate, source: "위와 같음"}
+      p_dis_mw: {value: 360, status: sourced, source: "4 × 90 MW (First Hydro 2005, PSH_SOURCES.md §5.1)"}
+      p_ch_mw: {value: 300, status: sourced, source: "4 × 75 MW 양수 (같은 자료)"}
+      e_mwh: {value: 1650, status: sourced, source: "약 1.4 GWh(같은 자료, 방전 기준) ÷ eta_dis 0.851"}
+      eta_ch: {value: 0.851, status: sourced, source: "왕복효율 72~73%(같은 자료) → √0.725"}
+      eta_dis: {value: 0.851, status: sourced, source: "위와 같음"}
+      var_cost: {value: 1.0, status: placeholder, source: ""}
+      pump_units: {value: 4, status: sourced, source: "4기"}
+
+  cruachan:
+    params:
+      p_dis_mw: {value: 440, status: sourced, source: "Drax (PSH_SOURCES.md §5.1)"}
+      p_ch_mw: {value: 480, status: data_estimate, source: "Elexon 등록부 demandCapacity 합 (134+134+120+120 MW 중 운영 한도는 MIL로 시간별 반영)"}
+      e_mwh: {value: 8140, status: data_estimate, source: "최대 출력 16시간 이상(Drax) → 7.0 GWh 방전 기준 ÷ eta_dis 0.86"}
+      eta_ch: {value: 0.866, status: placeholder, source: "Drax 미공개. 양수 일반값 75% 가정. 자연 유입 때문에 데이터로 추정 불가"}
+      eta_dis: {value: 0.866, status: placeholder, source: "위와 같음"}
       var_cost: {value: 1.0, status: placeholder, source: ""}
       pump_units: {value: 4, status: sourced, source: "4기"}
