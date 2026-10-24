@@ -32,7 +32,7 @@ def forecast(history: np.ndarray, horizon_sp: int, method: str):
     raise ValueError(f"예측 방법은 d1, d7, avg: {method}")
 
 
-def run(price: pd.Series, asset, horizon_days=3, method="avg", warmup: pd.Series = None):
+def run(price: pd.Series, asset, horizon_days=3, method="avg", warmup: pd.Series = None, gap=1e-4, **solve_kw):
     """price: 실행 기간의 실제 가격(하루 단위로 나뉘어야 함). warmup: 그 전 가격(예측용 과거). 없으면 첫 주는 d1."""
     if len(price) % SP_DAY:
         raise ValueError("기간은 하루(48구간) 단위여야 합니다 (UTC 날짜 기준)")
@@ -52,7 +52,8 @@ def run(price: pd.Series, asset, horizon_days=3, method="avg", warmup: pd.Series
         if len(idx) < H:   # 기간 끝: 예측 인덱스를 늘려 붙인다
             idx = pd.date_range(price.index[k * SP_DAY], periods=H, freq="30min")
         wv = float(np.median(fc)) * asset.eta_dis
-        plan, info = solve(pd.Series(fc, index=idx), asset, terminal="value", water_value=wv, s_start=s)
+        plan, info = solve(pd.Series(fc, index=idx), asset, terminal="value", water_value=wv, s_start=s, gap=gap,
+                           **solve_kw)
         day = plan.iloc[:SP_DAY].copy()
         day["price"] = actual[k * SP_DAY:(k + 1) * SP_DAY]
         day["forecast"] = fc[:SP_DAY]

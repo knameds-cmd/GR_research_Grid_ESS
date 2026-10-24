@@ -61,3 +61,10 @@ def test_placeholders_reported():
     out, info = solve(prices([10, 100]), tech["li_ion"])
     assert "eta_ch" in info["placeholders"]
     assert set(tech) >= {"li_ion", "psh", "caes_laes", "flow"}
+
+
+def test_reserve_headroom_caps_discharge_and_keeps_energy():
+    a = toy(p_dis_mw=10, p_ch_mw=10, e_mwh=20, soc_init=0.5)
+    out, _ = solve(prices([10, 200, 10, 200]), a, reserve_up_mw=4, reserve_hours=1.0)
+    assert out["discharge_mw"].max() <= 6 + 1e-9
+    assert out["soc_mwh"].min() >= 4 - 1e-9

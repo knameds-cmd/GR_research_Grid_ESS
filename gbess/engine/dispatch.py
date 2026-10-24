@@ -27,9 +27,13 @@ from scipy.optimize import Bounds, LinearConstraint, milp
 DT = 0.5
 
 
-def solve(price: pd.Series, asset, gap=1e-6, time_limit=600, terminal="geq_init", s_start=None, water_value=None):
+def solve(price: pd.Series, asset, gap=1e-6, time_limit=600, terminal="geq_init", s_start=None, water_value=None,
+          reserve_up_mw=0.0, reserve_hours=1.0):
     """terminal: "geq_init"(기간 끝 저장량 ≥ 시작 저장량) 또는 "value"(끝 저장량 1 MWh당 water_value £를 목적함수에 더함).
-    s_start: 시작 저장량 MWh (None이면 soc_init × 용량). 롤링에서 전날 끝 저장량을 넘길 때 쓴다."""
+    s_start: 시작 저장량 MWh (None이면 soc_init × 용량). 롤링에서 전날 끝 저장량을 넘길 때 쓴다.
+    reserve_up_mw: 응답·예비력 계약을 위해 늘 비워 두는 발전 쪽 출력 여유(MW). 방전 상한이 그만큼 줄고,
+        저장량은 그 출력을 reserve_hours 동안 낼 만큼 늘 남아 있어야 한다. 실제 양수발전이 엔진보다 적게
+        발전하는 이유를 시험하기 위한 매개변수 (09 문서 5.2)."""
     p = price.to_numpy(float)
     if np.isnan(p).any():
         raise ValueError(f"가격에 결측 {int(np.isnan(p).sum())}구간. 먼저 채우거나 기간을 줄이세요.")
@@ -52,8 +56,10 @@ def solve(price: pd.Series, asset, gap=1e-6, time_limit=600, terminal="geq_init"
     lb = np.zeros(n)
     ub = np.full(n, np.inf)
     ub[ic:ic + T] = asset.p_ch_mw
-    ub[id_:id_ + T] = asset.p_dis_mw
-    lb[is_:is_ + T] = asset.soc_min * E
+    if not 0 <= reserve_up_mw <= asset.p_dis_mw:
+        raise ValueError(f"reserve_up_mw는 0~{asset.p_dis_mw}")
+    ub[id_:id_ + T] = asset.p_dis_mw - reserve_up_mw
+    lb[is_:is_ + T] = asset.soc_min * E + reserve_up_mw * reserve_hours / asset.eta_dis
     ub[is_:is_ + T] = asset.soc_max * E
     if integer_pump:
         ub[ik:ik + T] = asset.pump_units

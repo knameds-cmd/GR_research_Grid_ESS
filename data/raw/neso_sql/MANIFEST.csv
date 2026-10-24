@@ -1,0 +1,5 @@
+downloaded_utc,name,rows,sha256,query
+2026-10-24T20:32:19+00:00,stor_psh_accepted,11,7087052bb1d74fb6472f69cf73d2b70cc8f3c2ac3cc2c477eb3fb71649fa9f62,"SELECT * FROM ""844a1a65-0a3c-4704-b327-d1685d0c397b"" WHERE ""Status"" = 'Accepted' AND (""Unit ID"" ILIKE 'DINO%' OR ""Unit ID"" ILIKE 'FFES%' OR ""Unit ID"" ILIKE 'CRUA%' OR ""Unit ID"" ILIKE 'FOYE%')"
+2026-10-24T20:32:19+00:00,orps_psh_long,1232,6add439ba457a54bdec10ed4df0dc572f5a367f4984a736c4b4d74f958d11a62,"SELECT * FROM ""528b03d2-4008-4b65-a732-a001cd835a3b"" WHERE ""Unit"" ILIKE 'DINO%' OR ""Unit"" ILIKE 'FFES%' OR ""Unit"" ILIKE 'CRUA%' OR ""Unit"" ILIKE 'FOYE%'"
+2026-10-24T20:32:20+00:00,orps_psh_hist,16,541cd8e491353c2cd4876d371b933f0d5fa35a344e8be496ce7cde171b2f712f,"SELECT * FROM ""3ee65326-3729-421d-b667-b2164501e4a5"" WHERE ""Unit"" ILIKE 'DINO%' OR ""Unit"" ILIKE 'FFES%' OR ""Unit"" ILIKE 'CRUA%' OR ""Unit"" ILIKE 'FOYE%'"
+2026-10-24T20:32:20+00:00,orps_rate,229,db632dcf90dc0e1c8fe3fd7de4b48c0bc2165152da6dfc3e28854adbc3f1e892,"SELECT * FROM ""b00df5b1-4179-44e3-b556-28a836ad619f"""
