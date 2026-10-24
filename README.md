@@ -4,15 +4,23 @@
 
 ## 처음이라면 여기부터
 
-1. **[`docs/06_project_roadmap_KO.md`](docs/06_project_roadmap_KO.md)**: 지금 상태, 정해야 할 것, 파악할 것, 할 일, 12/10까지 일정 (2026-10-23)
-2. **[`docs/05_method_assessment_KO.md`](docs/05_method_assessment_KO.md)**: 규칙 스위치·국면 분할이 유효한지, 장주기 ESS와 위치 정보를 어디까지 다룰 수 있는지, 오류를 어떻게 다룰지에 대한 판단
+> **2026-10-24: 연구 중심이 장주기(LDES, 8시간 이상)로 바뀌었습니다** (교수님 지침). 12/10 일정에 맞출 필요는 없어졌습니다.
 
-> **현재 `model/`과 `results/layer1/`은 프로토타입입니다.** 다시 설계해 만들 예정이므로 결과 수치는 인용하지 마세요(05 문서 7장).
+1. **[`docs/08_ldes_redesign_KO.md`](docs/08_ldes_redesign_KO.md)**: 장주기 중심 재설계. 질문, 두 층(실증·구조) 방법, "이전에 없던 규칙"을 비교하는 법, 확정한 결정
+2. **[`docs/09_model_explained_KO.md`](docs/09_model_explained_KO.md)**: 모델 해설. 손계산 예제로 실제 수익 재구성, 운전 엔진, cap-and-floor 재무층을 설명
+3. [`docs/07_decisions_and_build_KO.md`](docs/07_decisions_and_build_KO.md): 확정할 것과 구현 차이, 정밀한 연구 환경, 허점 점검표
+4. [`docs/05_method_assessment_KO.md`](docs/05_method_assessment_KO.md), [`docs/06_project_roadmap_KO.md`](docs/06_project_roadmap_KO.md): 단주기 기준의 이전 판단과 로드맵 (장주기 전환 전)
+
+> **새 모델은 `gbess/`입니다.** `model/`과 `results/layer1/`은 단주기 프로토타입입니다. 다시 설계해 만들 예정이므로 결과 수치는 인용하지 마세요(05 문서 7장).
 
 ## 문서
 
 | 파일 | 내용 |
 | --- | --- |
+| [`docs/08_ldes_redesign_KO.md`](docs/08_ldes_redesign_KO.md) | **장주기 재설계**: 영국 LDES 제도 사실, 규칙 4유형(F·C·P·M)과 비교 방법, 실증층 2016-09~2026-09 + 구조층 미래 × 기상연도, 바뀌는 구현, 확정한 결정 |
+| [`docs/09_model_explained_KO.md`](docs/09_model_explained_KO.md) | **모델 해설**: 실제 수익 재구성(PN·BM 지시·현금흐름), 운전 엔진과 정보 수준, cap-and-floor 재무층, 손계산 예제 |
+| [`docs/07_decisions_and_build_KO.md`](docs/07_decisions_and_build_KO.md) | 확정할 것과 결정별 구현 차이, 오늘 확인한 데이터 사실 F1~F7, 정밀 환경 E1~E7, 허점 점검표 H1~H13 |
+| [`literature/sources/ldes/FACTS.md`](literature/sources/ldes/FACTS.md) | Ofgem LDES cap-and-floor 제도 사실 정리 (기술결정문, Window 1 잠정결정, NERA 비평, 쪽 번호 포함) |
 | [`docs/06_project_roadmap_KO.md`](docs/06_project_roadmap_KO.md) | **로드맵**: 결정 D1~D7, 학습할 개념, 재확인할 사실, 있는/없는 데이터, 단계별 할 일과 완료 기준, 위험, 축소안 |
 | [`docs/05_method_assessment_KO.md`](docs/05_method_assessment_KO.md) | **방법론 판단**: 수익성의 네 단계, 규칙 스위치와 국면 분할의 유효 조건, 장주기 ESS, 선로·위치 모델링, 규칙·상황 귀속과 오류 |
 | [`docs/00_research_design_v0.md`](docs/00_research_design_v0.md) | 연구 설계 초안 원본 (2026-10-05 회의 정리) |
@@ -39,7 +47,10 @@
 | `literature/` | 논문 아카이브(.md). `papers/`에 논문 1편당 파일 1개(가정·제약·모델·데이터 가공·정당화), `streams/`에 갈래별 종합, `GROUPS.md` 연구 그룹·사제 계보, `CANON.md` 교과서·랜드마크 리뷰 |
 | `data/raw/` | 원자료 CSV (NESO EAC 경매, 용량시장 등록부, Elexon 2026-09 샘플). 약 33MB |
 | `data/processed/` | 가공본 (git 제외) |
-| `model/` | **(프로토타입)** 층 1 완전예측 MILP (`data.py` 입력, `layer1.py` 모델). 실행은 루트의 `run_layer1.py`. 재구축 예정 |
+| `gbess/` | **새 모델 패키지**: 데이터 받기(`fetch/`), 가격(`data/`), 실제 수익 재구성(`realized/`), 운전 엔진(`engine/`), 재무층(`finance/`), 기술 매개변수(`config/`). 해설은 `docs/09` |
+| `tests/` | `gbess` 시험 (손계산 예제, 불변식). `.venv/bin/python -m pytest -q tests` |
+| `results/realized/` | 양수발전 실제 수익 패널 |
+| `model/` | **(단주기 프로토타입)** 층 1 완전예측 MILP (`data.py` 입력, `layer1.py` 모델). 실행은 루트의 `run_layer1.py`. 재구축 예정 |
 | `results/layer1/` | **(프로토타입)** 모델 결과: 시나리오별 수익 `summary.csv`, 30분 운전 계획 `*_dispatch.csv` |
 
 ## 데이터 받기
