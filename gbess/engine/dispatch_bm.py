@@ -34,6 +34,14 @@ imbalance_penalty: 주면 실제 운전이 FPN + o − b에서 벗어나는 것(
     수치 오차 등으로 풀리지 않을 때의 대비책이다. 불균형 물량은 결과의 imbalance_mw 열로 남는다.
 p_dis_t, p_ch_t, pump_units_t: 구간별 가용 출력·입력·양수 가능 유닛 수(정지 반영, gbess.data.availability).
     주면 정격 대신 이 값이 상한이 되고, BM 상한도 가용 출력에 비례한다.
+
+채택 모형 방식 (opp에 alpha_offer, alpha_bid 열이 있을 때, gbess.model.bm_accept)
+    o[t] ≤ α_o[t] × (가용 출력 − FPN)        b[t] ≤ α_b[t] × (FPN + 가용 입력)
+    α는 "이 자산이 자기 단가(offer_price, bid_price 열)로 여유를 내놓았을 때 받아 줄 몫의 기댓값"이다. α는 FPN과
+    무관한 변수로만 만든 모형에서 나오므로 상한이 FPN에 선형이다. κ는 쓰지 않는다(모형이 이미 절대 수준을 준다).
+    기댓값이므로 같은 구간에 offer와 bid가 둘 다 양수일 수 있다(실제로는 둘 중 하나가 일어나는 것을 평균한 것).
+    그래서 이 방식에서는 offer·bid 동시 금지 이진변수(z)를 두지 않는다. 대신 각 상한이 기댓값이라 동시 수락으로
+    얻는 차익도 기댓값 안에 머문다.
 """
 import time
 from dataclasses import asdict
@@ -96,12 +104,21 @@ def solve_bm(price: pd.Series, opp: pd.DataFrame, asset, kappa_offer=1.0, kappa_
     P, Pc, E = asset.p_dis_mw, asset.p_ch_mw, asset.e_mwh
     Pt = np.full(T, P) if p_dis_t is None else np.minimum(np.asarray(p_dis_t, float), P)
     Pct = np.full(T, Pc) if p_ch_t is None else np.minimum(np.asarray(p_ch_t, float), Pc)
-    o_cap = np.nan_to_num(kappa_offer * opp["offer_mw_per_mw"].to_numpy(float) * Pt)
-    b_cap = np.nan_to_num(kappa_bid * opp["bid_mw_per_mw"].to_numpy(float) * Pt)
+    accept = "alpha_offer" in opp.columns
+    if accept:
+        a_o = np.clip(np.nan_to_num(opp["alpha_offer"].to_numpy(float)), 0, 1)
+        a_b = np.clip(np.nan_to_num(opp["alpha_bid"].to_numpy(float)), 0, 1)
+        o_cap, b_cap = a_o * (Pt + Pct), a_b * (Pt + Pct)      # 변수 상한. 실제 상한은 아래 FPN 선형 제약
+    else:
+        o_cap = np.nan_to_num(kappa_offer * opp["offer_mw_per_mw"].to_numpy(float) * Pt)
+        b_cap = np.nan_to_num(kappa_bid * opp["bid_mw_per_mw"].to_numpy(float) * Pt)
     po = opp["offer_price"].to_numpy(float)
     pb = opp["bid_price"].to_numpy(float)
     o_cap[np.isnan(po)] = 0.0
     b_cap[np.isnan(pb)] = 0.0
+    if accept:
+        a_o[np.isnan(po)] = 0.0
+        a_b[np.isnan(pb)] = 0.0
     po, pb = np.nan_to_num(po), np.nan_to_num(pb)
     integer_pump = asset.pump_units is not None
     s0 = asset.soc_init * E if s_start is None else float(s_start)
@@ -172,7 +189,13 @@ def solve_bm(price: pd.Series, opp: pd.DataFrame, asset, kappa_offer=1.0, kappa_
             lp.row([(fc[t], 1), (wf[t], -Pc)], -np.inf, 0.0)
             lp.row([(fd[t], 1), (wf[t], P)], -np.inf, P)
 
-    both = np.flatnonzero((o_cap > 0) & (b_cap > 0) & (po > pb))
+    if accept:
+        for t in range(T):
+            if a_o[t] > 0:   # o ≤ α_o (Pt − fd + fc)
+                lp.row([(o[t], 1), (fd[t], a_o[t]), (fc[t], -a_o[t])], -np.inf, a_o[t] * Pt[t])
+            if a_b[t] > 0:   # b ≤ α_b (fd − fc + Pct)
+                lp.row([(b[t], 1), (fd[t], -a_b[t]), (fc[t], a_b[t])], -np.inf, a_b[t] * Pct[t])
+    both = np.array([], int) if accept else np.flatnonzero((o_cap > 0) & (b_cap > 0) & (po > pb))
     if len(both):
         z = lp.var("z", len(both), 0, 1, integer=True)
         for j, t in enumerate(both):
@@ -206,7 +229,8 @@ def solve_bm(price: pd.Series, opp: pd.DataFrame, asset, kappa_offer=1.0, kappa_
     info = {"status": res.message, "optimal": bool(res.success), "mip_gap": getattr(res, "mip_gap", None),
             "seconds": round(time.time() - t0, 2), "periods": T, "offer_bid_binaries": int(len(both)),
             "mode_binaries": int(len(mode_t)), "placeholders": asset.placeholders(),
-            "kappa": (kappa_offer, kappa_bid), "asset": {k_: v for k_, v in asdict(asset).items()
+            "kappa": None if accept else (kappa_offer, kappa_bid), "bm_mode": "accept" if accept else "fleet",
+            "asset": {k_: v for k_, v in asdict(asset).items()
                                                          if k_ not in ("status", "source")}}
     return out, info
 

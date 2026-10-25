@@ -124,3 +124,45 @@ def test_imbalance_fallback_when_fpn_cannot_be_met():
     out, _ = solve_bm(series([50]), opp(1), a, fpn_fixed=[1.0], terminal="value", water_value=0,
                       imbalance_penalty=1000.0)
     assert out["imbalance_mw"].iat[0] == pytest.approx(-1.0)
+
+
+def acc(n, ao=None, ab=None, po=None, pb=None):
+    """채택 모형 방식 입력: α와 자기 단가."""
+    idx = series([0] * n).index
+    z = np.zeros(n)
+    return pd.DataFrame({"alpha_offer": z if ao is None else ao, "alpha_bid": z if ab is None else ab,
+                         "offer_price": np.full(n, np.nan) if po is None else po,
+                         "bid_price": np.full(n, np.nan) if pb is None else pb}, index=idx)
+
+
+def test_accept_offer_cap_is_alpha_times_headroom():
+    a = toy(e_mwh=10, soc_init=0.5, p_dis_mw=2, p_ch_mw=2)
+    o = acc(3, ao=[0.5] * 3, po=[200] * 3)
+    out, info = solve_bm(series([10, 10, 10]), o, a, fpn_fixed=[0.0, 2.0, -2.0], terminal="value", water_value=0)
+    # 여유 = 가용 출력 − FPN: 2, 0, 4 → offer 상한 1, 0, 2
+    assert out["offer_mw"].to_numpy() == pytest.approx([1.0, 0.0, 2.0])
+    assert info["bm_mode"] == "accept" and info["offer_bid_binaries"] == 0
+
+
+def test_accept_bid_cap_is_alpha_times_headroom():
+    a = toy(e_mwh=10, soc_init=0.5, p_dis_mw=2, p_ch_mw=2)
+    o = acc(3, ab=[0.25] * 3, pb=[-50] * 3)    # 음의 bid: 받으면 돈을 받으므로 상한까지 받는다
+    out, _ = solve_bm(series([10, 10, 10]), o, a, fpn_fixed=[2.0, 0.0, -2.0], terminal="value", water_value=0)
+    # 여유 = FPN + 가용 입력: 4, 2, 0 → bid 상한 1, 0.5, 0
+    assert out["bid_mw"].to_numpy() == pytest.approx([1.0, 0.5, 0.0])
+
+
+def test_accept_alpha_ignored_without_own_price():
+    a = toy(e_mwh=10, soc_init=0.5)
+    out, _ = solve_bm(series([10]), acc(1, ao=[1.0], ab=[1.0]), a, terminal="value", water_value=0)
+    assert out["offer_mw"].iat[0] == pytest.approx(0) and out["bid_mw"].iat[0] == pytest.approx(0)
+
+
+def test_accept_free_fpn_trades_off_wholesale_and_headroom():
+    # 도매 £50, offer £100에 α = 0.5. 꽉 찬 1 MWh 저장장치(2구간 × 1 MW)를 한 구간에 쓴다면:
+    # FPN 1 MW로 팔면 £25, FPN 0으로 두고 offer 0.5 MW를 받으면 £25 + 남은 에너지. 둘 다 같은 기댓값 근처에서
+    # 해가 정해지는지보다, 어떤 해든 상한(α × 여유)을 지키는지를 본다
+    a = toy(e_mwh=1, soc_init=1.0, p_dis_mw=1, p_ch_mw=1)
+    out, _ = solve_bm(series([50, 50]), acc(2, ao=[0.5, 0.5], po=[100, 100]), a, terminal="value", water_value=0)
+    head = 1 - out["fpn_mw"]
+    assert (out["offer_mw"] <= 0.5 * head + 1e-6).all()

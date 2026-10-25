@@ -6,6 +6,8 @@ Elexon Insights에서 BM 현금흐름·PN·BOALF·가격을 월 단위 parquet�
     .venv/bin/python -m gbess.fetch.elexon pn --units psh --start 2016-01 --end 2026-10
     .venv/bin/python -m gbess.fetch.elexon boalf --units psh --start 2016-01 --end 2026-10
     .venv/bin/python -m gbess.fetch.elexon prices --start 2018-01 --end 2021-09
+    .venv/bin/python -m gbess.fetch.elexon bod --units psh --start 2016-09 --end 2026-10
+    .venv/bin/python -m gbess.fetch.elexon fuelhh --start 2016-09 --end 2026-10
 
 - cashflows: 날짜·방향(bid/offer)마다 한 번 호출하면 그날 BM에 참여한 모든 유닛의 결제구간별 현금흐름이 나온다.
   유닛별 쌍(pair) 내역은 버리고 결제구간 합계(totalCashflow)만 남긴다.
@@ -16,6 +18,10 @@ Elexon Insights에서 BM 현금흐름·PN·BOALF·가격을 월 단위 parquet�
 - mels, mils: 유닛별 최대 출력·최대 입력 한도(가용 출력). 같은 구간을 여러 번 고쳐 내므로 notificationTime이 함께 있다.
   쓸 때는 마지막 통보값을 고른다 (gbess.data.availability).
 - pn, boalf: --units로 고른 유닛만. 한 호출에 여러 유닛을 넣고, 하루씩 끊어 받는다.
+- bod: 유닛이 낸 입찰(Bid-Offer Data). 결제구간·pair마다 offer·bid 단가(£/MWh)와 구간 출력(levelFrom/To).
+  pair +1의 offer = FPN보다 출력을 올리는 첫 단가, pair −1의 bid = 출력을 내리는 첫 단가.
+  --units battery는 저장장치 등록표(gbess.data.units)의 배터리 전부. 한 호출에 40개씩 나눠 넣는다.
+- fuelhh: 연료별 30분 발전량(MW, 풍력·연계선 포함). 한 달씩 한 번에 받는다.
 - prices: MID(APX만)와 정산가격. 기존 gb_data_fetch.py의 CSV와 같은 열을 parquet로 저장.
 결과: data/raw/elexon/<dataset>/<dataset>_YYYYMM.parquet. 받은 달마다 MANIFEST.csv에 행 수·sha256을 남긴다.
 이미 있는 달은 건너뛴다(--force면 다시). 끝나지 않은 달(이번 달)은 받지만 MANIFEST에 partial로 표시한다.
@@ -41,6 +47,18 @@ UNIT_SETS = {
     "psh": [f"T_DINO-{i}" for i in range(1, 7)] + [f"T_FFES-{i}" for i in range(1, 5)]
            + [f"T_CRUA-{i}" for i in range(1, 5)] + ["T_FOYE-1", "T_FOYE-2"],
 }
+CHUNK = 40   # 한 호출에 넣는 유닛 수 (주소 길이 제한)
+DROP = {"BOD": ["dataset", "settlementDate", "nationalGridBmUnit"]}   # 다른 열로 복원되는 열은 버려 용량을 줄인다
+
+
+def unit_set(name):
+    if name in UNIT_SETS:
+        return UNIT_SETS[name]
+    if name == "battery":
+        from gbess.data.units import storage_units
+        u = storage_units()
+        return u.loc[u["tech"] == "battery", "bmUnit"].tolist()
+    return name.split(",")
 
 
 def get(path, params=None, tries=6):
@@ -105,10 +123,20 @@ def fetch_volumes(m):
 def fetch_unit_stream(dataset, units, m):
     rows = []
     for d in days_of(m):
-        rows += get(f"/datasets/{dataset}/stream",
-                    {"from": f"{d}T00:00Z", "to": f"{d + timedelta(days=1)}T00:00Z", "bmUnit": units})
+        for i in range(0, len(units), CHUNK):
+            rows += get(f"/datasets/{dataset}/stream",
+                        {"from": f"{d}T00:00Z", "to": f"{d + timedelta(days=1)}T00:00Z", "bmUnit": units[i:i + CHUNK]})
+    df = pd.DataFrame(rows)
+    df = df.drop(columns=[c for c in DROP.get(dataset, []) if c in df.columns])
     # 하루씩 끊어 받으면 자정에 걸친 구간이 양쪽 날에 다 나온다 (2026-01 PN 시험에서 960행 중복 확인)
-    return pd.DataFrame(rows).drop_duplicates()
+    return df.drop_duplicates()
+
+
+def fetch_fuelhh(m):
+    nxt = (m.replace(day=28) + timedelta(days=4)).replace(day=1)
+    df = pd.DataFrame(get("/datasets/FUELHH/stream", {"settlementDateFrom": f"{m}",
+                                                       "settlementDateTo": f"{nxt - timedelta(days=1)}"}))
+    return df.drop(columns=["dataset"]).drop_duplicates(["settlementDate", "settlementPeriod", "fuelType"], keep="last")
 
 
 def fetch_prices(m):
@@ -162,7 +190,8 @@ def rebuild_manifest(dataset):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("what", choices=["cashflows", "volumes", "pn", "boalf", "mels", "mils", "prices", "manifest"])
+    ap.add_argument("what", choices=["cashflows", "volumes", "pn", "boalf", "mels", "mils", "bod", "fuelhh", "prices",
+                                       "manifest"])
     ap.add_argument("--start", required=True, help="YYYY-MM")
     ap.add_argument("--end", required=True, help="YYYY-MM (포함 안 함)")
     ap.add_argument("--units", help=f"유닛 묶음({', '.join(UNIT_SETS)}) 또는 쉼표로 구분한 Elexon 유닛 이름")
@@ -182,6 +211,8 @@ def main(argv=None):
             names = ["bm_volumes"]
         elif a.what == "prices":
             names = ["mid", "system_prices"]
+        elif a.what == "fuelhh":
+            names = ["fuelhh"]
         else:
             if not a.units:
                 sys.exit("--units가 필요합니다")
@@ -193,12 +224,14 @@ def main(argv=None):
             write(names[0], m, fetch_cashflows(m), partial)
         elif a.what == "volumes":
             write(names[0], m, fetch_volumes(m), partial)
+        elif a.what == "fuelhh":
+            write(names[0], m, fetch_fuelhh(m), partial)
         elif a.what == "prices":
             dfs, _ = fetch_prices(m)
             for n in names:
                 write(n, m, dfs[n], partial)
         else:
-            units = UNIT_SETS.get(a.units) or a.units.split(",")
+            units = unit_set(a.units)
             write(names[0], m, fetch_unit_stream(a.what.upper(), units, m), partial)
     return 0
 

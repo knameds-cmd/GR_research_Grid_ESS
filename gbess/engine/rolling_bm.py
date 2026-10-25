@@ -16,12 +16,14 @@ from .dispatch_bm import solve_bm
 from .rolling import SP_DAY, forecast
 
 OPP_COLS = ["offer_mw_per_mw", "bid_mw_per_mw", "offer_price", "bid_price"]
+ACC_COLS = ["alpha_offer", "alpha_bid"]   # 채택 모형 방식 (gbess.engine.dispatch_bm 머리말)
 
 
 def _fc_opp(hist_opp: pd.DataFrame, hist_price: np.ndarray, H, method):
     """BM 기회 예측. 단가 결측(지시 없던 구간)은 같은 구간 도매 가격으로 채운 뒤 예측한다 (상한도 0이라 영향 없음)."""
     out = {}
-    for c in ("offer_mw_per_mw", "bid_mw_per_mw"):
+    qty = ACC_COLS if "alpha_offer" in hist_opp.columns else ["offer_mw_per_mw", "bid_mw_per_mw"]
+    for c in qty:
         out[c] = forecast(np.nan_to_num(hist_opp[c].to_numpy(float)), H, method)
     for c in ("offer_price", "bid_price"):
         v = hist_opp[c].to_numpy(float)
@@ -87,5 +89,7 @@ def run_bm(price: pd.Series, opp: pd.DataFrame, asset, horizon_days=3, method="a
     meta = {"horizon_days": horizon_days, "method": method, "kappa": (kappa_offer, kappa_bid),
             "solve_seconds": round(seconds, 1), "end_soc_mwh": s, "imbalance_fallback_days": fallback_days,
             "imbalance_mwh": float(out["imbalance_mw"].abs().sum() * 0.5) if "imbalance_mw" in out else 0.0,
-            "information": "FPN은 D 00:00에 예측으로 정함. BM 수락은 D의 실제 BM 기회를 미리 안다고 가정(상한 쪽)"}
+            "information": ("FPN은 D 00:00에 예측으로 정함. 실시간 단계는 D의 실제 계통 상태로 계산한 채택 기댓값(α)을 씀"
+                            if "alpha_offer" in opp.columns else
+                            "FPN은 D 00:00에 예측으로 정함. BM 수락은 D의 실제 BM 기회를 미리 안다고 가정(상한 쪽)")}
     return out, meta

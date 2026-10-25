@@ -31,26 +31,29 @@ def _battery_names():
     return set(s.loc[s["fuel"] == "BATTERY", "bm_unit"])
 
 
-def storage_units():
+def bm_units():
+    """등록부의 모든 BM 유닛과 구역. 구역 규칙은 이 파일 머리말과 같다."""
     b = pd.read_csv(RAW / "elexon_bmunits.csv")
     b["zone"] = b["gspGroupName"].replace(ZONE_ALIASES)
     known = b[b["zone"].notna() & b["transmissionLossFactor"].notna()]
     modal = known.groupby("transmissionLossFactor")["zone"].agg(lambda s: s.value_counts().index[0])
     counts = known.groupby("transmissionLossFactor").size()
     rep = modal[counts >= 3]   # 대표값: 3개 이상 유닛이 같은 TLF를 쓰는 값
+    b["zone_method"] = np.where(b["zone"].notna(), "gsp", None)
+    miss = b["zone"].isna() & b["transmissionLossFactor"].notna()
+    tlf = b.loc[miss, "transmissionLossFactor"]
+    exact = tlf.map(modal)
+    near = tlf.map(lambda v: rep.iloc[int(np.abs(rep.index.to_numpy() - v).argmin())])
+    b.loc[miss, "zone"] = exact.fillna(near)
+    b.loc[miss, "zone_method"] = np.where(exact.notna(), "tlf_exact", "tlf_nearest")
+    b["scotland"] = b["zone"].isin({ZONE_ALIASES.get(z, z) for z in SCOTLAND})
+    return b.rename(columns={"elexonBmUnit": "bmUnit", "generationCapacity": "mw"})
+
+
+def storage_units():
+    u = bm_units()
     bat = _battery_names()
-    u = b[(b["fuelType"] == "PS") | b["nationalGridBmUnit"].isin(bat)].copy()
+    u = u[(u["fuelType"] == "PS") | u["nationalGridBmUnit"].isin(bat)].copy()
     u["tech"] = np.where(u["fuelType"] == "PS", "psh", "battery")
-    u["zone_method"] = np.where(u["zone"].notna(), "gsp", None)
-    miss = u["zone"].isna() & u["transmissionLossFactor"].notna()
-    for i in u.index[miss]:
-        tlf = u.at[i, "transmissionLossFactor"]
-        if tlf in modal.index:
-            u.at[i, "zone"], u.at[i, "zone_method"] = modal[tlf], "tlf_exact"
-        else:
-            j = int(np.abs(rep.index.to_numpy() - tlf).argmin())
-            u.at[i, "zone"], u.at[i, "zone_method"] = rep.iloc[j], "tlf_nearest"
-    u["scotland"] = u["zone"].isin({ZONE_ALIASES.get(z, z) for z in SCOTLAND})
-    u = u.rename(columns={"elexonBmUnit": "bmUnit", "generationCapacity": "mw"})
     return u[["bmUnit", "nationalGridBmUnit", "tech", "mw", "zone", "zone_method", "scotland", "leadPartyName"]] \
         .reset_index(drop=True)
