@@ -1,17 +1,19 @@
 """
-양수발전의 거래 외 수입: 용량시장(CM), FFR 월간 입찰, STOR 일일 경매, 무효전력(ORPS).
+양수발전의 거래 외 수입: 용량시장(CM), FFR 월간 입찰, 확정 Fast Reserve 계약, STOR 일일 경매, 무효전력(ORPS).
 
     .venv/bin/python -m gbess.realized.ancillary
 
 2026-10-24 확인: 양수발전은 EAC(DC/DM/DR·BR·QR·SR), BR 2023-24, 정적 FFR 경매에 한 번도 낙찰되지 않았고,
 STOR은 Cruachan 7일(2023), Ffestiniog 4일(2022)뿐이다. 그래서 공개 자료로 잡히지 않는 수입이 남는다:
-의무 주파수 응답(MFR), Fast Reserve(2024-12 QR로 대체), 블랙스타트 등 양자계약. 이 몫은 회사 결산서로 위에서 맞춘다.
+의무 주파수 응답(MFR), 옵션 Fast Reserve(2020~2024-12), 스핀 대기, 블랙스타트, 제약 계약 등 양자계약.
+이 몫은 회사 결산서로 위에서 맞춘다 (gbess.validation.accounts).
 
 계산 방법과 단순화 (결과에 그대로 남김)
 - CM: 낙찰된 CMU의 디레이팅 용량(MW) × 1,000 × 그 경매 낙찰가(£/kW/yr). 낙찰가 = 경매 총비용 ÷ 낙찰 용량
   (cm_auction_capacity_cost.csv, 알려진 낙찰가와 일치 확인). 인도연도는 10월~다음 해 9월.
   실제 지급은 월별 수요 가중이지만 여기서는 12개월에 고르게 나눈다. 2018-11~2019-10 CM 중단기의 지급은 나중에 소급 지급되어 발생 기준으로 둔다.
 - FFR: 낙찰 건마다 가용 요금(£/h) × (평일·토·일 창 길이) × 해당 날짜 수. 공휴일은 평일로 센다. 지명 요금(nomination fee)은 넣지 않음.
+- Fast Reserve: 확정 계약(2015-04~2019-12) 가용 요금 × 창 시간. 지명 요금은 상한으로 따로(fr_pos_gbp_upper).
 - STOR: 낙찰 건 Contracted MW × 시장 낙찰가(£/MW/h) × 24h. 실제로는 STOR 창 시간만 지급되므로 **상한**.
 - ORPS: 월별 사용량(MVArh, TOTAL) × 그 달 기본 지급 단가(“X = 1” 열, £/MVArh).
 """
@@ -123,6 +125,24 @@ def ffr():
     return pd.DataFrame(rows).groupby(["month", "site"], as_index=False).sum(), tenders
 
 
+# ---------------------------------------------------------------- Fast Reserve (확정 계약, 2015~2019)
+def fast_reserve():
+    """월별 확정 Fast Reserve 계약을 NESO 사후평가 보고서에서 옮겨 적은 표(literature/sources/psh/fast_reserve_contracts.csv)로 계산.
+    가용 요금(£/h) × 창 시간. 지명(positional) 요금은 NESO가 대기 지시를 낸 시간에만 받으므로 따로 상한으로 둔다.
+    2019-11·12 한 달 계약 2건은 단가가 공개되지 않아 0으로 남는다. 2020-01 이후 확정 조달은 중단(옵션 FR만, 단위별 미공개)."""
+    k = pd.read_csv(ROOT / "literature" / "sources" / "psh" / "fast_reserve_contracts.csv")
+    rows = []
+    for _, r in k.iterrows():
+        for day in pd.date_range(r.start, r.end, freq="D"):
+            if day.strftime("%Y-%m") == r.excluded_month:
+                continue
+            h = r.sat_h if day.dayofweek == 5 else r.sun_h if day.dayofweek == 6 else r.wd_h
+            rows.append({"month": day.strftime("%Y-%m"), "site": r.unit[:4],
+                         "fr_gbp": np.nan_to_num(r.avail_gbp_h) * h,
+                         "fr_pos_gbp_upper": np.nan_to_num(r.pos_gbp_h) * h})
+    return pd.DataFrame(rows).groupby(["month", "site"], as_index=False).sum()
+
+
 # ---------------------------------------------------------------- STOR
 def stor():
     q = ('SELECT * FROM "844a1a65-0a3c-4704-b327-d1685d0c397b" WHERE "Status" = \'Accepted\' AND '
@@ -176,10 +196,11 @@ def orps():
 def build():
     cm = capacity_market()
     f, tenders = ffr()
+    fr = fast_reserve()
     st = stor()
     o, missing_rate = orps()
-    df = cm.merge(f, on=["month", "site"], how="outer").merge(st, on=["month", "site"], how="outer") \
-        .merge(o, on=["month", "site"], how="outer").fillna(0.0)
+    df = cm.merge(f, on=["month", "site"], how="outer").merge(fr, on=["month", "site"], how="outer") \
+        .merge(st, on=["month", "site"], how="outer").merge(o, on=["month", "site"], how="outer").fillna(0.0)
     return df, tenders, missing_rate
 
 
@@ -188,7 +209,8 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     df.sort_values(["month", "site"]).to_csv(OUT / "psh_ancillary_monthly.csv", index=False)
     tenders.to_csv(OUT / "psh_ffr_tenders.csv", index=False)
-    y = df.assign(year=df["month"].str[:4]).groupby(["year", "site"])[["cm_gbp", "ffr_gbp", "stor_gbp_upper", "orps_gbp"]].sum()
+    y = df.assign(year=df["month"].str[:4]).groupby(["year", "site"])[
+        ["cm_gbp", "ffr_gbp", "fr_gbp", "fr_pos_gbp_upper", "stor_gbp_upper", "orps_gbp"]].sum()
     print((y / 1e6).round(2).to_string())
     print(f"FFR 낙찰 건수 {len(tenders)} (보고서 {tenders['n_files'].iat[0] if len(tenders) else 0}개)")
     for x in tenders.attrs.get("failed", []):

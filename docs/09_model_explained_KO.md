@@ -297,7 +297,7 @@ cap  수준(연) = 투자비 × 연금계수(7.48%, 25년) + 운영비
 
 | 연도 | Dinorwig 거래 | 용량시장 | 무효전력 | **합계** | Cruachan 합계 |
 | --- | --- | --- | --- | --- | --- |
-| 2019 | 15.5 | 16.2 | 1.5 | **33.7** | 63.8 |
+| 2019 | 15.5 | 16.2 | 1.5 | **33.7** | 64.4 |
 | 2021 | 56.2 | 16.2 | 1.9 | **74.2** | 97.0 |
 | 2022 | 69.3 | 6.8 | 3.4 | **79.5** | 159.5 |
 | 2023 | 30.5 | 7.6 | 1.6 | **39.6** | 145.1 |
@@ -307,7 +307,8 @@ cap  수준(연) = 투자비 × 연금계수(7.48%, 25년) + 운영비
 - **용량시장**: 등록부의 낙찰 CMU 디레이팅 용량 × 경매 낙찰가. 낙찰가는 경매 총비용 ÷ 낙찰 용량으로 구했고, 알려진 값(2018/19 T-4 £19.40, 2021/22 T-4 £8.40, 2025/26 T-4 £30.59)과 일치합니다. Dinorwig는 2026/27부터 T-4 £63이 적용되어 연 £55M을 넘습니다. Ffestiniog는 2024년부터 디레이팅 용량이 0으로 등록되어 있어 용량시장 수입이 없습니다(개보수로 보임, 확인 필요).
 - **무효전력(ORPS)**: 유닛·월별 MVArh × 그 달 기본 단가. Dinorwig 연 £0.7~3.4k/MW로 작지 않습니다.
 - **경쟁 입찰형 보조서비스는 거의 0입니다.** 양수발전은 EAC(DC/DM/DR·BR·QR·SR)와 정적 FFR에 한 번도 낙찰되지 않았습니다. STOR은 며칠, FFR 월간 입찰은 4건뿐입니다.
-- **아직 빠진 것**: 의무 주파수 응답(MFR), Fast Reserve(2024-12까지), 블랙스타트. 공개 경매 밖의 의무·양자계약이라 회사 결산서와의 차이로 추정합니다(진행 중).
+- **확정 Fast Reserve(2015~2019)**: NESO 월간 사후평가 보고서에서 양수발전 계약 15건을 옮겨 적었습니다(`literature/sources/psh/fast_reserve_contracts.csv`). 가용 요금 × 창 시간으로 계산하면 Ffestiniog 연 £3.1~4.3M, Cruachan £0.3~2.4M, Dinorwig 0입니다. 2020년 1월부터 확정 조달이 중단되었고, 그 뒤 옵션 Fast Reserve는 유닛별로 공개되지 않습니다.
+- **아직 빠진 것**: 의무 주파수 응답(MFR), 옵션 Fast Reserve, 스핀 대기, 블랙스타트, 제약 계약. 공개 경매 밖의 의무·양자계약이라 회사 결산서와의 차이로 범위를 잡습니다(5.9절).
 
 ### 5.4 검증 실험: "출력 여유" 하나로 실제 운전을 설명할 수 있나 → **아니다**
 
@@ -423,6 +424,32 @@ Dinorwig 연간 BM 물량(offer + bid)의 평균 절대 오차:
 
 ---
 
+### 5.9 결산서 대조: 공개 자료가 못 잡는 몫은 얼마인가
+
+코드: `gbess/validation/accounts.py` → `results/validation/accounts.csv`. 결산서 숫자와 쪽수는 `literature/sources/psh/accounts.csv`에 있습니다.
+
+**Cruachan은 발전소 하나만 가진 회사의 결산서가 있습니다.** Drax Pumped Storage Ltd(기업등기 06657336)는 2021년 7월부터 Cruachan만 소유합니다. 이 회사의 결산서는 수입을 세 줄로 나눕니다: 전력 판매, BM, 부가서비스·기타. 부가서비스는 결산서 말로 "스핀 대기, 예비력, 주파수 응답, 블랙스타트, 제약 계약, 무효전력" 수입입니다. 그래서 공개 자료로 다시 만든 값과 항목별로 맞대 볼 수 있습니다.
+
+| £M | 2022 | 2023 | 2024 | 2025 |
+| --- | --- | --- | --- | --- |
+| BM: 결산서 | 25.0 (+ 소비자 보상기금 6.1 = 31.1) | 18.8 | 11.2 | 11.4 |
+| BM: 공개 재구성 (Elexon) | 29.3 | 19.5 | 11.7 | 10.9 |
+| 전력 판매 − 매출원가 | 71.7 | 127.1 | 62.4 | 47.4 |
+| 도매 (PN × 당일 MID) | 36.8 | 40.8 | 40.4 | 38.2 |
+| 부가서비스·기타: 결산서 | 25.7 | 30.6 | 24.5 | 21.3 |
+| 용량시장 + 무효전력 + STOR: 공개 | 6.1 | 5.4 | 8.0 | 9.6 |
+| **공개되지 않는 부가서비스 (차이)** | **19.6** | **25.2** | **16.5** | **11.7** |
+| 공개 재구성 ÷ 결산서 (매출 − 매출원가) | 59% | 37% | 61% | 73% |
+
+무엇을 알 수 있나
+1. **BM 재구성이 맞습니다.** 결산서 BM과 5% 안팎으로 같습니다. 2022년 결산서 BM은 소비자 보상기금 납부 £6.1M을 뺀 값이므로 더하면 31.1 대 29.3입니다. 3.6절 채택 모형과 엔진의 BM 목표값을 믿을 근거가 생겼습니다.
+2. **공개되지 않는 부가서비스 계약은 Cruachan에 연 £12~25M, MW당 £26~56k입니다.** 5.8절에서 "실제 양수발전이 쉬면서 여유를 비워 두는 것은 보이지 않는 계약 때문"이라고 추정했는데, 그 계약의 크기가 처음으로 숫자로 나왔습니다. CRUA-3의 계통 안정화(Stability Pathfinder) 계약(Drax 발표 연 약 £5M)도 이 안에 있습니다.
+3. **도매 차이는 선도 판매입니다.** 결산서 전력 판매에는 몇 달 전에 미리 판 값이 들어 있습니다. 공개 재구성은 당일 가격(MID)으로만 계산합니다. 2023년 차이(£86M)가 가장 큰 것은 2022년 고가에 미리 팔아 둔 효과이고, Drax도 그렇게 설명합니다. 이것은 "정보 수준"이 아니라 **헤지 수단**의 가치라서, 가상 자산 엔진에는 넣지 않고 별도 항목으로 보고합니다.
+
+Dinorwig + Ffestiniog(First Hydro Company)는 시장별 구분이 없어서 합계만 비교합니다. 공개 재구성은 결산서(매출 − 매출원가)의 17~66%입니다.
+
+연구에 주는 의미: 장주기 저장장치 가치를 공개 시장만으로 계산하면, Cruachan 기준으로 실제 총이익의 약 40~60%가 빠집니다. 빠지는 몫은 (a) 부가서비스 양자계약 MW당 £26~56k/yr와 (b) 선도 판매 헤지입니다. cap-and-floor 분석에서 이 두 몫을 범위로 넣어야 floor 발동 확률을 과대평가하지 않습니다.
+
 ## 6. 지금 할 수 있는 것과 아직 못 하는 것
 
 | 할 수 있다 | 아직 못 한다 (다음 작업) |
@@ -430,7 +457,7 @@ Dinorwig 연간 BM 물량(offer + bid)의 평균 절대 오차:
 | 양수발전 4곳의 2016-09~2026-09 월별 도매·BM 수익 | **가상 자산의 입찰 규칙**: 채택 곡선 α(단가) 위에서 기대수익 α·단가가 가장 큰 단가를 고르는 방식과, 실제 양수발전의 입찰 습관을 따르는 방식을 비교 |
 | BM 채택 모형(입찰 단가 + 계통 상태). 연간 BM 물량 오차 약 30%(표본 밖 발전소) | 배터리 채택 모형: 배터리 BOD는 받았음(2019~). PN·MEL·MIL을 더 받아 패널을 만들면 스코틀랜드 위치 효과를 43기로 보강할 수 있음 |
 | BM 층 엔진(두 단계 롤링, 정지 반영, α × 여유). 발전량 검증 오차 19% | 여유 보유 계약(MFR·예비력)의 가치: 결산서 차이로 범위를 잡고, 엔진에 "여유를 비우면 받는 값"으로 넣어 실제 대기 운전이 재현되는지 시험 |
-| 용량시장·무효전력·FFR·STOR 수입 | MFR·Fast Reserve·블랙스타트 (결산서와의 차이로 추정) |
+| 용량시장·무효전력·FFR·STOR·확정 Fast Reserve 수입, Cruachan 결산서 항목별 대조(5.9절) | 공개되지 않는 부가서비스 계약을 엔진에 "여유를 비우면 받는 값"으로 넣기 (Cruachan MW당 £26~56k/yr를 기준 범위로) |
 | 가상 장주기 자산 4종의 완전예측·롤링 운전, 예비력 여유 제약 | 기술 매개변수 1차 자료 확인 (지금은 임시값) |
 | 수익 경로에 cap-and-floor 적용, IRR·소비자 부담 | 풍력·수요 예측 기반 롤링 (정보 수준 3) |
 | 가격 결측 자동 감시와 처리 기록 | 구조층 계통 모형 (PyPSA-GB), 기상연도 40개 |
@@ -443,7 +470,7 @@ BM 층은 3.5절에 구현했고, 검증 결과는 5.6절에 있습니다. BM �
 
 | 파일 | 하는 일 |
 | --- | --- |
-| `gbess/fetch/elexon.py` | Elexon 자료 받기 (BM 현금흐름·물량 전 유닛, 양수 PN·BOALF·MEL·MIL, 양수·배터리 BOD, 연료별 발전 FUELHH, MID·정산가격). 받은 기록은 `data/raw/elexon/MANIFEST.csv` |
+| `gbess/fetch/elexon.py` | Elexon 자료 받기 (BM 현금흐름·물량 전 유닛, 양수 PN·BOALF·MEL·MIL, 배터리 184기 PN·MEL·MIL·BOD(2019-01~2026-09), 연료별 발전 FUELHH, MID·정산가격). 받은 기록은 `data/raw/elexon/MANIFEST.csv` |
 | `gbess/data/prices.py` | 가격 읽기. 3시간 이하 결측은 보간, 더 긴 결측은 정산가격으로 채우고 개수를 기록 |
 | `gbess/realized/physical.py` | PN + BM 지시 → 실제 출력 |
 | `gbess/realized/psh.py` | 양수발전 월별 수익 패널 → `results/realized/psh_monthly.csv`, `psh_annual.csv` |
@@ -463,6 +490,8 @@ BM 층은 3.5절에 구현했고, 검증 결과는 5.6절에 있습니다. BM �
 | `gbess/model/bm_panel.py` | 양수 유닛 × 30분 패널(여유, 자기 입찰 단가, 받은 물량) → `data/processed/bm_panel/` |
 | `gbess/model/bm_accept.py` | BM 채택 모형과 검증 A·B·C → `results/validation/bm_accept_*.csv` |
 | `gbess/validation/psh_accept.py` | 검증 3: 채택 모형 엔진 → `results/validation/psh_accept.csv` |
+| `gbess/validation/accounts.py` | 결산서 대조 (Cruachan 항목별, First Hydro 합계) → `results/validation/accounts.csv` |
+| `literature/sources/psh/accounts.csv`, `fast_reserve_contracts.csv` | 결산서 숫자(쪽수 포함), 확정 Fast Reserve 계약 15건(보고서 번호 포함) |
 | `gbess/finance/cap_floor.py` | cap-and-floor, IRR, 소비자 부담 |
 | `tests/` | 이 문서의 예제와 불변식 37개 |
 
@@ -474,11 +503,13 @@ BM 층은 3.5절에 구현했고, 검증 결과는 5.6절에 있습니다. BM �
 .venv/bin/python -m gbess.validation.psh_headroom         # 검증 1: 45개 실행, 병렬로 수 분
 .venv/bin/python -m gbess.validation.psh_bm               # 검증 2: 68개 실행, 병렬로 약 30분 (진행 로그 있음)
 .venv/bin/python -m gbess.fetch.elexon bod --units psh --start 2016-09 --end 2026-10    # 입찰 자료 (battery도 가능)
+.venv/bin/python -m gbess.fetch.elexon pn --units battery --start 2019-01 --end 2026-10    # 배터리 PN (mels, mils도 같은 방식, 각 수십 분)
 .venv/bin/python -m gbess.fetch.elexon fuelhh --start 2016-09 --end 2026-10
 .venv/bin/python -m gbess.fetch.neso constraints
 .venv/bin/python -m gbess.model.bm_panel 2016 2026        # 상태표·패널, 약 30초
 .venv/bin/python -m gbess.model.bm_accept                 # 채택 모형 검증 A·B·C, 약 1~2분
 .venv/bin/python -m gbess.validation.psh_accept           # 검증 3: 40개 실행, 병렬로 약 1.5시간
+.venv/bin/python -m gbess.validation.accounts             # 결산서 대조, 몇 초
 ```
 
 환경은 저장소의 `.venv`이고, 설치된 패키지 버전은 `requirements.lock`에 고정되어 있습니다. 새 컴퓨터에서는 `python3 -m venv .venv && .venv/bin/pip install -r requirements.lock`으로 만듭니다.

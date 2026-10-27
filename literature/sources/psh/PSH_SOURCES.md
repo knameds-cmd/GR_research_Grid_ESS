@@ -84,6 +84,22 @@ Examples of firm FR contracts held by PSH [V, report 132511 "Previously accepted
 
 Rough scale [C]: £250–500/h × ~17 h/day × 365 days ≈ **£1.5–3m per contract per year**. That puts FHC's firm FR at roughly £3–5m/yr in 2018-19.
 
+**Full contract list, Sep 2015 – Dec 2019 (added 2026-10-27)** [V]. I found the monthly post-assessment reports for Sep 2015 – Apr 2017 by walking NESO document ids. Ids decrease by 10 per month from 59251 (Sep 2015) to 59066 (Apr 2017). Reports for July 2017 – March 2019 are the ids listed above plus 93006/93016/93031/95416/103346/284851. Every report also lists all live accepted contracts, so the set has no hole for contracts that were live at any report date. The only gap is a contract that both started and ended between May and June 2017; none is mentioned in the July 2017 report.
+
+Late 2019 had two one-month contracts for EFA blocks 3–6, 07:00–23:00:
+- Nov 2019: 90 MW from First Hydro, unit not named.
+- Dec 2019: FFES-4.
+
+Their prices are not published (WebEx decks 155181, 157036).
+
+The 15 accepted PSH contracts (unit, term, £/h availability and positional fees, energy fee, MW, windows) are in `fast_reserve_contracts.csv`, with the source doc id on every row. The PDFs are saved in `fast_reserve/` (git-ignored). `gbess.realized.ancillary.fast_reserve()` values them as availability fee × window hours. The positional fee is kept separately as an upper bound. Annual result [C]:
+
+| £m | 2016 | 2017 | 2018 | 2019 |
+|---|---|---|---|---|
+| FFES | 4.25 | 3.11 | 3.60 | 3.60 |
+| CRUA | 2.42 | 0.95 | 0.76 | 0.30 |
+| DINO | 0 | 0 | 0 | 0 |
+
 Firm FR and firm STOR procurement was **suspended in January 2020** "due to the existing method for firm procurement no longer being compliant with the EU's Clean Energy Package" [V, FHC accounts 2020, Strategic report p.1]. After that, FR was bought only as **Optional FR**, which had no tender data. NESO says it stopped the MIR after June 2021 [S, opennetzero mirror text]. **No per-unit Optional FR payments are public.** Quick Reserve replaced FR in Dec 2024 (per the user brief, not re-checked).
 
 ---
@@ -223,6 +239,45 @@ Capacity Market statements:
 - Hydro and pumped-storage CM agreements worth "around £10 million in the delivery period October 2024 to September 2025" [V, FY2021 results p.7].
 - The Cruachan units 3–4 upgrade (£80m, +40 MW, 2027) is "underpinned by 15-year Capacity Market agreements (>£220 million)" [V, FY2024 results].
 
+### 4.2a Drax Pumped Storage Ltd: Cruachan on its own (added 2026-10-27)
+
+**Companies House:** Drax Pumped Storage Limited, no. **06657336**. Before 2021 the company was dormant under other names (Drax Corporate Developments, Drax Biomass (Immingham)), so its pre-2021 accounts are not about Cruachan. On 30 Jun 2021 it bought "the trade and assets of the Drax Power Limited generation businesses at the Cruachan Power Station" and started trading in July 2021. From then on it owns only Cruachan [V, 2022 accounts p.1]. In 2019–2020 Cruachan sat inside a larger Drax company, so there is no Cruachan-only figure for those years.
+
+The accounts are scanned images. I read them visually. They are saved as `DPSL_accounts_YYYY.pdf` for 2021–2025 (git-ignored). Numbers are in `accounts.csv` with page references.
+
+Note 4 "Revenue" splits revenue into **electricity sales / balancing market revenues / ancillary revenues and other income**. Ancillary revenue "primarily relate[s] to spin generation income, reserve income, frequency response income, black start income, constraint payments and reactive power income" [V, 2022 accounts p.24; 2024 p.27, which omits black start from the list].
+
+| £m | 2021 (Jul–Dec) | 2022 | 2023 | 2024 | 2025 |
+|---|---|---|---|---|---|
+| Electricity sales | 24.1 | 172.5 | 215.7 | 96.4 | 58.9 |
+| Balancing market | 16.0 | 25.0 (net of £6.1m Voluntary Energy Redress Fund payment) | 18.8 | 11.2 | 11.4 |
+| Ancillary and other | 12.7 | 25.7 | 30.6 | 24.5 | 21.3 |
+| **Revenue** | 52.8 | 223.1 | 265.1 | 132.1 | 91.6 |
+| Cost of sales | 21.0 | 100.8 | 88.6 | 34.0 | 11.5 |
+| Gross profit | 31.8 | 122.3 | 176.5 | 98.1 | 80.1 |
+| EBITDA | 27.9 | 114.3 | 166.4 | 83.0 | 63.6 |
+| Availability (excl. planned outages) | 97.0% | 99.1% | 98.4% | 99.3% | 98.2% |
+
+- The 2022 note 4 prints a total of 180,246. The three lines sum to 223,104, which equals the income statement, so the printed total is a typo.
+- In 2025 the company used the subsidiary audit exemption, so those accounts are unaudited.
+- On 30 Dec 2025 "a cable fault occurred which impacted units 3&4" [V, 2025 p.2].
+
+**Comparison with the public reconstruction** (`gbess.validation.accounts` → `results/validation/accounts.csv`) [C]:
+
+| £m | 2022 | 2023 | 2024 | 2025 |
+|---|---|---|---|---|
+| BM, accounts | 25.0 (+6.1 redress = 31.1) | 18.8 | 11.2 | 11.4 |
+| BM, Elexon reconstruction | 29.3 | 19.5 | 11.7 | 10.9 |
+| Electricity sales − cost of sales | 71.7 | 127.1 | 62.4 | 47.4 |
+| Wholesale at MID, reconstruction | 36.8 | 40.8 | 40.4 | 38.2 |
+| Ancillary and other, accounts | 25.7 | 30.6 | 24.5 | 21.3 |
+| CM + ORPS + STOR, reconstruction | 6.1 | 5.4 | 8.0 | 9.6 |
+| **Unpublished ancillary (difference)** | **19.6** | **25.2** | **16.5** | **11.7** |
+
+- **BM matches within about 5%.** This confirms the Tagged-volume reconstruction.
+- The wholesale gap is forward selling and shaping. Drax says 2023 "included the benefit of forward selling high priced peak power" [V, 2024 p.1].
+- The unpublished ancillary of £12–25m a year (£26–56/kW/yr on 453 MW) is the value of spin, reserve, frequency-response, black-start and constraint contracts. CRUA-3's Stability Pathfinder contract (≈£5m/yr per Drax) sits inside it.
+
 ### 4.3 SSE: Foyers
 
 I found no separate figures. SSE reports Foyers inside SSE Renewables (hydro), with no pumped-storage line [S, search of SSE results; not exhaustive]. SSE Renewables says Foyers has an "average annual output 213 million units" (GWh) [V, https://www.sserenewables.com/hydro/foyers/]. For a top-down check on Foyers, use bottom-up public data only: BM cashflows, ORPS, CM register and STOR. **Unverified**: whether SSE Generation Ltd's statutory accounts break out hydro.
@@ -302,6 +357,7 @@ These are BM-submitted parameters, not physical minima. NDZ, MZT and MNZT can be
 10. FHC EBITDA ≈ (£m): 103, 108, 102, 79, 126, 114, 117 (incl. £20m insurance), 280, 265, 140, 82 for 2015 to 2025.
 11. FHC has no market split. Only the IFRS 9 (bilateral/traded) vs IFRS 15 (contracts; likely BM, ancillary and CM) split is given, e.g. 2024: £134m vs £187m.
 12. Drax "Pumped storage & hydro" Adj. EBITDA (£m): 71, 73, 68, 171, 230 (253 excl. EGL), 138, 111 for 2019 to 2025. It includes ~126 MW of run-of-river hydro, and Daldowie to 2022.
-13. Drax Flexible Generation revenue: £381m in 2023, £223m in 2024, £172m in 2025. Ancillary services within it: £30.4m, £24.2m, £21.2m. Cruachan alone is not reported. Foyers has no separate disclosure.
+13. Drax Flexible Generation revenue: £381m in 2023, £223m in 2024, £172m in 2025. Ancillary services within it: £30.4m, £24.2m, £21.2m. Foyers has no separate disclosure.
+    Cruachan alone *is* reported, by Drax Pumped Storage Ltd (06657336, from Jul 2021), split into electricity / BM / ancillary (section 4.2a). Its BM line matches the Elexon reconstruction within ~5%. Unpublished ancillary contracts are worth £12–25m/yr.
 14. Physical data (IPR 2005 primary): Dinorwig 6×288 MW gen / 275 MW pump, ~9 GWh, 74–75%. Ffestiniog 4×90 / 75 MW, ~1.4 GWh, 72–73%. Dinorwig pump→generate ≈ 6 + 1.5 min.
 15. Cruachan: 440 MW, ≥16 h at full output (≈7 GWh), efficiency not published. Foyers: 2×150 MW, ~6.3 GWh [S], efficiency not published. Elexon dynamic data gives SEL/SIL/MZT/NDZ per BMU.
