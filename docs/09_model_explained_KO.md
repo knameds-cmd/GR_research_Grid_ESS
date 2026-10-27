@@ -216,6 +216,37 @@ o ≤ α_o × (가용 출력 − FPN),    b ≤ α_b × (FPN + 가용 입력)
 
 **한계**: 기존 유닛이 받던 지시로 맞춘 모형이라, 새 자산이 들어와 지시를 나눠 갖는 잠식 효과는 없습니다(구조층에서 다룸). 단가는 자산이 정하는 값이라 검증에는 실제 입찰 단가를 넣고, 가상 자산에는 입찰 규칙을 따로 정해야 합니다(6장).
 
+### 3.7 예비력 보유 (코드: `gbess/engine/dispatch_bm.py`의 `reserve_price`)
+
+**왜 넣나**: 결산서에서 공개되지 않는 부가서비스 수입이 Cruachan에 연 £12~25M이었습니다(5.9절). 그 맨 앞 항목이 **스핀 대기(spin generation)** 수입입니다. 스핀 대기는 유닛을 물 없이 돌려 두었다가, 부르면 수십 초 안에 발전하는 운전입니다. "쉬면서 여유를 남겨 두는" 실제 운전에 돈을 주는 계약이므로, 엔진에 이 값을 넣어야 실제 운전을 설명할 수 있는지 시험할 수 있습니다.
+
+**식**: 시간마다 비워 둘 상향 예비력 r(MW)을 엔진이 고르고, 보유한 시간만큼 단가 π(£/MW/h)를 받습니다.
+
+```
+목적함수에 +  π × r × 0.5h
+양수형:  FPN 발전 + (P/Pc) × FPN 양수 + r ≤ 가용 출력   (양수 중인 유닛은 스핀 대기를 못 함)
+배터리:  FPN 방전 − FPN 충전 + r ≤ 가용 출력           (충전을 멈추고 바로 방전 가능)
+저장량 ≥ 최소 저장량 + r × 지속시간 ÷ 방전 효율        (불려 나가면 낼 물이 있어야 함)
+```
+
+**정한 것과 그 이유** (Dinorwig 한 주 시험에서 고친 것 두 가지를 그대로 남깁니다)
+1. **여유는 FPN 기준입니다.** 처음에는 BM 지시까지 반영한 실제 출력을 기준으로 두었습니다. 그러자 예비력과 BM offer가 같은 여유를 서로 깎아 먹어, 예비력을 가진 자산이 BM 지시를 덜 받았습니다. 실제로는 NESO가 예비력으로 잡아 둔 여유를 BM offer로 불러 씁니다. 그래서 둘은 같은 여유를 함께 씁니다. 불려 나가 낸 에너지는 offer 단가로 정산됩니다.
+2. **양수 중인 유닛은 예비력을 못 냅니다.** 처음에는 양수를 멈추는 것도 상향 여유로 셌습니다. 그랬더니 엔진이 예비력을 지키려고 양수를 늘렸습니다. Dinorwig는 양수에서 발전으로 바꾸는 데 약 7.5분이 걸려서, 수십 초 안에 내야 하는 스핀 대기를 할 수 없습니다.
+3. **하루 전에 약속합니다.** 롤링의 하루 전 단계가 FPN과 함께 그날의 r을 정합니다. 실시간 단계는 그 r을 지킵니다. 약속한 r은 BM 지시가 하나도 없어도(FPN만으로 운전해도) 지킬 수 있어야 합니다.
+
+**손으로 풀어 보기** (시험 `test_reserve_*`)
+- **0.5 MWh가 차 있는 1 MW 자산.** 가격 0, π = £10, 지속 1시간.
+  - 출력 여유는 1 MW지만, 1시간 낼 물이 0.5 MWh뿐이라 r = 0.5 MW입니다.
+  - 네 구간(2시간) 수입 = 10 × 0.5 × 2 = £10.
+- **가득 찬 4 MWh, 1 MW 자산.** 첫 구간 가격 £100, π = £30.
+  - 첫 구간에 방전하면 100 × 1 × 0.5h = £50, 비워 두면 30 × 1 × 0.5h = £15 → 방전합니다.
+  - 가격이 0인 나머지 구간은 1 MW를 비워 둡니다.
+
+**한계**
+- π는 공개되지 않으므로 하나의 상수로 두고 실제 운전에 맞춥니다(5.10절).
+- 실제 계약은 시간대, 계절, 유닛마다 다르고, 블랙스타트처럼 여유가 아니라 "그 자리에 있는 것"에 주는 돈도 있습니다.
+- 하향 예비력(출력을 줄이는 쪽)은 넣지 않았습니다.
+
 ---
 
 ## 4. [D] 재무층: cap-and-floor는 수익을 어떻게 바꾸나
@@ -450,6 +481,20 @@ Dinorwig + Ffestiniog(First Hydro Company)는 시장별 구분이 없어서 합�
 
 연구에 주는 의미: 장주기 저장장치 가치를 공개 시장만으로 계산하면, Cruachan 기준으로 실제 총이익의 약 40~60%가 빠집니다. 빠지는 몫은 (a) 부가서비스 양자계약 MW당 £26~56k/yr와 (b) 선도 판매 헤지입니다. cap-and-floor 분석에서 이 두 몫을 범위로 넣어야 floor 발동 확률을 과대평가하지 않습니다.
 
+### 5.10 검증 실험 4: 쉬는 데 값을 주면 실제 운전이 재현되나 (실행 중)
+
+코드: `gbess/validation/psh_reserve.py` → `results/validation/psh_reserve.csv`.
+
+검증 3과 같은 엔진(채택 모형 others_all, 로짓)에 예비력 보유(3.7절)를 더해 Dinorwig 2017~2025년을 돌립니다.
+- **설정**: 단가 π ∈ {0, 2, 4, 8, 16} £/MW/h, 지속 조건 1시간.
+- **보정**: 2017~2020년 발전량에 가장 잘 맞는 π를 고릅니다.
+- **검증**: 그 π로 2021~2025년의 발전량, BM 물량, 거래 수익을 실제와 비교합니다.
+- **돈으로 따로 확인**: 엔진이 번 예비력 수입을 결산서의 공개되지 않는 몫과 비교합니다. 이 숫자는 보정에 쓰지 않았습니다.
+  - First Hydro: 매출 − 매출원가 − 공개 재구성
+  - Cruachan: MW당 £26~56k
+
+결과는 실행이 끝나면 이 절에 채웁니다.
+
 ## 6. 지금 할 수 있는 것과 아직 못 하는 것
 
 | 할 수 있다 | 아직 못 한다 (다음 작업) |
@@ -490,13 +535,14 @@ BM 층은 3.5절에 구현했고, 검증 결과는 5.6절에 있습니다. BM �
 | `gbess/model/bm_panel.py` | 양수 유닛 × 30분 패널(여유, 자기 입찰 단가, 받은 물량) → `data/processed/bm_panel/` |
 | `gbess/model/bm_accept.py` | BM 채택 모형과 검증 A·B·C → `results/validation/bm_accept_*.csv` |
 | `gbess/validation/psh_accept.py` | 검증 3: 채택 모형 엔진 → `results/validation/psh_accept.csv` |
+| `gbess/validation/psh_reserve.py` | 검증 4: 예비력 보유 단가 → `results/validation/psh_reserve.csv` |
 | `gbess/validation/accounts.py` | 결산서 대조 (Cruachan 항목별, First Hydro 합계) → `results/validation/accounts.csv` |
 | `literature/sources/psh/accounts.csv`, `fast_reserve_contracts.csv` | 결산서 숫자(쪽수 포함), 확정 Fast Reserve 계약 15건(보고서 번호 포함) |
 | `gbess/finance/cap_floor.py` | cap-and-floor, IRR, 소비자 부담 |
-| `tests/` | 이 문서의 예제와 불변식 37개 |
+| `tests/` | 이 문서의 예제와 불변식 42개 |
 
 ```bash
-.venv/bin/python -m pytest -q tests                       # 시험 37개
+.venv/bin/python -m pytest -q tests                       # 시험 42개
 .venv/bin/python -m gbess.realized.psh --start 2016-09 --end 2026-10
 .venv/bin/python -m gbess.realized.ancillary
 .venv/bin/python -m gbess.realized.total
@@ -510,6 +556,7 @@ BM 층은 3.5절에 구현했고, 검증 결과는 5.6절에 있습니다. BM �
 .venv/bin/python -m gbess.model.bm_accept                 # 채택 모형 검증 A·B·C, 약 1~2분
 .venv/bin/python -m gbess.validation.psh_accept           # 검증 3: 40개 실행, 병렬로 약 1.5시간
 .venv/bin/python -m gbess.validation.accounts             # 결산서 대조, 몇 초
+.venv/bin/python -m gbess.validation.psh_reserve          # 검증 4: 36개 실행, 병렬로 약 2시간
 ```
 
 환경은 저장소의 `.venv`이고, 설치된 패키지 버전은 `requirements.lock`에 고정되어 있습니다. 새 컴퓨터에서는 `python3 -m venv .venv && .venv/bin/pip install -r requirements.lock`으로 만듭니다.

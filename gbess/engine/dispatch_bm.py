@@ -11,7 +11,7 @@
         z[t]          offer와 bid를 같은 구간에 동시에 받지 못하게 하는 이진변수
         y[t]          실제 충전·방전 동시 금지 이진변수
     목적함수
-        max Σ dt·[ MID·(fd − fc) + offer_price·o − bid_price·b ] − 가변비용·Σ dt·pd
+        max Σ dt·[ MID·(fd − fc) + offer_price·o − bid_price·b ] − 가변비용·Σ dt·pd  (+ reserve_price·r, 아래 예비력 보유)
     BM 물량 상한 (외생)
         o[t] ≤ κ_o × offer_mw_per_mw[t] × 출력,   b[t] ≤ κ_b × bid_mw_per_mw[t] × 출력
         offer_mw_per_mw 등은 같은 지역 저장장치 무리가 실제로 받은 MW당 지시 (gbess.data.bm_opportunity).
@@ -42,6 +42,24 @@ p_dis_t, p_ch_t, pump_units_t: 구간별 가용 출력·입력·양수 가능 �
     기댓값이므로 같은 구간에 offer와 bid가 둘 다 양수일 수 있다(실제로는 둘 중 하나가 일어나는 것을 평균한 것).
     그래서 이 방식에서는 offer·bid 동시 금지 이진변수(z)를 두지 않는다. 대신 각 상한이 기댓값이라 동시 수락으로
     얻는 차익도 기댓값 안에 머문다.
+
+예비력 보유 (reserve_price를 주면, 09 문서 5.10)
+    r[t]          비워 두는 상향 예비력 MW. 단가 reserve_price(£/MW/h)를 보유한 시간만큼 받는다
+    배터리:  fd − fc + r ≤ Pt           (충전을 멈추고 바로 방전으로 바꿀 수 있다)
+    양수형:  fd + (P/Pc)·fc + r ≤ Pt    (양수 중인 유닛은 예비력을 낼 수 없다. 남은 유닛이 스핀 대기로 낸다)
+        양수발전의 공개되지 않는 부가서비스는 결산서에서 "스핀 대기(spin generation) 수입"이 맨 앞이다(Cruachan).
+        스핀 대기는 유닛을 물 없이 돌려 두고 수십 초 안에 발전하는 운전이라, 양수 중인 유닛은 할 수 없다.
+        Dinorwig는 양수 → 발전 전환에 약 7.5분이 걸린다(PSH_SOURCES 5.1). 처음에 양수 정지도 예비력으로 셌더니
+        엔진이 예비력을 지키려고 양수를 늘렸다(2026-10-27 한 주 시험).
+    저장량 ≥ 최소 저장량 + r × reserve_hours ÷ 방전 효율   (불려 나가면 그 시간 동안 낼 물이 있어야 한다)
+    fpn_feasible이면 FPN 경로 저장량(sf)에도 같은 저장량 조건을 둔다(BM 지시가 없어도 약속을 지킬 수 있게).
+    여유는 FPN 기준이다. 예비력으로 잡아 둔 여유를 NESO가 BM offer로 불러 쓰는 것이 실제 예비력 운용이므로
+    r과 BM offer(o ≤ α_o × (Pt − FPN))는 같은 여유를 나눠 쓰지 않고 함께 쓴다. 불려 나가 낸 에너지는 offer 단가로 정산.
+    (처음에는 실제 출력 기준 pd − pc + r ≤ Pt로 두었으나, 그러면 예비력과 BM offer가 서로 깎아 먹어
+    예비력을 가진 자산이 BM 지시를 덜 받는 비현실적인 해가 나왔다. 2026-10-27 Dinorwig 한 주 시험.)
+    reserve_fixed: r을 이 값으로 고정(롤링 실시간 단계. 예비력은 하루 전에 FPN과 함께 약속한다).
+    공개되지 않는 스핀 대기·예비력·주파수 응답 계약을 "여유를 비우면 받는 값" 하나로 나타낸 것이다.
+    reserve_up_mw(고정 여유, 대가 없음)는 검증 1용으로 그대로 둔다.
 """
 import time
 from dataclasses import asdict
@@ -95,7 +113,7 @@ class LP:
 def solve_bm(price: pd.Series, opp: pd.DataFrame, asset, kappa_offer=1.0, kappa_bid=1.0, fpn_fixed=None,
              terminal="geq_init", water_value=None, s_start=None, reserve_up_mw=0.0, reserve_hours=1.0,
              gap=1e-6, time_limit=600, p_dis_t=None, p_ch_t=None, pump_units_t=None, fpn_feasible=True,
-             imbalance_penalty=None):
+             imbalance_penalty=None, reserve_price=None, reserve_fixed=None):
     p = price.to_numpy(float)
     if np.isnan(p).any():
         raise ValueError("도매 가격 결측")
@@ -149,6 +167,23 @@ def solve_bm(price: pd.Series, opp: pd.DataFrame, asset, kappa_offer=1.0, kappa_
     if imbalance_penalty is not None:
         iu = lp.var("iu", T, 0, P + Pc, obj=-imbalance_penalty * DT)    # FPN+BM보다 더 낸 양
         idn = lp.var("idn", T, 0, P + Pc, obj=-imbalance_penalty * DT)  # 덜 낸 양
+    hold = reserve_price is not None or reserve_fixed is not None
+    rp = np.zeros(T) if reserve_price is None else np.broadcast_to(np.asarray(reserve_price, float), T).copy()
+    if hold:
+        if reserve_fixed is None:
+            r = lp.var("r", T, 0, Pt, obj=rp * DT)
+        else:
+            rf = np.minimum(np.asarray(reserve_fixed, float), Pt)
+            if fpn_fixed is not None:   # FPN 반올림(펌프 단위)으로 여유가 조금 줄었으면 그만큼만 지킨다
+                f = np.asarray(fpn_fixed, float)
+                used = np.where(f > 0, f, -f * (P / Pc if asset.pump_units is not None else -1.0))
+                rf = np.clip(np.minimum(rf, Pt - used), 0, None)
+            r = lp.var("r", T, rf, rf, obj=rp * DT)
+        r_e = reserve_hours / asset.eta_dis
+        fc_coef = P / Pc if integer_pump else -1.0
+        for t in range(T):
+            lp.row([(fd[t], 1), (fc[t], fc_coef), (r[t], 1)], -np.inf, Pt[t])
+            lp.row([(s[t], 1), (r[t], -r_e)], asset.soc_min * E, np.inf)
 
     for t in range(T):
         # 에너지 수지
@@ -179,6 +214,9 @@ def solve_bm(price: pd.Series, opp: pd.DataFrame, asset, kappa_offer=1.0, kappa_
             kf = lp.var("kf", T, 0, kf_ub, integer=True)
             for t in range(T):
                 lp.row([(fc[t], 1), (kf[t], -Pc / asset.pump_units)], 0.0, 0.0)
+        if hold:   # 약속한 예비력은 FPN만으로 운전해도 지킬 수 있어야 한다
+            for t in range(T):
+                lp.row([(sf[t], 1), (r[t], -r_e)], asset.soc_min * E, np.inf)
         # FPN 방전은 예비력 여유를 뺀 출력까지만
         for t in range(T):
             lp.row([(fd[t], 1.0)], -np.inf, max(Pt[t] - reserve_up_mw, 0.0))
@@ -226,6 +264,8 @@ def solve_bm(price: pd.Series, opp: pd.DataFrame, asset, kappa_offer=1.0, kappa_
                         "offer_price": po, "bid_price": pb, "offer_cap": o_cap, "bid_cap": b_cap}, index=price.index)
     out["net_mw"] = out["discharge_mw"] - out["charge_mw"]
     out["imbalance_mw"] = (g(iu) - g(idn)) if imbalance_penalty is not None else 0.0
+    out["reserve_mw"] = g(r) if hold else 0.0
+    out["reserve_price"] = rp
     info = {"status": res.message, "optimal": bool(res.success), "mip_gap": getattr(res, "mip_gap", None),
             "seconds": round(time.time() - t0, 2), "periods": T, "offer_bid_binaries": int(len(both)),
             "mode_binaries": int(len(mode_t)), "placeholders": asset.placeholders(),
@@ -242,9 +282,11 @@ def summarise_bm(out, asset):
     offer = float((out["offer_price"] * out["offer_mw"]).sum() * DT)
     bid = float(-(out["bid_price"] * out["bid_mw"]).sum() * DT)
     var = float(asset.var_cost * out["discharge_mw"].sum() * DT)
-    total = wholesale + offer + bid - var
+    reserve = float((out["reserve_price"] * out["reserve_mw"]).sum() * DT) if "reserve_mw" in out else 0.0
+    total = wholesale + offer + bid - var + reserve
     k = lambda v: v / asset.p_dis_mw * yr / 1e3   # noqa: E731
     return {"wholesale_k": k(wholesale), "bm_offer_k": k(offer), "bm_bid_k": k(bid), "var_cost_k": -k(var),
+            "reserve_k": k(reserve), "reserve_mw_mean": float(out["reserve_mw"].mean()) if "reserve_mw" in out else 0.0,
             "total_k_per_mw_yr": k(total), "gen_mwh": float(out["discharge_mw"].sum() * DT),
             "pump_mwh": float(out["charge_mw"].sum() * DT), "offer_mwh": float(out["offer_mw"].sum() * DT),
             "bid_mwh": float(out["bid_mw"].sum() * DT),

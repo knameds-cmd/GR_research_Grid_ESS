@@ -8,6 +8,8 @@
      끝 저장량은 1단계와 같은 water value로 평가한다.
 정보 가정 (결과에 기록): 2단계는 D 하루의 BM 기회를 미리 안다. 실제로는 지시가 실시간에 오므로 이 단계는 상한 쪽이다.
 가용 출력(정지)은 운영자가 미리 아는 정보로 두고 두 단계 모두 실제 값을 쓴다.
+reserve_price(£/MW/h)를 주면 1단계가 FPN과 함께 그날의 예비력 r을 정하고, 2단계는 그 r을 지킨다(gbess.engine.dispatch_bm).
+2단계가 r을 지키며 풀리지 않으면 불균형 대비책에서는 r을 다시 고르게 한다(그날은 기록에 남는다).
 """
 import numpy as np
 import pandas as pd
@@ -33,7 +35,8 @@ def _fc_opp(hist_opp: pd.DataFrame, hist_price: np.ndarray, H, method):
 
 
 def run_bm(price: pd.Series, opp: pd.DataFrame, asset, horizon_days=3, method="avg", warmup_price: pd.Series = None,
-           warmup_opp: pd.DataFrame = None, avail: pd.DataFrame = None, kappa_offer=1.0, kappa_bid=1.0, gap=1e-4):
+           warmup_opp: pd.DataFrame = None, avail: pd.DataFrame = None, kappa_offer=1.0, kappa_bid=1.0, gap=1e-4,
+           reserve_price=None, reserve_hours=1.0):
     if len(price) % SP_DAY:
         raise ValueError("기간은 하루(48구간) 단위여야 합니다")
     opp = opp.reindex(price.index)
@@ -65,17 +68,20 @@ def run_bm(price: pd.Series, opp: pd.DataFrame, asset, horizon_days=3, method="a
         if av and len(av["p_dis_t"]) < H:   # 기간 끝: 마지막 가용값을 늘려 붙인다
             av = {key: (None if v is None else np.resize(v, H) if len(v) == 0 else np.r_[v, np.full(H - len(v), v[-1])])
                   for key, v in av.items()}
+        rk = dict(reserve_price=reserve_price, reserve_hours=reserve_hours)
         plan, i1 = solve_bm(pd.Series(fp, index=idx), pd.DataFrame(fo, index=idx), asset, kappa_offer, kappa_bid,
-                            terminal="value", water_value=wv, s_start=s, gap=gap, **av)
+                            terminal="value", water_value=wv, s_start=s, gap=gap, **rk, **av)
         fpn = plan["fpn_mw"].to_numpy()[:SP_DAY].copy()
         fpn[np.abs(fpn) < 1e-6] = 0.0
         if asset.pump_units:   # FPN 양수는 펌프 단위의 배수여야 한다. 미세한 수치 오차를 맞춘다
             unit = asset.p_ch_mw / asset.pump_units
             neg = fpn < 0
             fpn[neg] = -np.round(-fpn[neg] / unit) * unit
-        kw2 = dict(fpn_fixed=fpn, terminal="value", water_value=wv, s_start=s, gap=gap, **avail_slice(a, b))
+        kw2 = dict(fpn_fixed=fpn, terminal="value", water_value=wv, s_start=s, gap=gap, **rk, **avail_slice(a, b))
+        r_plan = plan["reserve_mw"].to_numpy()[:SP_DAY] if reserve_price is not None else None
         try:
-            real, i2 = solve_bm(price.iloc[a:b], opp.iloc[a:b], asset, kappa_offer, kappa_bid, **kw2)
+            real, i2 = solve_bm(price.iloc[a:b], opp.iloc[a:b], asset, kappa_offer, kappa_bid, reserve_fixed=r_plan,
+                                **kw2)
         except RuntimeError:
             # 그래도 풀리지 않으면 불균형을 벌금(£1,000/MWh)으로 허용해 다시 푼다. 횟수와 물량을 기록한다
             real, i2 = solve_bm(price.iloc[a:b], opp.iloc[a:b], asset, kappa_offer, kappa_bid,
@@ -87,6 +93,7 @@ def run_bm(price: pd.Series, opp: pd.DataFrame, asset, horizon_days=3, method="a
         seconds += i1["seconds"] + i2["seconds"]
     out = pd.concat(days)
     meta = {"horizon_days": horizon_days, "method": method, "kappa": (kappa_offer, kappa_bid),
+            "reserve_price": reserve_price, "reserve_hours": reserve_hours,
             "solve_seconds": round(seconds, 1), "end_soc_mwh": s, "imbalance_fallback_days": fallback_days,
             "imbalance_mwh": float(out["imbalance_mw"].abs().sum() * 0.5) if "imbalance_mw" in out else 0.0,
             "information": ("FPN은 D 00:00에 예측으로 정함. 실시간 단계는 D의 실제 계통 상태로 계산한 채택 기댓값(α)을 씀"

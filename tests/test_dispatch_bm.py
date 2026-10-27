@@ -166,3 +166,54 @@ def test_accept_free_fpn_trades_off_wholesale_and_headroom():
     out, _ = solve_bm(series([50, 50]), acc(2, ao=[0.5, 0.5], po=[100, 100]), a, terminal="value", water_value=0)
     head = 1 - out["fpn_mw"]
     assert (out["offer_mw"] <= 0.5 * head + 1e-6).all()
+
+
+# ---------------------------------------------------------------- 예비력 보유 (reserve_price)
+def test_reserve_limited_by_stored_energy():
+    # 0.5 MWh가 차 있는 1 MW 자산, 도매 가격 0, 예비력 £10/MW/h, 1시간 지속 조건.
+    # 출력 여유는 1 MW지만 1시간 낼 물이 0.5 MWh뿐이라 r = 0.5. 수입 = 10 × 0.5 MW × 0.5h × 4구간 = £10
+    a = toy(soc_init=1.0)
+    out, _ = solve_bm(series([0, 0, 0, 0]), opp(4), a, reserve_price=10.0, reserve_hours=1.0)
+    assert out["reserve_mw"].to_numpy() == pytest.approx([0.5] * 4)
+    assert float((out["reserve_price"] * out["reserve_mw"]).sum() * DT) == pytest.approx(10.0)
+
+
+def test_reserve_competes_with_discharge():
+    # 가득 찬 4 MWh, 1 MW 자산. 구간 0 가격 £100, 예비력 £30/MW/h (지속 조건 0.5h).
+    # 구간 0에 1 MW 방전하면 £50, 예비력으로 비워 두면 £15 → 방전. 나머지 구간은 가격 0이라 예비력 1 MW
+    a = toy(e_mwh=4, soc_init=1.0)
+    out, _ = solve_bm(series([100, 0, 0]), opp(3), a, reserve_price=30.0, reserve_hours=0.5)
+    assert out["discharge_mw"].iat[0] == pytest.approx(1.0)
+    assert out["reserve_mw"].to_numpy() == pytest.approx([0.0, 1.0, 1.0])
+    assert (out["net_mw"] + out["reserve_mw"] <= 1.0 + 1e-6).all()
+
+
+def test_reserve_fixed_is_held_and_paid():
+    a = toy(e_mwh=4, soc_init=1.0)
+    out, _ = solve_bm(series([100, 0, 0]), opp(3), a, reserve_price=30.0, reserve_hours=0.5,
+                      reserve_fixed=[0.6, 0.6, 0.6])
+    assert out["reserve_mw"].to_numpy() == pytest.approx([0.6] * 3)
+    assert out["net_mw"].iat[0] == pytest.approx(0.4)                # 1 MW − 약속한 0.6 MW
+    r = summarise_bm(out, a)
+    assert r["reserve_k"] > 0 and r["reserve_mw_mean"] == pytest.approx(0.6)
+
+
+def test_rolling_reserve_commits_day_ahead():
+    from gbess.engine.rolling_bm import run_bm
+    rng = np.random.default_rng(3)
+    p = series(rng.normal(60, 30, 96))
+    a = toy(e_mwh=4, soc_init=0.5, eta_ch=0.9, eta_dis=0.9)
+    out, meta = run_bm(p, opp(96), a, horizon_days=1, reserve_price=5.0, reserve_hours=1.0)
+    assert (out["net_mw"] + out["reserve_mw"] <= 1.0 + 1e-6).all()
+    assert (out["soc_mwh"] + 1e-6 >= out["reserve_mw"] * 1.0 / 0.9).all()
+    assert meta["reserve_price"] == 5.0 and out["reserve_mw"].mean() > 0
+
+
+def test_psh_pumping_units_cannot_hold_reserve():
+    # 양수형 2유닛(각 1 MW 발전, 1 MW 양수). 구간 0 가격이 아주 낮아 한 유닛 양수가 이득.
+    # 양수 중인 유닛은 스핀 대기를 못 하므로 그 구간 예비력은 남은 한 유닛분(1 MW)까지만
+    a = toy(p_dis_mw=2, p_ch_mw=2, e_mwh=8, soc_init=0.5, pump_units=2)
+    out, _ = solve_bm(series([-50, 0, 0, 0]), opp(4), a, reserve_price=1.0, reserve_hours=0.5)
+    assert out["charge_mw"].iat[0] > 0
+    pumping_units = out["charge_mw"] / 1.0
+    assert (out["reserve_mw"] <= 2 - pumping_units - out["discharge_mw"] + 1e-6).all()
