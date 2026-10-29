@@ -8,9 +8,10 @@
 
 0. **[`docs/10_study_path_KO.md`](docs/10_study_path_KO.md)**: 학습 경로. 지금 어디까지 왔는지, 어떤 문서를 어떤 순서로 읽고 무엇을 직접 돌려 보고 어떤 질문에 답할 수 있어야 하는지
 1. **[`docs/08_ldes_redesign_KO.md`](docs/08_ldes_redesign_KO.md)**: 장주기 중심 재설계. 질문, 두 층(실증·구조) 방법, "이전에 없던 규칙"을 비교하는 법, 확정한 결정
-2. **[`docs/09_model_explained_KO.md`](docs/09_model_explained_KO.md)**: 모델 해설. 손계산 예제로 실제 수익 재구성, 운전 엔진(BM 층, 채택 모형, 예비력), cap-and-floor 재무층과 검증 실험 1~4, 결산서 대조를 설명
-3. [`docs/07_decisions_and_build_KO.md`](docs/07_decisions_and_build_KO.md): 확정할 것과 구현 차이, 정밀한 연구 환경, 허점 점검표
-4. [`docs/05_method_assessment_KO.md`](docs/05_method_assessment_KO.md), [`docs/06_project_roadmap_KO.md`](docs/06_project_roadmap_KO.md): 단주기 기준의 이전 판단과 로드맵 (장주기 전환 전)
+2. **[`docs/09_model_explained_KO.md`](docs/09_model_explained_KO.md)**: 모델 해설. 손계산 예제로 실제 수익 재구성, 운전 엔진(BM 층, 채택 모형, 예비력, 망요금, 기동 비용), cap-and-floor 재무층과 검증 실험 1~5, 결산서 대조를 설명
+3. **[`docs/11_referee_review_KO.md`](docs/11_referee_review_KO.md)**: 독립 심사 기록(2026-10-29). 이 모델이 학술 비판을 견디는지, 영국 시장 규칙 분석에 맞는지에 대한 판정, 지적별 확인·수정·남은 일
+4. [`docs/07_decisions_and_build_KO.md`](docs/07_decisions_and_build_KO.md): 확정할 것과 구현 차이, 정밀한 연구 환경, 허점 점검표
+5. [`docs/05_method_assessment_KO.md`](docs/05_method_assessment_KO.md), [`docs/06_project_roadmap_KO.md`](docs/06_project_roadmap_KO.md): 단주기 기준의 이전 판단과 로드맵 (장주기 전환 전)
 
 > **새 모델은 `gbess/`입니다.** `model/`과 `results/layer1/`은 단주기 프로토타입입니다. 다시 설계해 만들 예정이므로 결과 수치는 인용하지 마세요(05 문서 7장).
 
@@ -20,7 +21,8 @@
 | --- | --- |
 | [`docs/10_study_path_KO.md`](docs/10_study_path_KO.md) | **학습 경로**: 현재 상태표, 문서 지도(유효/지난 문서), 4단계 학습과 자가 점검 질문, 코드 흐름, 자주 묻는 질문(장주기 자산 현황, 예비력과 모델) |
 | [`docs/08_ldes_redesign_KO.md`](docs/08_ldes_redesign_KO.md) | **장주기 재설계**: 영국 LDES 제도 사실, 규칙 4유형(F·C·P·M)과 비교 방법, 실증층 2016-09~2026-09 + 구조층 미래 × 기상연도, 바뀌는 구현, 확정한 결정 |
-| [`docs/09_model_explained_KO.md`](docs/09_model_explained_KO.md) | **모델 해설**: 실제 수익 재구성(PN·BM 지시·현금흐름), 운전 엔진과 정보 수준, BM 층·채택 모형·예비력 보유, cap-and-floor 재무층, 검증 실험, 결산서 대조, 손계산 예제 |
+| [`docs/09_model_explained_KO.md`](docs/09_model_explained_KO.md) | **모델 해설**: 실제 수익 재구성(PN·BM 지시·현금흐름), 운전 엔진과 정보 수준, BM 층·채택 모형·예비력 보유·망요금(BSUoS·TNUoS)·기동 비용, cap-and-floor 재무층(Ofgem 정산 규칙), 검증 실험 1~5, 결산서 대조, 손계산 예제 |
+| [`docs/11_referee_review_KO.md`](docs/11_referee_review_KO.md) | **독립 심사 기록**: 판정(학술 비판, 규칙 분석 적합성), 주요 지적 9개와 우려 9개의 확인·수정·남은 일, 말할 수 있는 것과 못 하는 것, 다음 작업 순서 |
 | [`literature/sources/psh/PSH_SOURCES.md`](literature/sources/psh/PSH_SOURCES.md) | 양수발전 수입원과 출처: MFR, Fast Reserve 계약 전체, 무효전력, 결산서(First Hydro, Cruachan 단독), 물리 매개변수 |
 | [`docs/07_decisions_and_build_KO.md`](docs/07_decisions_and_build_KO.md) | 확정할 것과 결정별 구현 차이, 오늘 확인한 데이터 사실 F1~F7, 정밀 환경 E1~E7, 허점 점검표 H1~H13 |
 | [`literature/sources/ldes/FACTS.md`](literature/sources/ldes/FACTS.md) | Ofgem LDES cap-and-floor 제도 사실 정리 (기술결정문, Window 1 잠정결정, NERA 비평, 쪽 번호 포함) |
@@ -51,9 +53,9 @@
 | `data/raw/` | 원자료 CSV (NESO EAC 경매, 용량시장 등록부, Elexon 2026-09 샘플). 약 33MB |
 | `data/processed/` | 가공본 (git 제외) |
 | `gbess/` | **새 모델 패키지**: 데이터 받기(`fetch/`), 가격·유닛·계통 상태(`data/`), 실제 수익 재구성(`realized/`), BM 채택 모형(`model/`), 운전 엔진(`engine/`), 검증(`validation/`), 재무층(`finance/`), 기술 매개변수(`config/`). 해설은 `docs/09`, 읽는 순서는 `docs/10` |
-| `tests/` | `gbess` 시험 42개 (손계산 예제, 불변식). `.venv/bin/python -m pytest -q tests` |
-| `results/realized/` | 양수발전 실제 수익 패널 (도매, BM, 거래 밖 수입) |
-| `results/validation/` | 엔진 검증 1~4, 채택 모형 검증, 결산서 대조 |
+| `tests/` | `gbess` 시험 49개 (손계산 예제, 불변식). `.venv/bin/python -m pytest -q tests` |
+| `results/realized/` | 양수발전 실제 수익 패널 (도매, BM, BSUoS, TNUoS 추정, 거래 밖 수입) |
+| `results/validation/` | 엔진 검증 1~5, 채택 모형 검증, 결산서 대조 |
 | `model/` | **(단주기 프로토타입)** 층 1 완전예측 MILP (`data.py` 입력, `layer1.py` 모델). 실행은 루트의 `run_layer1.py`. 재구축 예정 |
 | `results/layer1/` | **(프로토타입)** 모델 결과: 시나리오별 수익 `summary.csv`, 30분 운전 계획 `*_dispatch.csv` |
 

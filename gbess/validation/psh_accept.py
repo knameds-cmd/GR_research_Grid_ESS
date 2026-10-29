@@ -30,6 +30,7 @@ END_2026 = "2026-10-01"   # 자료 끝
 def one(args):
     setting, kind, year = args
     from gbess.data.availability import site_availability
+    from gbess.data.charges import bsuos_storage
     from gbess.data.prices import load_mid
     from gbess.engine.asset import load_technologies
     from gbess.engine.dispatch_bm import summarise_bm
@@ -43,7 +44,8 @@ def one(args):
     wp, _ = load_mid(w0, s)
     o, wo = al.reindex(p.index), al.reindex(wp.index)
     av = site_availability("DINO", s, e, pump_unit_mw=275)
-    out, meta = run_bm(p, o, a, horizon_days=3, method="avg", warmup_price=wp, warmup_opp=wo, avail=av)
+    ch = bsuos_storage(s, e)
+    out, meta = run_bm(p, o, a, horizon_days=3, method="avg", warmup_price=wp, warmup_opp=wo, avail=av, charges=ch)
     r = summarise_bm(out, a)
     yr_frac = len(p) / (365.25 * 48)   # 2026은 아홉 달: 물량은 실제와 같은 기간 합계로 비교
     return {"setting": setting, "kind": kind, "year": year, **{f"model_{k}": v for k, v in r.items()},
@@ -70,7 +72,7 @@ def main(argv=None):
     m["real_bm_mwh"] = m["real_offer_mwh"] + m["real_bid_mwh"]
     m["model_bm_k"] = m["model_bm_offer_k"] + m["model_bm_bid_k"]
     # summarise_bm은 연환산(£k/MW/yr), 실제 값은 그 해 합계 ÷ MW. 2026(아홉 달)은 실제 값을 연환산해 맞춘다
-    for c in ("real_total_k_per_mw_yr", "real_bm_k"):
+    for c in ("real_total_k_per_mw_yr", "real_gross_k_per_mw_yr", "real_bsuos_k", "real_bm_k"):
         m[c] = m[c] / m["period_years"].where(m["year"] == 2026, 1.0)
     OUT.mkdir(parents=True, exist_ok=True)
     m.to_csv(OUT / "psh_accept.csv", index=False)

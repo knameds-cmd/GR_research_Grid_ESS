@@ -73,7 +73,13 @@ def _build(year, units):
     p["scotland"] = p["bmUnit"].map(units.set_index("bmUnit")["scotland"])
 
     st = state(year)
-    p = p.join(st, on="t")
+    ref = [c for c in st.columns if "_x" in c]
+    p = p.join(st.drop(columns=ref), on="t")
+    # 기준 단가 분위수도 같은 발전소 몫을 뺀 값으로 바꾼다 (gbess.data.bm_state)
+    for c in sorted({c.rsplit("_x", 1)[0] for c in ref}):
+        for s in p["site"].dropna().unique():
+            rows = p["site"] == s
+            p.loc[rows, c] = st[f"{c}_x{s}"].reindex(p.loc[rows, "t"]).to_numpy()
     # 지역 물량에서 같은 발전소 몫을 뺀다 (자기 결과로 자기를 설명하지 않게)
     site_tot = p.groupby(["site", "t"])[["offer_mwh", "bid_mwh"]].transform("sum")
     for side in ("offer", "bid"):

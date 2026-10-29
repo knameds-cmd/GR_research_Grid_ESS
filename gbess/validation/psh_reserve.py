@@ -27,13 +27,14 @@ YEARS = range(2017, 2026)
 TRAIN = [2017, 2018, 2019, 2020]
 PRICES = [2.0, 4.0, 8.0, 16.0]
 RESERVE_HOURS = 1.0
-SETTING, KIND = "others_all", "logit"
+SETTING, KIND = "others_train", "logit"   # 2026-10-29: 검증 기간과 겹치지 않는 모형 (독립 심사 지적)
 MW = 1728
 
 
 def one(args):
     pi, year = args
     from gbess.data.availability import site_availability
+    from gbess.data.charges import bsuos_storage
     from gbess.data.prices import load_mid
     from gbess.engine.asset import load_technologies
     from gbess.engine.dispatch_bm import summarise_bm
@@ -45,8 +46,9 @@ def one(args):
     p, _ = load_mid(s, e)
     wp, _ = load_mid(w0, s)
     av = site_availability("DINO", s, e, pump_unit_mw=275)
+    ch = bsuos_storage(s, e)
     out, meta = run_bm(p, al.reindex(p.index), a, horizon_days=3, method="avg", warmup_price=wp,
-                       warmup_opp=al.reindex(wp.index), avail=av, reserve_price=pi, reserve_hours=RESERVE_HOURS)
+                       warmup_opp=al.reindex(wp.index), avail=av, charges=ch, reserve_price=pi, reserve_hours=RESERVE_HOURS)
     r = summarise_bm(out, a)
     idle = float((out["net_mw"].abs() < 1.0).mean())
     return {"reserve_price": pi, "year": year, **{f"model_{k}": v for k, v in r.items()}, "model_idle_share": idle,

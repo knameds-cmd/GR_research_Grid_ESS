@@ -5,6 +5,7 @@ NESO 데이터 포털(CKAN datastore)에서 SQL로 필요한 행만 받아 parqu
     df = sql_cached("stor_psh", 'SELECT * FROM "844a1a65-..." WHERE "Unit ID" ILIKE \'DINO%\'')
 
     .venv/bin/python -m gbess.fetch.neso constraints     # 송전 제약 자료 (아래 CONSTRAINTS)
+    .venv/bin/python -m gbess.fetch.neso bsuos           # BSUoS 결제구간 단가 (아래 BSUOS)
 
 결과: data/raw/neso_sql/<name>.parquet. 같은 이름이 있으면 다시 받지 않는다(force=True면 다시).
 받은 기록(질의문, 행 수, sha256)은 data/raw/neso_sql/MANIFEST.csv에 남긴다.
@@ -67,12 +68,21 @@ BREAKDOWN = {"2017-2018": "3651e9e3-52a8-46b6-a675-3a4c2aedc813", "2018-2019": "
              "2025-2026": "6afe1c2b-6d70-4e76-8e74-0952b0a2beab", "2026-2027": "4136a8e2-07c5-4784-8096-28999447a16e"}
 
 
+# BSUoS 결제구간 단가(£/MWh). 2016-04~2023-03, 재정산(RF) 값. 2023-04부터는 최종 수요만 고정 요율로 내므로
+# 저장장치에는 0이다(gbess.data.charges)
+BSUOS = {"bsuos_rf_hist": "2e8b2ea6-cdb5-4936-8636-4ab5a3f7e350"}
+
+
 def main(argv=None):
     import argparse
     ap = argparse.ArgumentParser()
-    ap.add_argument("what", choices=["constraints"])
+    ap.add_argument("what", choices=["constraints", "bsuos"])
     ap.add_argument("--force", action="store_true")
     a = ap.parse_args(argv)
+    if a.what == "bsuos":
+        for name, rid in BSUOS.items():
+            print(name, len(sql_cached(name, f'SELECT * FROM "{rid}" ORDER BY "_id"', force=a.force)))
+        return 0
     for name, rid in CONSTRAINTS.items():
         df = sql_cached(name, f'SELECT * FROM "{rid}" ORDER BY "_id"', force=a.force)
         print(name, len(df))

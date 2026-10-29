@@ -7,7 +7,8 @@
 - 도매: PN(사업자 계획 위치) × 가격. 실제 거래 가격은 모르므로 MID와 정산가격(SSP) 두 가지로 평가해 범위로 낸다 (07 문서 H1).
 - BM: Elexon 정산 현금흐름(indicative cashflows). offer(출력 증가 지시)는 +, bid(출력 감소 지시)는 −로 이미 부호가 붙어 있다.
 - 지시 반영 에너지: PN 위에 BOALF를 덮어쓴 출력 (gbess.realized.physical). 발전/양수 비율로 자료를 검증한다.
-아직 넣지 않은 것: 불균형 정산(실측 출력 B1610 필요), 보조서비스 계약(응답·예비력), 용량시장, 망요금. 결과표에 열로 표시만 해 둔다.
+- BSUoS: 지시 반영 출력에 규칙 시기별 단가를 매긴 비용(gbess.data.charges). 거래 수익과 따로 열로 둔다(bsuos_gbp, 양수 = 낸 돈).
+아직 넣지 않은 것: 불균형 정산(실측 출력 B1610 필요). 거래 밖 수입은 gbess.realized.ancillary, TNUoS는 gbess.realized.tnuos.
 Foyers는 자연 유입이 큰 수력 겸용이라 순수 저장장치 비교에서는 뺀다(is_pure_storage = False).
 """
 import argparse
@@ -15,6 +16,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from gbess.data.charges import bsuos_storage
 from gbess.data.prices import load_mid, load_ssp
 from gbess.realized.physical import sp_energy
 
@@ -22,11 +24,13 @@ ROOT = Path(__file__).resolve().parents[2]
 RAW = ROOT / "data" / "raw" / "elexon"
 OUT = ROOT / "results" / "realized"
 
-SITES = {  # 등록부 출력 합(MW), 지역, 순수 저장장치 여부
-    "DINO": {"name": "Dinorwig", "mw": 1920, "region": "North Wales", "b6_north": False, "pure": True},
-    "FFES": {"name": "Ffestiniog", "mw": 364, "region": "North Wales", "b6_north": False, "pure": True},
-    "CRUA": {"name": "Cruachan", "mw": 453, "region": "Argyll, Scotland", "b6_north": True, "pure": True},
-    "FOYE": {"name": "Foyers", "mw": 320, "region": "Highland, Scotland", "b6_north": True, "pure": False},
+SITES = {  # 순 발전 출력(MW, 엔진 gbess/config/technologies.yaml과 같은 값), 지역, 순수 저장장치 여부
+    # 처음 판은 Elexon 등록 출력 합(1,920 / 364 / 453 / 320 MW)으로 나눠, 엔진(1,728 MW 등)과 MW당 값의 분모가 달랐다.
+    # 2026-10-29 독립 심사 지적으로 엔진 값에 맞췄다
+    "DINO": {"name": "Dinorwig", "mw": 1728, "region": "North Wales", "b6_north": False, "pure": True},
+    "FFES": {"name": "Ffestiniog", "mw": 360, "region": "North Wales", "b6_north": False, "pure": True},
+    "CRUA": {"name": "Cruachan", "mw": 440, "region": "Argyll, Scotland", "b6_north": True, "pure": True},
+    "FOYE": {"name": "Foyers", "mw": 300, "region": "Highland, Scotland", "b6_north": True, "pure": False},
 }
 
 
@@ -45,6 +49,9 @@ def month_panel(m):
     en["p_mid"] = en["start_utc"].map(mid)
     en["p_ssp"] = en["start_utc"].map(ssp)
     en["site"] = en["bmUnit"].str[2:6]
+    ch = bsuos_storage(s, e)
+    en["c_exp"] = en["start_utc"].map(ch["export_gbp_mwh"])
+    en["c_imp"] = en["start_utc"].map(ch["import_gbp_mwh"])
     cf = cf[cf["bmUnit"].str.match(r"T_(DINO|FFES|CRUA|FOYE)-")].assign(site=lambda d: d["bmUnit"].str[2:6])
     rows = []
     for site, g in en.groupby("site"):
@@ -58,6 +65,9 @@ def month_panel(m):
             "wholesale_mid_gbp": (g["pn_mwh"] * g["p_mid"]).sum(),
             "wholesale_ssp_gbp": (g["pn_mwh"] * g["p_ssp"]).sum(),
             "bm_offer_gbp": float(c.get("offer", 0.0)), "bm_bid_gbp": float(c.get("bid", 0.0)),
+            "bsuos_gbp": float((g["phys_mwh"].clip(lower=0) * g["c_exp"]).sum()
+                               + (-g["phys_mwh"].clip(upper=0) * g["c_imp"]).sum()),
+            "bsuos_missing_sp": int(g["c_exp"].isna().sum()),
             "mid_filled_ssp_sp": rep["filled_ssp"], "pn_missing_min": int(g["pn_missing_min"].sum()),
         })
     return pd.DataFrame(rows)
@@ -87,9 +97,9 @@ def main(argv=None):
     yr = df.assign(year=df["month"].str[:4]).groupby(["year", "site"]).agg(
         months=("month", "count"), mw=("mw", "first"), wholesale_mid=("wholesale_mid_gbp", "sum"),
         wholesale_ssp=("wholesale_ssp_gbp", "sum"), bm_net=("bm_net_gbp", "sum"),
-        gen=("phys_gen_mwh", "sum"), pump=("phys_pump_mwh", "sum")).reset_index()
+        gen=("phys_gen_mwh", "sum"), pump=("phys_pump_mwh", "sum"), bsuos=("bsuos_gbp", "sum")).reset_index()
     ann = 12 / yr["months"]
-    for k in ("wholesale_mid", "wholesale_ssp", "bm_net"):
+    for k in ("wholesale_mid", "wholesale_ssp", "bm_net", "bsuos"):
         yr[f"{k}_k_per_mw_yr"] = yr[k] * ann / yr["mw"] / 1e3
     yr["trading_mid_k_per_mw_yr"] = yr["wholesale_mid_k_per_mw_yr"] + yr["bm_net_k_per_mw_yr"]
     yr["trading_ssp_k_per_mw_yr"] = yr["wholesale_ssp_k_per_mw_yr"] + yr["bm_net_k_per_mw_yr"]

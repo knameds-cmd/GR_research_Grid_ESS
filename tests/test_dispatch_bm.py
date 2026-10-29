@@ -217,3 +217,51 @@ def test_psh_pumping_units_cannot_hold_reserve():
     assert out["charge_mw"].iat[0] > 0
     pumping_units = out["charge_mw"] / 1.0
     assert (out["reserve_mw"] <= 2 - pumping_units - out["discharge_mw"] + 1e-6).all()
+
+
+def test_start_cost_counts_and_prices_unit_starts():
+    # 양수형 2유닛. 가격이 낮음-높음-낮음-높음으로 두 번 오르내린다. 기동 비용이 없으면 두 번 다 양수·발전하고,
+    # 기동 비용이 차익보다 크면 아예 돌리지 않는다. 기동 횟수 = 발전·양수 유닛이 0에서 켜진 횟수
+    a = toy(p_dis_mw=2, p_ch_mw=2, e_mwh=8, soc_init=0.5, pump_units=2, eta_ch=0.9, eta_dis=0.9)
+    p = series([0, 100, 0, 100])
+    free, _ = solve_bm(p, opp(4), a, start_cost=0.0)
+    s = summarise_bm(free, a)
+    assert free["starts"].sum() == pytest.approx(free["gen_units"].clip(lower=0).diff().clip(lower=0).fillna(
+        free["gen_units"].iat[0]).sum() + free["pump_units"].diff().clip(lower=0).fillna(free["pump_units"].iat[0]).sum())
+    assert s["start_cost_k"] == 0 and free["gen_units"].max() > 0
+    dear, _ = solve_bm(p, opp(4), a, start_cost=1e4)
+    assert dear["starts"].sum() == 0 and summarise_bm(dear, a)["total_k_per_mw_yr"] >= -1e-9
+    assert (dear["gen_units"] + dear["pump_units"] <= 2).all()
+
+
+def test_units_cannot_generate_and_pump_beyond_unit_count():
+    a = toy(p_dis_mw=2, p_ch_mw=2, e_mwh=8, soc_init=0.5, pump_units=2)
+    out, _ = solve_bm(series([-50, 80, -50, 80]), opp(4), a, start_cost=0.0)
+    assert (out["gen_units"] + out["pump_units"] <= 2).all()
+    assert np.all(out["discharge_mw"] <= out["gen_units"] * 1.0 + 1e-6)
+
+
+def test_rolling_price_known_uses_actual_day_prices():
+    from gbess.engine.rolling_bm import run_bm
+    rng = np.random.default_rng(5)
+    p = series(rng.normal(60, 40, 96))
+    a = toy(e_mwh=4, soc_init=0.5, eta_ch=0.9, eta_dis=0.9)
+    f, _ = run_bm(p, opp(96), a, horizon_days=1)
+    k, meta = run_bm(p, opp(96), a, horizon_days=1, info="price_known")
+    assert meta["info"] == "price_known"
+    assert np.allclose(k["fpn_forecast_price"], p.to_numpy())
+    assert summarise_bm(k, a)["total_k_per_mw_yr"] >= summarise_bm(f, a)["total_k_per_mw_yr"] - 1e-6
+
+
+def test_charges_reduce_arbitrage_and_are_reported():
+    # 가격 0 → 10. 왕복 손실 없음. 방전에 £6/MWh, 충전에 £6/MWh를 매기면 차익 10 < 12라 돌리지 않는다
+    a = toy(e_mwh=1, soc_init=0.0)
+    p = series([0, 10])
+    free, _ = solve_bm(p, opp(2), a, terminal="value", water_value=0.0)
+    assert free["discharge_mw"].iat[1] > 0
+    dear, _ = solve_bm(p, opp(2), a, terminal="value", water_value=0.0, charges=(np.full(2, 6.0), np.full(2, 6.0)))
+    assert dear["discharge_mw"].sum() == pytest.approx(0)
+    half, _ = solve_bm(p, opp(2), a, terminal="value", water_value=0.0, charges=(np.full(2, 6.0), np.zeros(2)))
+    s = summarise_bm(half, a)
+    assert half["discharge_mw"].iat[1] > 0
+    assert s["charges_k"] == pytest.approx(-6.0 * half["discharge_mw"].sum() * DT / 1 * 8760 / (2 * DT) / 1e3)

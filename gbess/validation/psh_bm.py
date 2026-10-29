@@ -61,9 +61,13 @@ def realized():
     m = m[m["site"] == "DINO"].assign(year=lambda d: d["month"].str[:4].astype(int))
     g = m.groupby("year").agg(real_gen_mwh=("phys_gen_mwh", "sum"), real_offer_mwh=("boa_up_mwh", "sum"),
                               real_bid_mwh=("boa_down_mwh", "sum"), real_wholesale=("wholesale_mid_gbp", "sum"),
-                              real_offer=("bm_offer_gbp", "sum"), real_bid=("bm_bid_gbp", "sum"))
+                              real_offer=("bm_offer_gbp", "sum"), real_bid=("bm_bid_gbp", "sum"),
+                              real_bsuos=("bsuos_gbp", "sum"))
     k = 1728 * 1e3   # £ → £k/MW/yr (연 단위라 연환산 불필요)
-    g["real_total_k_per_mw_yr"] = (g["real_wholesale"] + g["real_offer"] + g["real_bid"]) / k
+    g["real_gross_k_per_mw_yr"] = (g["real_wholesale"] + g["real_offer"] + g["real_bid"]) / k
+    g["real_bsuos_k"] = g["real_bsuos"] / k
+    # 엔진도 BSUoS를 빼므로(2026-10-29부터) 비교 기준은 BSUoS를 뺀 순액이다
+    g["real_total_k_per_mw_yr"] = g["real_gross_k_per_mw_yr"] - g["real_bsuos_k"]
     g["real_bm_k"] = (g["real_offer"] + g["real_bid"]) / k
     return g.reset_index()
 

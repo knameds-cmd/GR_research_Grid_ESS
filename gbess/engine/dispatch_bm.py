@@ -60,6 +60,17 @@ p_dis_t, p_ch_t, pump_units_t: 구간별 가용 출력·입력·양수 가능 �
     reserve_fixed: r을 이 값으로 고정(롤링 실시간 단계. 예비력은 하루 전에 FPN과 함께 약속한다).
     공개되지 않는 스핀 대기·예비력·주파수 응답 계약을 "여유를 비우면 받는 값" 하나로 나타낸 것이다.
     reserve_up_mw(고정 여유, 대가 없음)는 검증 1용으로 그대로 둔다.
+
+운전량 요금 (charges를 주면, gbess.data.charges)
+    charges = (export_gbp_mwh, import_gbp_mwh) 구간별 배열. 실제 방전 pd에 export, 실제 충전 pc에 import 단가를 매겨 뺀다.
+    BSUoS처럼 계량된 운전량에 붙는 요금이다. 규칙이 바뀐 시점(CMP281, CMP308)마다 값이 다르다.
+
+기동 비용 (start_cost를 주면, 양수형만, 09 문서 5.11)
+    u[t]          발전 중인 유닛 수(정수). pd ≤ (P / 유닛 수) × u. 유닛은 가역식이라 u + k ≤ 쓸 수 있는 유닛 수
+    sg[t], sp[t]  발전·양수 기동 횟수. sg ≥ u[t] − u[t−1], sp ≥ k[t] − k[t−1]
+    목적함수에서 start_cost × (sg + sp)를 뺀다(£/기동). 마모와 기동 손실을 한 값으로 나타낸 것이다.
+    units_start = (u, k): 직전 구간의 유닛 수(롤링에서 전날 마지막 값). 주지 않으면 0으로 본다.
+    기동은 실제 운전(pd, pc)에서 센다. FPN 경로는 실행 가능성 점검용이라 기동 비용을 매기지 않는다.
 """
 import time
 from dataclasses import asdict
@@ -113,7 +124,7 @@ class LP:
 def solve_bm(price: pd.Series, opp: pd.DataFrame, asset, kappa_offer=1.0, kappa_bid=1.0, fpn_fixed=None,
              terminal="geq_init", water_value=None, s_start=None, reserve_up_mw=0.0, reserve_hours=1.0,
              gap=1e-6, time_limit=600, p_dis_t=None, p_ch_t=None, pump_units_t=None, fpn_feasible=True,
-             imbalance_penalty=None, reserve_price=None, reserve_fixed=None):
+             imbalance_penalty=None, reserve_price=None, reserve_fixed=None, start_cost=None, units_start=None, charges=None):
     p = price.to_numpy(float)
     if np.isnan(p).any():
         raise ValueError("도매 가격 결측")
@@ -151,8 +162,12 @@ def solve_bm(price: pd.Series, opp: pd.DataFrame, asset, kappa_offer=1.0, kappa_
         fd = lp.var("fd", T, np.maximum(f, 0), np.maximum(f, 0), obj=p * DT)
     o = lp.var("o", T, 0, o_cap, obj=po * DT)
     b = lp.var("b", T, 0, b_cap, obj=-pb * DT)
-    pc = lp.var("pc", T, 0, Pct)
-    pd_ = lp.var("pd", T, 0, np.maximum(Pt - reserve_up_mw, 0), obj=-asset.var_cost * DT)
+    if charges is None:
+        ch_e, ch_i = np.zeros(T), np.zeros(T)
+    else:
+        ch_e, ch_i = (np.nan_to_num(np.broadcast_to(np.asarray(c, float), T)) for c in charges)
+    pc = lp.var("pc", T, 0, Pct, obj=-ch_i * DT)
+    pd_ = lp.var("pd", T, 0, np.maximum(Pt - reserve_up_mw, 0), obj=-(asset.var_cost + ch_e) * DT)
     s_lb = asset.soc_min * E + reserve_up_mw * reserve_hours / asset.eta_dis
     s_lb_arr = np.full(T, s_lb)
     if terminal == "geq_init":
@@ -252,6 +267,25 @@ def solve_bm(price: pd.Series, opp: pd.DataFrame, asset, kappa_offer=1.0, kappa_
         unit = Pc / asset.pump_units
         for t in range(T):
             lp.row([(pc[t], 1), (k[t], -unit)], 0.0, 0.0)
+    commit = start_cost is not None and integer_pump
+    if commit:
+        G = asset.pump_units
+        g_unit = P / G
+        u_ub = np.minimum(np.ceil(Pt / g_unit - 1e-9), G)
+        n_ub = np.maximum(u_ub, k_ub)          # 발전이나 양수에 쓸 수 있는 유닛 수
+        u = lp.var("u", T, 0, u_ub, integer=True)
+        sg = lp.var("sg", T, 0, G, obj=-float(start_cost))
+        spp = lp.var("sp", T, 0, G, obj=-float(start_cost))
+        u0, k0 = (0.0, 0.0) if units_start is None else units_start
+        for t in range(T):
+            lp.row([(pd_[t], 1), (u[t], -g_unit)], -np.inf, 0.0)
+            lp.row([(u[t], 1), (k[t], 1)], -np.inf, float(np.broadcast_to(n_ub, T)[t]))
+            if t == 0:
+                lp.row([(sg[t], 1), (u[t], -1)], -u0, np.inf)
+                lp.row([(spp[t], 1), (k[t], -1)], -k0, np.inf)
+            else:
+                lp.row([(sg[t], 1), (u[t], -1), (u[t - 1], 1)], 0.0, np.inf)
+                lp.row([(spp[t], 1), (k[t], -1), (k[t - 1], 1)], 0.0, np.inf)
 
     t0 = time.time()
     res = lp.solve(gap=gap, time_limit=time_limit)
@@ -266,6 +300,18 @@ def solve_bm(price: pd.Series, opp: pd.DataFrame, asset, kappa_offer=1.0, kappa_
     out["imbalance_mw"] = (g(iu) - g(idn)) if imbalance_penalty is not None else 0.0
     out["reserve_mw"] = g(r) if hold else 0.0
     out["reserve_price"] = rp
+    if integer_pump:
+        unit_p = P / asset.pump_units
+        out["gen_units"] = np.round(g(u)) if commit else np.ceil(np.round(g(pd_), 6) / unit_p - 1e-6)
+        out["pump_units"] = np.round(g(k))
+        if commit:   # 켜진 유닛 수의 증가분 (기동 비용이 0이면 sg·sp 값이 정해지지 않으므로 유닛 수에서 센다)
+            u_prev = np.r_[u0, out["gen_units"].to_numpy()[:-1]]
+            k_prev = np.r_[k0, out["pump_units"].to_numpy()[:-1]]
+            out["starts"] = (np.clip(out["gen_units"] - u_prev, 0, None) + np.clip(out["pump_units"] - k_prev, 0, None))
+        else:
+            out["starts"] = np.nan
+    out["start_cost"] = float(start_cost) if commit else 0.0
+    out["charge_export"], out["charge_import"] = ch_e, ch_i
     info = {"status": res.message, "optimal": bool(res.success), "mip_gap": getattr(res, "mip_gap", None),
             "seconds": round(time.time() - t0, 2), "periods": T, "offer_bid_binaries": int(len(both)),
             "mode_binaries": int(len(mode_t)), "placeholders": asset.placeholders(),
@@ -283,10 +329,14 @@ def summarise_bm(out, asset):
     bid = float(-(out["bid_price"] * out["bid_mw"]).sum() * DT)
     var = float(asset.var_cost * out["discharge_mw"].sum() * DT)
     reserve = float((out["reserve_price"] * out["reserve_mw"]).sum() * DT) if "reserve_mw" in out else 0.0
-    total = wholesale + offer + bid - var + reserve
+    starts = float(out["starts"].sum()) if "starts" in out and out["starts"].notna().any() else 0.0
+    start = float(out["start_cost"].iat[0]) * starts if "start_cost" in out and len(out) else 0.0
+    chg = float((out["charge_export"] * out["discharge_mw"] + out["charge_import"] * out["charge_mw"]).sum() * DT) \
+        if "charge_export" in out else 0.0
+    total = wholesale + offer + bid - var + reserve - start - chg
     k = lambda v: v / asset.p_dis_mw * yr / 1e3   # noqa: E731
     return {"wholesale_k": k(wholesale), "bm_offer_k": k(offer), "bm_bid_k": k(bid), "var_cost_k": -k(var),
-            "reserve_k": k(reserve), "reserve_mw_mean": float(out["reserve_mw"].mean()) if "reserve_mw" in out else 0.0,
+            "reserve_k": k(reserve), "charges_k": -k(chg), "start_cost_k": -k(start), "starts": starts * yr, "reserve_mw_mean": float(out["reserve_mw"].mean()) if "reserve_mw" in out else 0.0,
             "total_k_per_mw_yr": k(total), "gen_mwh": float(out["discharge_mw"].sum() * DT),
             "pump_mwh": float(out["charge_mw"].sum() * DT), "offer_mwh": float(out["offer_mw"].sum() * DT),
             "bid_mwh": float(out["bid_mw"].sum() * DT),

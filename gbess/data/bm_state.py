@@ -21,8 +21,11 @@ BM 채택 모형(gbess.model.bm_accept)의 설명변수다.
     bat_offer_mwh, bat_bid_mwh    배터리(저장장치 등록표)가 받은 물량. 2021년 이후 늘어난 배터리와의 경쟁을 보는 변수
   분위수는 1 MWh 이상 받은 유닛만으로 계산한다(시험 지시 같은 작은 물량이 한계 단가를 정하지 않게).
   지시가 없던 구간의 분위수는 결측이다.
-주의: 지역 물량에는 모든 유닛이 들어 있다. 채택 모형에서 한 발전소를 설명할 때는 그 발전소 몫을 빼서 쓴다
-(gbess.model.bm_accept가 처리). 그러지 않으면 결과로 결과를 설명하게 된다.
+    {r}_offer_p90_x{S} 등           같은 분위수를 양수발전소 S(DINO, FFES, CRUA, FOYE)의 유닛을 빼고 다시 센 값
+주의: 지역 물량과 분위수에는 모든 유닛이 들어 있다. 채택 모형에서 한 발전소를 설명할 때는 그 발전소 몫을 뺀 값을 쓴다
+(물량은 gbess.model.bm_panel이 빼고, 분위수는 _x{S} 열로 바꾼다). 그러지 않으면 결과로 결과를 설명하게 된다.
+처음 판(2026-10-25~28)은 분위수에서 자기 몫을 빼지 않았다. 받아 준 구간의 15~28%에서 Dinorwig의 90% 분위수가
+Dinorwig 자신의 단가와 같았다(2026-10-29 독립 심사 지적, 확인함). 검증 A~C, 엔진 검증 3·4는 고친 뒤 다시 돌렸다.
 """
 from pathlib import Path
 
@@ -44,6 +47,9 @@ def _monthly(ds, start, end, pad=True):
     ms = [ms[0] - 1, *ms, ms[-1] + 1] if pad else list(ms)
     files = [RAW / ds / f"{ds}_{m:%Y%m}.parquet" for m in ms]
     return pd.concat([pd.read_parquet(f) for f in files if f.exists()], ignore_index=True)
+
+
+PSH_SITES = ("DINO", "FFES", "CRUA", "FOYE")   # 자기 몫을 뺀 분위수를 따로 두는 발전소
 
 
 def wquantile(v, w, q):
@@ -103,13 +109,23 @@ def _build(year):
     sc, fuel = unit_maps()
     m["region"] = np.where(m["bmUnit"].map(sc).fillna(False).astype(bool), "sc", "ew")
     m["wind"] = m["bmUnit"].map(fuel).eq("WIND")
+    m["site"] = m["bmUnit"].str.extract(r"^T_([A-Z]+)-")[0]
     for (r, side), d in m.groupby(["region", "side"]):
         out[f"{r}_{side}_mwh"] = d.groupby("t")["mwh"].sum().reindex(idx).fillna(0.0)
         d = d[(d["mwh"] >= MIN_MWH) & d["price"].notna()]
         q = 0.9 if side == "offer" else 0.1
-        out[f"{r}_{side}_{'p90' if side == 'offer' else 'p10'}"] = (
-            d.groupby("t").apply(lambda x: wquantile(x["price"].to_numpy(), x["mwh"].to_numpy(), q))
-            .reindex(idx).astype(float))
+        name = f"{r}_{side}_{'p90' if side == 'offer' else 'p10'}"
+
+        def wq(x):
+            return wquantile(x["price"].to_numpy(), x["mwh"].to_numpy(), q)
+        out[name] = d.groupby("t").apply(wq).reindex(idx).astype(float)
+        # 같은 분위수를 양수발전소 하나씩 빼고 다시 센다. 채택 모형이 그 발전소를 예측할 때 쓴다:
+        # 자기가 받은 단가가 기준 분위수에 섞이면 "받았다"는 결과가 경쟁력 입력을 좋게 만든다 (2026-10-29 심사 지적)
+        for s in PSH_SITES:
+            if (d["site"] == s).any():
+                out[f"{name}_x{s}"] = d[d["site"] != s].groupby("t").apply(wq).reindex(idx).astype(float)
+            else:
+                out[f"{name}_x{s}"] = out[name]
     w = m[m["wind"] & (m["region"] == "sc") & (m["side"] == "bid")]
     out["sc_wind_bid_mwh"] = w.groupby("t")["mwh"].sum().reindex(idx).fillna(0.0)
     su = storage_units()
