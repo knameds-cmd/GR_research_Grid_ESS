@@ -265,3 +265,68 @@ def test_charges_reduce_arbitrage_and_are_reported():
     s = summarise_bm(half, a)
     assert half["discharge_mw"].iat[1] > 0
     assert s["charges_k"] == pytest.approx(-6.0 * half["discharge_mw"].sum() * DT / 1 * 8760 / (2 * DT) / 1e3)
+
+
+# ---------------------------------------------------------------- 입찰 단가 띠 (가상 자산의 입찰 규칙)
+def ladder_opp(n, offer_bands, bid_bands=((0.0, 0.0),)):
+    """offer_bands, bid_bands: [(α, 단가), ...]. 모든 구간에 같은 띠."""
+    idx = series([0] * n).index
+    d = {}
+    for side, bands in (("offer", offer_bands), ("bid", bid_bands)):
+        for k, (al, pr) in enumerate(bands):
+            d[f"alpha_{side}_{k}"], d[f"{side}_price_{k}"] = np.full(n, al), np.full(n, pr)
+    return pd.DataFrame(d, index=idx)
+
+
+def test_ladder_with_one_band_equals_single_alpha():
+    a = toy(e_mwh=10, soc_init=0.5, p_dis_mw=2, p_ch_mw=2)
+    p = series([10, 10, 10])
+    one, _ = solve_bm(p, acc(3, ao=[0.5] * 3, po=[200] * 3, ab=[0.25] * 3, pb=[-50] * 3), a,
+                      fpn_fixed=[0.0, 2.0, -2.0], terminal="value", water_value=0)
+    lad, info = solve_bm(p, ladder_opp(3, [(0.5, 200)], [(0.25, -50)]), a, fpn_fixed=[0.0, 2.0, -2.0],
+                         terminal="value", water_value=0)
+    assert info["bands"] == (1, 1)
+    assert lad["offer_mw"].to_numpy() == pytest.approx(one["offer_mw"].to_numpy())
+    assert lad["bid_mw"].to_numpy() == pytest.approx(one["bid_mw"].to_numpy())
+
+
+def test_ladder_picks_band_with_highest_expected_margin():
+    # 가득 찬 저장장치, 남은 저장 에너지의 값 £50/MWh, 도매 £40(팔지 않음). 1 MW 여유를 어느 단가로 내나?
+    #   띠 0: α 0.5, £60 → 0.5 × (60 − 50) = 5        띠 1: α 0.1, £200 → 0.1 × (200 − 50) = 15  → 띠 1
+    # 띠 0의 단가를 £100으로 올리면 0.5 × 50 = 25 > 15 → 띠 0
+    a = toy(e_mwh=10, soc_init=1.0)
+    kw = dict(terminal="value", water_value=50.0)
+    out, _ = solve_bm(series([40]), ladder_opp(1, [(0.5, 60), (0.1, 200)]), a, **kw)
+    assert out["offer_band"].iat[0] == 1 and out["offer_mw"].iat[0] == pytest.approx(0.1)
+    assert out["offer_price"].iat[0] == pytest.approx(200)
+    out, _ = solve_bm(series([40]), ladder_opp(1, [(0.5, 100), (0.1, 200)]), a, **kw)
+    assert out["offer_band"].iat[0] == 0 and out["offer_mw"].iat[0] == pytest.approx(0.5)
+    assert summarise_bm(out, a)["bm_offer_k"] > 0
+
+
+def test_ladder_headroom_is_shared_by_bands():
+    # 두 띠가 같은 여유 1 MW를 나눠 쓴다: 둘 다 α = 1이면 받는 물량 합은 1 MW를 넘지 않는다
+    a = toy(e_mwh=10, soc_init=1.0)
+    out, info = solve_bm(series([0]), ladder_opp(1, [(1.0, 100), (1.0, 120)]), a, terminal="value", water_value=0)
+    assert info["offer_mw_bands"].sum() == pytest.approx(1.0)
+    assert out["offer_band"].iat[0] == 1
+
+
+def test_rolling_plan_price_choice_cannot_use_realised_acceptance():
+    # 과거(1~2일째)에는 띠 0(£60, α 0.5)이 낫고, 3일째에만 띠 1(£300)의 α가 0.5로 뛴다.
+    # price_choice="plan"은 하루 전에 띠 0을 낸다. "realtime"은 그날 실제 α를 보고 띠 1로 바꾼다(상한)
+    from gbess.engine.rolling_bm import run_bm
+    n = 48 * 3
+    o = ladder_opp(n, [(0.5, 60), (0.05, 300)])
+    o.loc[o.index[96:], "alpha_offer_1"] = 0.5
+    a = toy(e_mwh=1000, soc_init=0.5, p_dis_mw=1, p_ch_mw=1)
+    p = series([20.0] * n)
+    wp = pd.Series(20.0, index=pd.date_range(p.index[0] - pd.Timedelta(days=2), periods=96, freq="30min"))
+    wo = ladder_opp(96, [(0.5, 60), (0.05, 300)])
+    wo.index = wp.index
+    plan, meta = run_bm(p, o, a, horizon_days=1, warmup_price=wp, warmup_opp=wo, price_choice="plan")
+    real, _ = run_bm(p, o, a, horizon_days=1, warmup_price=wp, warmup_opp=wo, price_choice="realtime")
+    assert meta["price_choice"] == "plan" and meta["bands"] == {"offer": 2, "bid": 1}
+    assert (plan["offer_band"].iloc[96:] == 0).all()
+    assert (real["offer_band"].iloc[96:] == 1).all()
+    assert summarise_bm(real, a)["bm_offer_k"] > summarise_bm(plan, a)["bm_offer_k"]

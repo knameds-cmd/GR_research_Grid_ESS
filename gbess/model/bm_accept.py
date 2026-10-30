@@ -304,3 +304,55 @@ def alphas(models, frame):
         out[f"alpha_{side}"] = a
         out[f"{side}_price"] = f[f"{side}_price"].to_numpy()
     return out
+
+
+# ---- 입찰 단가 띠: 가상 자산이 단가를 고르게 하는 입력 (09 문서 3.9) ---------------------------------------------------
+# 후보 단가는 그 구간 도매 가격(MID)에 더하는(offer) 또는 빼는(bid) 값이다. 실제 양수 유닛의 단가 분포를 덮도록 잡았다
+# (Dinorwig offer − MID 중앙값 2017~2026: £50~184, 3.6절 표). bid의 0은 "MID 그대로 되산다".
+OFFER_MARKUPS = (0, 10, 20, 35, 50, 75, 100, 150, 200, 300)
+BID_MARKUPS = (0, 10, 20, 35, 50, 75, 100, 150)
+
+
+def alpha_ladder(models, frame, offer_markups=OFFER_MARKUPS, bid_markups=BID_MARKUPS):
+    """후보 단가마다의 α 계열. 열: alpha_offer_k, offer_price_k (= MID + offer_markups[k]), alpha_bid_k,
+    bid_price_k (= MID − bid_markups[k]). gbess.engine.dispatch_bm의 입찰 단가 띠 입력이다.
+    계통 상태는 frame(site_frame)의 실제 값이고, 바뀌는 것은 자기 단가뿐이다. 단가가 바뀌면 경쟁력(단가 − 한계 분위수)과
+    도매 대비 단가(markup)가 함께 바뀐다."""
+    out = pd.DataFrame(index=pd.DatetimeIndex(frame["t"]))
+    mid = frame["mid"].to_numpy(float)
+    for k, m in enumerate(offer_markups):
+        a = alphas(models, frame.assign(offer_price=mid + m, bid_price=mid))
+        out[f"alpha_offer_{k}"], out[f"offer_price_{k}"] = a["alpha_offer"].to_numpy(), a["offer_price"].to_numpy()
+    for k, m in enumerate(bid_markups):
+        a = alphas(models, frame.assign(offer_price=mid, bid_price=mid - m))
+        out[f"alpha_bid_{k}"], out[f"bid_price_{k}"] = a["alpha_bid"].to_numpy(), a["bid_price"].to_numpy()
+    return out
+
+
+def habit_markups(site, setting="others_train"):
+    """'실제 양수발전의 입찰 습관' 규칙: site를 뺀 양수 유닛이 낸 단가의 도매 대비 차이(가용 유닛, 중앙값).
+    setting이 others_train이면 보정 기간(2017~2020)만 쓴다. 반환 (offer − MID, MID − bid) £/MWh."""
+    P = load_panel()
+    T = P[SETTINGS[setting](P, site) & (P["mel_mw"] > 10)]
+    return float((T["offer_price"] - T["mid"]).median()), float((T["mid"] - T["bid_price"]).median())
+
+
+def support_grid(site, setting="others_train", q=(0.05, 0.95), offer_markups=OFFER_MARKUPS, bid_markups=BID_MARKUPS):
+    """모형을 맞춘 자료에서 실제로 낸 단가의 범위(도매 대비 차이의 5~95% 분위수) 안의 후보 단가만 남긴다. 범위 끝값은
+    후보에 넣는다. 반환 (offer 띠, bid 띠).
+    왜: 범위 밖의 α는 로짓 식을 늘려 그은 값(외삽)이다. 2026-10-30 Dinorwig 이틀 시험에서 bid α가 단가에 거의 반응하지
+    않아(MID − 0 ~ − 150에서 1.5% → 1.0%), 범위를 막지 않으면 엔진이 늘 가장 낮은 bid 단가(MID − 150)를 골랐다.
+    다른 양수 유닛(2017~2020)의 범위는 offer MID + £21~125, bid MID − £26~111이었다."""
+    P = load_panel()
+    T = P[SETTINGS[setting](P, site) & (P["mel_mw"] > 10)]
+    out = []
+    for vals, grid in (((T["offer_price"] - T["mid"]).dropna(), offer_markups),
+                       ((T["mid"] - T["bid_price"]).dropna(), bid_markups)):
+        lo, hi = (round(float(v), 1) for v in vals.quantile(list(q)))
+        out.append(tuple(sorted({lo, hi, *[m for m in grid if lo < m < hi]})))
+    return out[0], out[1]
+
+
+def fixed_ladder(frame, models, offer_markup, bid_markup):
+    """단가 하나(띠 하나) 규칙. alpha_ladder와 같은 열 형식이라 엔진에 그대로 넣는다."""
+    return alpha_ladder(models, frame, (offer_markup,), (bid_markup,))

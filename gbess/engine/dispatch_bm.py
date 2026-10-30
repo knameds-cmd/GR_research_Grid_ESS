@@ -61,6 +61,17 @@ p_dis_t, p_ch_t, pump_units_t: 구간별 가용 출력·입력·양수 가능 �
     공개되지 않는 스핀 대기·예비력·주파수 응답 계약을 "여유를 비우면 받는 값" 하나로 나타낸 것이다.
     reserve_up_mw(고정 여유, 대가 없음)는 검증 1용으로 그대로 둔다.
 
+입찰 단가 띠 (opp에 alpha_offer_0, offer_price_0, alpha_offer_1, … 열이 있을 때, 09 문서 3.9)
+    가상 자산은 실제 입찰 단가가 없으므로 단가를 스스로 골라야 한다. 후보 단가 K개(띠 k)마다 그 단가로 냈을 때의
+    채택 비율 α_k(gbess.model.bm_accept.alpha_ladder)를 주면, 여유를 띠에 나눠 담는다.
+        h[t,k] ≥ 0,  Σ_k h[t,k] ≤ 가용 출력 − FPN,   o[t,k] ≤ α_k[t] × h[t,k],   수입 Σ_k 단가_k × o[t,k]
+    (bid도 같다. 여유는 FPN + 가용 입력.) 목적함수가 선형이므로 해는 구간마다 "α_k × (단가_k − 저장 에너지의 값)"이
+    가장 큰 띠 하나에 여유를 모두 담는다. 즉 채택 곡선 위에서 기대이익이 가장 큰 단가를 고르는 것과 같다.
+    띠마다 α_k를 따로 적용하는 것은 "NESO가 받아 주는 한계 단가가 단가 순서대로 띠를 채운다"는 문턱 해석이다.
+    해가 한 띠로 모이므로 실제로는 구간마다 단가 하나를 고르는 것과 같아, 띠 사이 순서 문제는 생기지 않는다.
+    띠가 하나면(또는 alpha_offer 열이면) 위의 채택 모형 방식과 똑같다. 결과의 offer_band, bid_band 열이 고른 띠
+    번호(받은 물량이 없으면 −1), offer_price는 받은 물량 가중 평균 단가다.
+
 운전량 요금 (charges를 주면, gbess.data.charges)
     charges = (export_gbp_mwh, import_gbp_mwh) 구간별 배열. 실제 방전 pd에 export, 실제 충전 pc에 import 단가를 매겨 뺀다.
     BSUoS처럼 계량된 운전량에 붙는 요금이다. 규칙이 바뀐 시점(CMP281, CMP308)마다 값이 다르다.
@@ -72,6 +83,7 @@ p_dis_t, p_ch_t, pump_units_t: 구간별 가용 출력·입력·양수 가능 �
     units_start = (u, k): 직전 구간의 유닛 수(롤링에서 전날 마지막 값). 주지 않으면 0으로 본다.
     기동은 실제 운전(pd, pc)에서 센다. FPN 경로는 실행 가능성 점검용이라 기동 비용을 매기지 않는다.
 """
+import re
 import time
 from dataclasses import asdict
 
@@ -121,6 +133,19 @@ class LP:
         return res
 
 
+def ladder(opp: pd.DataFrame, side: str):
+    """opp의 side("offer"·"bid") 띠 → (α T×K, 단가 T×K). 띠 열이 없으면 alpha_{side}·{side}_price를 K=1로 돌려준다.
+    채택 모형 열이 아예 없으면 None."""
+    ks = sorted(int(c.rsplit("_", 1)[1]) for c in opp.columns if re.fullmatch(f"alpha_{side}_\\d+", c))
+    if ks:
+        A = opp[[f"alpha_{side}_{k}" for k in ks]].to_numpy(float)
+        Pr = opp[[f"{side}_price_{k}" for k in ks]].to_numpy(float)
+        return A, Pr
+    if f"alpha_{side}" in opp.columns:
+        return opp[[f"alpha_{side}"]].to_numpy(float), opp[[f"{side}_price"]].to_numpy(float)
+    return None
+
+
 def solve_bm(price: pd.Series, opp: pd.DataFrame, asset, kappa_offer=1.0, kappa_bid=1.0, fpn_fixed=None,
              terminal="geq_init", water_value=None, s_start=None, reserve_up_mw=0.0, reserve_hours=1.0,
              gap=1e-6, time_limit=600, p_dis_t=None, p_ch_t=None, pump_units_t=None, fpn_feasible=True,
@@ -133,22 +158,22 @@ def solve_bm(price: pd.Series, opp: pd.DataFrame, asset, kappa_offer=1.0, kappa_
     P, Pc, E = asset.p_dis_mw, asset.p_ch_mw, asset.e_mwh
     Pt = np.full(T, P) if p_dis_t is None else np.minimum(np.asarray(p_dis_t, float), P)
     Pct = np.full(T, Pc) if p_ch_t is None else np.minimum(np.asarray(p_ch_t, float), Pc)
-    accept = "alpha_offer" in opp.columns
-    if accept:
-        a_o = np.clip(np.nan_to_num(opp["alpha_offer"].to_numpy(float)), 0, 1)
-        a_b = np.clip(np.nan_to_num(opp["alpha_bid"].to_numpy(float)), 0, 1)
-        o_cap, b_cap = a_o * (Pt + Pct), a_b * (Pt + Pct)      # 변수 상한. 실제 상한은 아래 FPN 선형 제약
+    lo_, lb_ = ladder(opp, "offer"), ladder(opp, "bid")
+    accept = lo_ is not None
+    if accept:   # 채택 모형 방식. 띠가 하나면 K = 1
+        (Ao, Po), (Ab, Pb) = lo_, lb_
+        Ao, Ab = np.clip(np.nan_to_num(Ao), 0, 1), np.clip(np.nan_to_num(Ab), 0, 1)
+        Ao[np.isnan(Po)], Ab[np.isnan(Pb)] = 0.0, 0.0
+        O_cap, B_cap = Ao * (Pt + Pct)[:, None], Ab * (Pt + Pct)[:, None]   # 변수 상한. 실제 상한은 아래 FPN 선형 제약
     else:
-        o_cap = np.nan_to_num(kappa_offer * opp["offer_mw_per_mw"].to_numpy(float) * Pt)
-        b_cap = np.nan_to_num(kappa_bid * opp["bid_mw_per_mw"].to_numpy(float) * Pt)
-    po = opp["offer_price"].to_numpy(float)
-    pb = opp["bid_price"].to_numpy(float)
-    o_cap[np.isnan(po)] = 0.0
-    b_cap[np.isnan(pb)] = 0.0
-    if accept:
-        a_o[np.isnan(po)] = 0.0
-        a_b[np.isnan(pb)] = 0.0
-    po, pb = np.nan_to_num(po), np.nan_to_num(pb)
+        O_cap = np.nan_to_num(kappa_offer * opp["offer_mw_per_mw"].to_numpy(float) * Pt)[:, None]
+        B_cap = np.nan_to_num(kappa_bid * opp["bid_mw_per_mw"].to_numpy(float) * Pt)[:, None]
+        Po, Pb = opp[["offer_price"]].to_numpy(float), opp[["bid_price"]].to_numpy(float)
+        O_cap[np.isnan(Po)], B_cap[np.isnan(Pb)] = 0.0, 0.0
+    Po, Pb = np.nan_to_num(Po), np.nan_to_num(Pb)
+    Ko, Kb = Po.shape[1], Pb.shape[1]
+    o_cap, b_cap = O_cap.max(axis=1), B_cap.max(axis=1)
+    po, pb = Po[:, 0], Pb[:, 0]   # 띠가 하나일 때의 단가 (상대 거래 방식의 z 이진변수에 쓴다)
     integer_pump = asset.pump_units is not None
     s0 = asset.soc_init * E if s_start is None else float(s_start)
 
@@ -160,8 +185,9 @@ def solve_bm(price: pd.Series, opp: pd.DataFrame, asset, kappa_offer=1.0, kappa_
         f = np.asarray(fpn_fixed, float)
         fc = lp.var("fc", T, np.maximum(-f, 0), np.maximum(-f, 0), obj=-p * DT)
         fd = lp.var("fd", T, np.maximum(f, 0), np.maximum(f, 0), obj=p * DT)
-    o = lp.var("o", T, 0, o_cap, obj=po * DT)
-    b = lp.var("b", T, 0, b_cap, obj=-pb * DT)
+    O = lp.var("o", T * Ko, 0, O_cap.ravel(), obj=(Po * DT).ravel()).reshape(T, Ko)   # O[t, k]: 띠 k에서 받은 offer
+    B = lp.var("b", T * Kb, 0, B_cap.ravel(), obj=(-Pb * DT).ravel()).reshape(T, Kb)
+    o, b = O[:, 0], B[:, 0]
     if charges is None:
         ch_e, ch_i = np.zeros(T), np.zeros(T)
     else:
@@ -209,7 +235,7 @@ def solve_bm(price: pd.Series, opp: pd.DataFrame, asset, kappa_offer=1.0, kappa_
         else:
             lp.row(terms, keep * s0, keep * s0)
         # 실제 출력 = FPN + offer − bid (+ 불균형)
-        terms = [(pd_[t], 1), (pc[t], -1), (fd[t], -1), (fc[t], 1), (o[t], -1), (b[t], 1)]
+        terms = [(pd_[t], 1), (pc[t], -1), (fd[t], -1), (fc[t], 1)] + [(j, -1) for j in O[t]] + [(j, 1) for j in B[t]]
         if imbalance_penalty is not None:
             terms += [(iu[t], -1), (idn[t], 1)]
         lp.row(terms, 0.0, 0.0)
@@ -243,18 +269,35 @@ def solve_bm(price: pd.Series, opp: pd.DataFrame, asset, kappa_offer=1.0, kappa_
             lp.row([(fd[t], 1), (wf[t], P)], -np.inf, P)
 
     if accept:
-        for t in range(T):
-            if a_o[t] > 0:   # o ≤ α_o (Pt − fd + fc)
-                lp.row([(o[t], 1), (fd[t], a_o[t]), (fc[t], -a_o[t])], -np.inf, a_o[t] * Pt[t])
-            if a_b[t] > 0:   # b ≤ α_b (fd − fc + Pct)
-                lp.row([(b[t], 1), (fd[t], -a_b[t]), (fc[t], a_b[t])], -np.inf, a_b[t] * Pct[t])
+        if Ko == 1:
+            a_o = Ao[:, 0]
+            for t in range(T):
+                if a_o[t] > 0:   # o ≤ α_o (Pt − fd + fc)
+                    lp.row([(o[t], 1), (fd[t], a_o[t]), (fc[t], -a_o[t])], -np.inf, a_o[t] * Pt[t])
+        else:            # 여유를 띠에 나눠 담는다: o_k ≤ α_k h_k, Σ h_k ≤ Pt − fd + fc
+            ho = lp.var("ho", T * Ko, 0, (Pt + Pct).repeat(Ko)).reshape(T, Ko)
+            for t in range(T):
+                for k_ in range(Ko):
+                    lp.row([(O[t, k_], 1), (ho[t, k_], -Ao[t, k_])], -np.inf, 0.0)
+                lp.row([(j, 1) for j in ho[t]] + [(fd[t], 1), (fc[t], -1)], -np.inf, Pt[t])
+        if Kb == 1:
+            a_b = Ab[:, 0]
+            for t in range(T):
+                if a_b[t] > 0:   # b ≤ α_b (fd − fc + Pct)
+                    lp.row([(b[t], 1), (fd[t], -a_b[t]), (fc[t], a_b[t])], -np.inf, a_b[t] * Pct[t])
+        else:
+            hb = lp.var("hb", T * Kb, 0, (Pt + Pct).repeat(Kb)).reshape(T, Kb)
+            for t in range(T):
+                for k_ in range(Kb):
+                    lp.row([(B[t, k_], 1), (hb[t, k_], -Ab[t, k_])], -np.inf, 0.0)
+                lp.row([(j, 1) for j in hb[t]] + [(fd[t], -1), (fc[t], 1)], -np.inf, Pct[t])
     both = np.array([], int) if accept else np.flatnonzero((o_cap > 0) & (b_cap > 0) & (po > pb))
     if len(both):
         z = lp.var("z", len(both), 0, 1, integer=True)
         for j, t in enumerate(both):
             lp.row([(o[t], 1), (z[j], -o_cap[t])], -np.inf, 0.0)          # o ≤ cap·z
             lp.row([(b[t], 1), (z[j], b_cap[t])], -np.inf, b_cap[t])       # b ≤ cap·(1 − z)
-    mode_t = np.arange(T) if integer_pump else np.flatnonzero((p <= 0) | ((b_cap > 0) & (pb < 0)))
+    mode_t = np.arange(T) if integer_pump else np.flatnonzero((p <= 0) | ((B_cap > 0) & (Pb < 0)).any(axis=1))
     if len(mode_t):
         y = lp.var("y", len(mode_t), 0, 1, integer=True)
         for j, t in enumerate(mode_t):
@@ -293,9 +336,19 @@ def solve_bm(price: pd.Series, opp: pd.DataFrame, asset, kappa_offer=1.0, kappa_
         raise RuntimeError(f"해를 찾지 못함: {res.message}")
     x = res.x
     g = lambda blk: x[blk]   # noqa: E731
-    out = pd.DataFrame({"price": p, "fpn_mw": g(fd) - g(fc), "offer_mw": g(o), "bid_mw": g(b),
+    Ov, Bv = x[O], x[B]                       # T × K 띠별 받은 물량
+    ov, bv = Ov.sum(axis=1), Bv.sum(axis=1)
+
+    def eff(V, Pr):   # 받은 물량 가중 평균 단가. 받은 것이 없으면 첫 띠 단가 (수입 계산에는 영향 없음)
+        tot = V.sum(axis=1)
+        return np.where(tot > 1e-9, (V * Pr).sum(axis=1) / np.where(tot > 1e-9, tot, 1.0), Pr[:, 0])
+
+    out = pd.DataFrame({"price": p, "fpn_mw": g(fd) - g(fc), "offer_mw": ov, "bid_mw": bv,
                         "charge_mw": g(pc), "discharge_mw": g(pd_), "soc_mwh": g(s),
-                        "offer_price": po, "bid_price": pb, "offer_cap": o_cap, "bid_cap": b_cap}, index=price.index)
+                        "offer_price": eff(Ov, Po), "bid_price": eff(Bv, Pb), "offer_cap": o_cap, "bid_cap": b_cap},
+                       index=price.index)
+    out["offer_band"] = np.where(ov > 1e-9, Ov.argmax(axis=1), -1)
+    out["bid_band"] = np.where(bv > 1e-9, Bv.argmax(axis=1), -1)
     out["net_mw"] = out["discharge_mw"] - out["charge_mw"]
     out["imbalance_mw"] = (g(iu) - g(idn)) if imbalance_penalty is not None else 0.0
     out["reserve_mw"] = g(r) if hold else 0.0
@@ -314,7 +367,8 @@ def solve_bm(price: pd.Series, opp: pd.DataFrame, asset, kappa_offer=1.0, kappa_
     out["charge_export"], out["charge_import"] = ch_e, ch_i
     info = {"status": res.message, "optimal": bool(res.success), "mip_gap": getattr(res, "mip_gap", None),
             "seconds": round(time.time() - t0, 2), "periods": T, "offer_bid_binaries": int(len(both)),
-            "mode_binaries": int(len(mode_t)), "placeholders": asset.placeholders(),
+            "mode_binaries": int(len(mode_t)), "placeholders": asset.placeholders(), "bands": (Ko, Kb),
+            "offer_mw_bands": Ov, "bid_mw_bands": Bv,
             "kappa": None if accept else (kappa_offer, kappa_bid), "bm_mode": "accept" if accept else "fleet",
             "asset": {k_: v for k_, v in asdict(asset).items()
                                                          if k_ not in ("status", "source")}}

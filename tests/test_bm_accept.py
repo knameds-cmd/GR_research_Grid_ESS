@@ -46,3 +46,19 @@ def test_design_signs_and_target():
 def test_design_drops_small_headroom():
     X, y, w, ok = design(_panel_row(head_up_mw=2.0), "offer")
     assert len(X) == 0 and not ok.iat[0]
+
+
+def test_alpha_ladder_prices_and_monotone_acceptance():
+    from gbess.model.bm_accept import alpha_ladder
+
+    class Fake:   # α가 도매 대비 단가(markup)에만 달린 가짜 모형
+        def predict(self, X):
+            return 1 / (1 + np.exp(5 * X["markup"].to_numpy()))
+
+    f = _panel_row()
+    lad = alpha_ladder({"offer": Fake(), "bid": Fake()}, f, (0, 50, 100), (0, 30))
+    assert lad.filter(like="offer_price_").iloc[0].tolist() == [50.0, 100.0, 150.0]   # MID 50 + 띠
+    assert lad.filter(like="bid_price_").iloc[0].tolist() == [50.0, 20.0]
+    ao = lad.filter(like="alpha_offer_").iloc[0].to_numpy()
+    ab = lad.filter(like="alpha_bid_").iloc[0].to_numpy()
+    assert np.all(np.diff(ao) < 0) and np.all(np.diff(ab) < 0)                         # 비쌀수록 덜 받아 준다
