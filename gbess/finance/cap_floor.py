@@ -16,6 +16,11 @@ cap-and-floor 재무층 (08 문서 2장의 F형 규칙). 연 수익 경로가 �
   - 한계 순환 비용(marginal cycling costs): Ofgem은 총수익에서 빼서 "평가 수익"을 만들 수 있다고 했다(FFD 5.25–5.27,
     면허에서 확정). cycling_cost로 해마다 뺄 값을 줄 수 있다. 기본 0.
   - 소비자 부담은 NESO가 공급사에 매기는 BSUoS로 회수된다(FFD 8.1–8.4). 여기서는 금액만 계산하고 누가 내는지는 나누지 않는다.
+  - 교체 투자(repex)와 잔존가치(residual value): repex는 RAV에 들어가는 capex다(TDD p40–41). 사전에 정한 repex 계획을
+    받아, floor·cap 수준을 RAV = capex + repex 현재가치 − 잔존가치 현재가치(각 수익률로 할인)의 연금으로 계산하고, 사업자는
+    repex를 그해에 쓴다. 잔존가치는 Window 1에서 45건 중 41건이 0이 아닌 값을 인정받았다(MTD 6.11). 잔존가치만큼 floor·cap이
+    낮아지고, 사업자는 제도가 끝나는 해(시점 n)에 그 값을 가진다. 둘 다 기본 0이라 예전 결과와 같다. 비용 입력은
+    gbess.finance.costs.
 단순화(결과에 함께 기록):
   - 제도 종료 뒤 floor 보전금 회수(TDD p37, p40; FFD 9.6 "time bound", 방식 미정)는 넣지 않았다. 그래서 floor 보전이
     큰 경로의 소비자 부담은 상한 쪽이다.
@@ -76,10 +81,11 @@ def irr(cashflows, lo=-0.9, hi=1.0, tol=1e-9):
 
 
 def evaluate(revenue, capex, opex, regime=Regime(), available=None, social_rate=0.035, cycling_cost=None,
-             carry_over=True):
+             carry_over=True, repex=None, residual_value=0.0):
     """revenue: 연 총수익(거래 마진) 길이 regime_years 배열(실질 £). capex: 운전 시작 시점 RAV. opex: 연 통제 가능 운영비.
     cycling_cost: 평가 수익에서 뺄 연 한계 순환 비용(스칼라나 배열). 사업자 현금흐름에서는 빼지 않는다(실제 비용은 이미
     수익 경로에 들어 있다고 본다).
+    repex: 운전 연도 1..n에 쓸 교체 투자(스칼라나 길이 n 배열, 실질 £). residual_value: 시점 n의 잔존가치(실질 £).
     시점: 0 = 투자, 1..n = 운전 연도, n+1 = 마지막 묶음 지급과 최종 정산.
     반환: 사업자 현금흐름(길이 n+2), 시점별 floor 보전·cap 환수·최종 정산, IRR, 소비자 부담(사회 할인율 현재가치)."""
     R = np.asarray(revenue, float)
@@ -88,8 +94,14 @@ def evaluate(revenue, capex, opex, regime=Regime(), available=None, social_rate=
         raise ValueError(f"수익 경로 길이 {len(R)} ≠ regime_years {n}")
     avail = np.ones(n, bool) if available is None else np.asarray(available, bool)
     A = R - (0.0 if cycling_cost is None else np.broadcast_to(np.asarray(cycling_cost, float), n))
-    F = annuity(capex, regime.floor_rate, n) + opex
-    C = annuity(capex, regime.cap_rate, n) + opex
+    rep = np.zeros(n) if repex is None else np.broadcast_to(np.asarray(repex, float), n)
+    t_op = np.arange(1, n + 1)
+
+    def level(rate):   # RAV = capex + repex 현재가치 − 잔존가치 현재가치
+        rav = capex + float(np.sum(rep / (1 + rate) ** t_op)) - residual_value / (1 + rate) ** n
+        return annuity(rav, rate, n) + opex
+
+    F, C = level(regime.floor_rate), level(regime.cap_rate)
     A_floor = np.where(avail, A, np.maximum(A - F, 0.0))   # 가용률 미달 해는 floor를 넘는 몫만
     F_t = F * avail
     topup = np.zeros(n + 2)       # 시점 0..n+1
@@ -118,7 +130,8 @@ def evaluate(revenue, capex, opex, regime=Regime(), available=None, social_rate=
             paid = float(np.sum((topup - payback) * (1 + r) ** (n + 1 - np.arange(n + 2))))
             trueup[n + 1] = (full_t - full_p) - paid
     consumer = topup - payback + trueup
-    investor = np.r_[-capex, R - opex, 0.0] + consumer
+    investor = np.r_[-capex, R - opex - rep, 0.0] + consumer
+    investor[n] += residual_value
     disc = (1 + social_rate) ** -np.arange(n + 2)
     return {
         "floor_level": F, "cap_level": C,

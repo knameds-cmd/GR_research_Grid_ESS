@@ -1,0 +1,122 @@
+# 기술·비용 입력 (11 문서 #6, 09 문서 4.5). 계산: gbess/finance/costs.py. 출처 정리: literature/sources/tech/TECH_SOURCES.md
+#
+# 값은 자료의 원래 통화·연도 그대로 적고(currency, year), 코드가 2025년 실질 £(CPIH)로 바꾼다.
+# 경우(case): central = 영국 정부·NESO 가정(있을 때), low·high = 다른 1차 자료나 같은 자료의 범위. 값마다 경우별로
+#   통화·연도가 다를 수 있어, 경우 값이 {value, currency, year, source}면 그 경우만 따로 환산한다.
+# status: sourced = 1차 자료에서 읽음 / derived = 1차 자료 값으로 계산(식은 source에) / placeholder = 확인 전 임시값.
+# 단위: capex_power = 원/kW, capex_energy = 원/kWh(정격 출력 × 지속시간 기준), fixed_om_power = 원/kW·년,
+#   fixed_om_energy = 원/kWh·년, var_om = 원/MWh 방전, devex_grid = 원/kW(개발비 + 계통 접속, 자료 capex에 빠져 있을 때만).
+# 공통 주의
+#   - Mott MacDonald 2018과 그것을 이어받은 AFRY 2022·FES 2025의 capex는 EPC 계약 이후 비용이라 개발비와 계통 접속을
+#     따로 더한다(MM p46/38). PNNL capex에는 개발비와 계통 접속이 들어 있다(PNNL 2022 p30/8, p31/9). 그래서 devex_grid는
+#     경우마다 다르다.
+#   - 2030년 값을 쓴다(Window 1 사업의 첫 운전 2029~2033, MTD Table 6).
+#   - 자료 약칭: PNNL22 = PNNL-33283(2022), PNNL24 = PNNL ESGC 데이터베이스 v2024(시트 Database, 행 번호),
+#     ATB25 = NREL ATB 2025 workbook, Cole25 = NREL/TP-6A40-93281, MM18 = Mott MacDonald for BEIS 2018(2012년 가격),
+#     AFRY22 = BEIS Research Paper 2022/019 Exhibit 3.11(2019년 실질 £), FES25 = NESO FES 2025 Economics Inputs E.03
+#     (2025년 가격), LCP24 = DESNZ Research Paper 2023/047 Table 7(2022년 실질 £), MTD = Ofgem Window 1 minded-to(2026-06).
+
+assets:   # 대표 자산. 크기·지속시간은 Window 1 Table 6 (technologies.yaml과 같음)
+  li_ion_8h: {tech: li_ion, p_mw: 400, duration_h: 8}
+  li_ion_16h: {tech: li_ion, p_mw: 400, duration_h: 16}
+  psh: {tech: psh, p_mw: 1440, duration_h: 22.3}
+  caes: {tech: caes, p_mw: 50, duration_h: 30}
+  flow: {tech: flow, p_mw: 50, duration_h: 8}
+
+technologies:
+
+  li_ion:   # LFP. 8·16시간 모두 같은 출력·에너지 단가 분해를 쓴다(PNNL24 8h·24h 총액이 이 분해와 2% 안에서 맞음)
+    capex_power:
+      central: {value: 152.96, currency: GBP, year: 2025, status: derived, source: "FES25 E.03 2030 Battery 4h £654.0/kW, 9h £1,280.3/kW → 에너지 (1280.3−654.0)/5 = £125.26/kWh, 출력 654.0 − 4×125.26 = £152.96/kW. FES 배터리 capex의 원자료는 Modo(비공개)"}
+      low: {value: 108.76, currency: GBP, year: 2025, status: derived, source: "central × 0.711 = ATB25 8h 2030 OCC Advanced 1,300.3 ÷ Moderate 1,828.4 $/kW (Utility-Scale Battery - R&D, 113·114행)"}
+      high: {value: 73.60, currency: USD, year: 2023, status: derived, source: "PNNL24 100 MW 8h 2030 Point: 전력 설비 55.77 + 제어 0.96 + 계통 통합 16.87 $/kW (9470~9477행)"}
+    capex_energy:
+      central: {value: 125.26, currency: GBP, year: 2025, status: derived, source: "위 FES25 분해"}
+      low: {value: 89.06, currency: GBP, year: 2025, status: derived, source: "central × 0.711 (위와 같음)"}
+      high: {value: 262.98, currency: USD, year: 2023, status: derived, source: "PNNL24 100 MW 8h 2030 Point: SB 133.33 + SBOS 27.14 + 통합 32.04 + EPC 32.08 + 개발 38.39 $/kWh. 합계 8h $2,177/kW = 9491행 총액과 일치"}
+    devex_grid:
+      central: {value: 40.0, currency: GBP, year: 2012, status: sourced, source: "MM18 Li-ion PL-DA 200 MW: 개발비 £1.18m + 계통 접속(Medium) £6.82m = £8.0m ÷ 200 MW (p59/51). FES capex에 빠진 몫"}
+      high: {value: 0.0, currency: USD, year: 2023, status: sourced, source: "PNNL capex에 개발비·계통 통합 포함 (PNNL22 p30/8, p31/9)"}
+    fixed_om_power:
+      central: {value: 9.44, currency: GBP, year: 2025, status: derived, source: "FES25 E.03 fixed opex 4h 12.4, 9h 16.1 £/kW·년 → 에너지 0.74/kWh, 출력 12.4 − 4×0.74"}
+      high: {value: 0.88, currency: USD, year: 2023, status: derived, source: "PNNL24 2030 고정 운영비 8h 6.48, 24h 17.68 $/kW·년(9478·9622행) → 에너지 0.70/kWh, 출력 6.48 − 8×0.70. 전력 설비 10년마다 30% 정비 포함(PNNL22 p39/17), 셀 보강 제외"}
+    fixed_om_energy:
+      central: {value: 0.74, currency: GBP, year: 2025, status: derived, source: "위 FES25 분해"}
+      high: {value: 0.70, currency: USD, year: 2023, status: derived, source: "위 PNNL24 분해"}
+    var_om: {central: 0.0, currency: GBP, year: 2025, status: sourced, source: "FES25·Cole25(p18/11)·PNNL22(p31/9) 모두 0"}
+    life_years: {central: 25, status: sourced, source: "Ofgem 경제 수명 Li-ion 25년 (MTD 5.18 p24). 자료의 기술 수명은 15년(ATB25, Cole25, FES25)~16년 달력 수명(PNNL22 p41/19)이라, 25년은 보강을 전제한다"}
+    build_years: {central: 1, status: sourced, source: "PNNL22 Table 6.2 p144/122, ATB25 41행, AFRY22, FES25 E.02 모두 1년"}
+    idc_rate: {central: 0.0447, status: placeholder, source: "건설 중 이자율. floor 수익률(BBB 15년+ 실질)을 임시로 씀. Ofgem은 벤치마크로 정한다(TDD p57)"}
+    # 보강: Ofgem 조건 "25년 내내 8시간 연속 정격 출력"(TDD p19, MTD 5.6). 매년 줄어든 만큼 채운다(처음 과설비 없음)
+    augmentation_years: {central: 1, status: placeholder, source: "매년 보강으로 단순화. 실제는 몇 년마다 보강 + 처음 과설비(PNNL22 p148/126). 보강 간격은 총비용을 조금만 바꾼다"}
+    augmentation_cost:
+      central: {value: 63.5, currency: GBP, year: 2025, status: derived, source: "보강은 셀(SB) 단가로 산다(PNNL22 p148/126). FES25 에너지 단가 125.26 × PNNL24 2030 SB 몫(133.33 ÷ 262.98 = 0.507)"}
+      low: {value: 45.2, currency: GBP, year: 2025, status: derived, source: "low 에너지 단가 89.06 × 0.507"}
+      high: {value: 133.33, currency: USD, year: 2023, status: sourced, source: "PNNL24 100 MW 8h 2030 Point DC SB $/kWh (9470행)"}
+    fade_per_cycle:   # 등가 완전 사이클 1회당 용량 감소 비율
+      central: {value: 9.47e-5, status: derived, source: "PNNL24 2030 cycle life 2,640회(9485행, 80% DOD, 정격의 80%까지, PNNL22 p43/21) → 0.2 ÷ (2,640 × 0.8)"}
+      low: {value: 5.49e-5, status: derived, source: "PNNL24 Low(최선) 4,550회 → 0.2 ÷ (4,550 × 0.8)"}
+      high: {value: 1.042e-4, status: derived, source: "PNNL24 2023 2,400회 → 0.2 ÷ (2,400 × 0.8)"}
+    fade_calendar: {central: 0.0, status: placeholder, source: "달력 열화는 사이클 열화와 따로 주어진 자료가 없다. 점검: 연 250회면 사이클 열화만 2.4%/년으로 LCP24 Table 7의 −2.5%/년과 맞는다"}
+    ref_cycles_per_year: {central: 250, status: placeholder, source: "보강 계산용 연 등가 완전 사이클. 엔진 결과로 바꿔 넣을 것(project_costs의 cycles_per_year)"}
+    energy_cost_trend:
+      central: {value: -0.022, status: derived, source: "Cole25 Table 2 중간 경로 4h 2030 $279 → 2050 $178/kWh: (178/279)^(1/20) − 1 (p23/16)"}
+      high: {value: 0.0, status: placeholder, source: "보강 셀 단가가 2030년 뒤 내리지 않는 경우"}
+
+  psh:
+    capex_power:
+      central: {value: 1523.1, currency: GBP, year: 2019, status: derived, source: "AFRY22 Exhibit 3.11 PSH 2030 20h £1,680/kW, 72h £2,088/kW (p30) → 에너지 (2088−1680)/52 = £7.846/kWh, 출력 1680 − 20×7.846"}
+      low: {value: 990.0, currency: GBP, year: 2019, status: sourced, source: "AFRY22 낮은 capex 민감도: 기준값의 −35%, 유럽 양수 사업 capex 근거 (p34)"}
+      high: {value: 3706.4, currency: USD, year: 2023, status: derived, source: "ATB25 PSH Class 8(15개 등급의 가운데) 10h OCC $3,706.4/kW(201행)를 출력 단가로, 에너지 단가는 central과 같게"}
+    capex_energy:
+      central: {value: 7.846, currency: GBP, year: 2019, status: derived, source: "위 AFRY22 분해"}
+      low: {value: 5.10, currency: GBP, year: 2019, status: sourced, source: "AFRY22 −35%"}
+      high: {value: 7.846, currency: GBP, year: 2019, status: derived, source: "central과 같음"}
+    devex_grid: {central: 152.4, currency: GBP, year: 2012, status: sourced, source: "MM18 PSH PL-DA 200 MW: 개발비 £19.10m + 계통 접속(Medium) £11.37m ÷ 200 MW (p55/47). 양수 개발비는 배터리의 약 4배(p46/38)"}
+    fixed_om_power: {central: 20.08, currency: GBP, year: 2019, high: {value: 20.98, currency: USD, year: 2023, status: sourced, source: "ATB25 PSH 고정 운영비, 전 등급 같음(227~271행)"}, status: derived, source: "AFRY22 opex 20h £22, 72h £27/kW·년 → 에너지 0.096/kWh·년, 출력 22 − 20×0.096"}
+    fixed_om_energy: {central: 0.096, currency: GBP, year: 2019, high: {value: 0.0, currency: USD, year: 2023, status: sourced, source: "ATB25는 출력 기준만"}, status: derived, source: "위 AFRY22 분해"}
+    var_om: {central: 2.0, currency: GBP, year: 2022, low: {value: 0.61, currency: USD, year: 2023, status: sourced, source: "ATB25 PSH 가변 운영비 (274~318행)"}, status: sourced, source: "LCP24 Table 7 PSH 가변 O&M £2/MWh (p44)"}
+    life_years: {central: 40, status: sourced, source: "Ofgem 경제 수명 PSH 40년 (MTD 5.18 p24). 기술 수명은 60년(PNNL22 p89/67)"}
+    build_years:
+      central: {value: 5, status: sourced, source: "PNNL22 Table 6.2 p144/122 (보고서 스스로 '다소 낙관적'이라 함)"}
+      low: {value: 4, status: sourced, source: "AFRY22 Exhibit 3.11, MM18 PSH(4년, 매년 25%), LCP24 Table 7"}
+      high: {value: 7, status: placeholder, source: "Coire Glas·Earba 첫 운전 2033(MTD Table 6). 착공 시점 미확인"}
+    idc_rate: {central: 0.0447, status: placeholder, source: "li_ion과 같음"}
+
+  caes:   # 단열(adiabatic) 압축 공기. 대표 자산은 TeesCAES 50 MW × 30h
+    capex_power:
+      central: {value: 1286.9, currency: GBP, year: 2019, status: derived, source: "AFRY22 Exhibit 3.11 CAES 2030 20h £1,385/kW, 72h £1,640/kW → 에너지 (1640−1385)/52 = £4.904/kWh, 출력 1385 − 20×4.904"}
+      low: {value: 1066.6, currency: USD, year: 2023, status: derived, source: "PNNL24 CAES 100 MW 10h $112.53, 24h $50.31/kWh(77·116행) → 에너지 (1207.4−1125.3)/14 = $5.87/kWh, 출력 1125.3 − 10×5.87. PNNL은 가스를 때는 diabatic CAES라(PNNL22 p7/vi) 단열식보다 싸다"}
+      high: {value: 892.0, currency: GBP, year: 2012, status: derived, source: "MM18 CAES(단열 동굴 가정) 4h £1,000.7/kW, 20h £1,437.3/kW (p56–57) → 에너지 27.3/kWh, 출력 892"}
+    capex_energy:
+      central: {value: 4.904, currency: GBP, year: 2019, status: derived, source: "위 AFRY22 분해"}
+      low: {value: 5.87, currency: USD, year: 2023, status: derived, source: "위 PNNL24 분해"}
+      high: {value: 27.3, currency: GBP, year: 2012, status: derived, source: "위 MM18 분해"}
+    devex_grid:
+      central: {value: 46.85, currency: GBP, year: 2012, status: sourced, source: "MM18 CAES PL-DA 200 MW: 개발비 £2.55m + 계통 접속(Medium) £6.82m ÷ 200 MW (p56/48)"}
+      low: {value: 0.0, currency: USD, year: 2023, status: sourced, source: "PNNL CAES capex의 BOP에 계통 접속 포함 (PNNL22 p83/61)"}
+    fixed_om_power: {central: 13.0, currency: GBP, year: 2019, low: {value: 15.43, currency: USD, year: 2023, status: sourced, source: "PNNL24 CAES 100 MW 10h (69행)"}, high: {value: 13.6, currency: GBP, year: 2012, status: sourced, source: "MM18 CAES OPEX Yr0"}, status: sourced, source: "AFRY22 Exhibit 3.11 CAES opex £13/kW·년"}
+    var_om: {central: 0.0, currency: GBP, year: 2022, status: sourced, source: "LCP24 Table 7 저효율 저장 0, MM18 가변비용 0(p45/37)"}
+    life_years: {central: 25, status: sourced, source: "Ofgem 경제 수명 CAES 25년 (MTD 5.18 p24)"}
+    build_years: {central: 2, high: {value: 3, status: sourced, source: "MM18 CAES 3년, PNNL22 Table 6.2"}, status: sourced, source: "AFRY22 Exhibit 3.11, FES25 E.02, LCP24 12h 2년"}
+    idc_rate: {central: 0.0447, status: placeholder, source: "li_ion과 같음"}
+
+  flow:   # 바나듐 흐름전지. 영국 정부 자료는 MM18(2012년 가격, 지금과 크게 다름)뿐이라 PNNL24를 central로 둔다
+    capex_power:
+      central: {value: 124.1, currency: USD, year: 2023, status: derived, source: "PNNL24 VRFB 100 MW 8h 2023 분해 출력 114.79 + 1.42 + 20 = $136.21/kW(17342~17349행)에 2030/2023 총액 비율 438.01/480.78 = 0.911을 곱함"}
+      low: {value: 103.3, currency: USD, year: 2023, status: derived, source: "central × PNNL24 2030 Low/Point 364.65/438.01 = 0.833"}
+      high: {value: 140.4, currency: USD, year: 2023, status: derived, source: "central × PNNL24 2030 High/Point 495.57/438.01 = 1.131"}
+    capex_energy:
+      central: {value: 422.5, currency: USD, year: 2023, status: derived, source: "PNNL24 2023 분해 에너지 275.77 + 62.02 + 37.68 + 41.06 + 47.22 = $463.75/kWh × 0.911"}
+      low: {value: 351.7, currency: USD, year: 2023, status: derived, source: "× 0.833"}
+      high: {value: 478.0, currency: USD, year: 2023, status: derived, source: "× 1.131"}
+    devex_grid: {central: 0.0, currency: USD, year: 2023, status: sourced, source: "PNNL capex에 포함"}
+    fixed_om_power: {central: 8.50, currency: USD, year: 2023, status: sourced, source: "PNNL24 VRFB 100 MW 8h 2030 Point 고정 운영비 (19366행)"}
+    fixed_om_energy: {central: 1.46, currency: USD, year: 2023, status: sourced, source: "PNNL24 보증비 $1.46/kWh·년(100 MW 8h 2023, 17352행). 해마다 냄(PNNL22 p61/39)"}
+    var_om: {central: 0.0, currency: USD, year: 2023, status: sourced, source: "PNNL22 p31/9"}
+    life_years: {central: 30, status: sourced, source: "Ofgem 경제 수명 VFB 30년 (MTD 5.18 p24)"}
+    build_years: {central: 1, status: sourced, source: "PNNL22 Table 6.2"}
+    idc_rate: {central: 0.0447, status: placeholder, source: "li_ion과 같음"}
+    replacements:   # 스택 달력 수명 12년(PNNL22 p62/40, PNNL24 17357행) → 12·24년째 교체
+      - {year: 12, cost_per_kw: {central: 492.7, currency: USD, year: 2023}, status: sourced, source: "PNNL24 스택 교체 단가 2030 $492.7/kW (19369행)"}
+      - {year: 24, cost_per_kw: {central: 492.7, currency: USD, year: 2023}, status: sourced, source: "위와 같음"}

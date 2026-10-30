@@ -1,47 +1,61 @@
 # 저장장치 기술 매개변수 (기술 중립 4종 + 기존 양수발전 검증용)
-# status: sourced = 1차 자료로 확인 / data_estimate = 이 저장소의 데이터로 추정 / placeholder = 확인 전 임시값
+# status: sourced = 1차 자료로 확인 / derived = 1차 자료 값으로 계산 / data_estimate = 이 저장소의 데이터로 추정 / placeholder = 확인 전 임시값
 # placeholder가 하나라도 있는 자산으로 낸 결과에는 엔진이 경고를 붙인다. 값을 확인하면 source를 적고 status를 바꾼다.
 # 출력·용량은 "대표 단위 자산" 기준이며, 실험에서는 Asset.scaled()로 출력·지속시간을 바꿔 쓴다.
 
 technologies:
 
-  li_ion:
+  # 대표 자산 (2026-10-30): Ofgem Window 1 신청 사업 73건(Table 6)의 범위에서 정했다. 크기·효율의 출처는 Table 6.
+  # 왕복효율(RTE)은 충·방전에 √로 나눈다. var_cost는 gbess.finance.costs의 가변비용(가변 운영비 + 사이클 열화 한계 비용)과
+  # 맞춘다(costs.yaml, 09 문서 4.5). 비용 표의 대표 자산 목록은 costs.yaml의 assets.
+
+  li_ion:            # 리튬 8시간
     params:
-      p_dis_mw: {value: 100, status: sourced, source: "대표 단위 (Window 1 Stream 1 최소 100 MW, FACTS.md §1)"}
-      p_ch_mw: {value: 100, status: sourced, source: "대칭 인버터"}
-      e_mwh: {value: 860, status: placeholder, source: "8h × 100 MW / eta_dis"}
-      eta_ch: {value: 0.93, status: placeholder, source: "AC 왕복효율 약 86% 가정. 확인 필요"}
-      eta_dis: {value: 0.93, status: placeholder, source: "위와 같음"}
-      var_cost: {value: 5.0, status: placeholder, source: "열화 대리비용 £/MWh. 07 문서 T10: 사이클 수명 기반으로 다시 계산"}
+      p_dis_mw: {value: 400, status: sourced, source: "대표 크기. Window 1 리튬 8~12시간 38건 출력 중앙값 341~385 MW, 선정 사업 145~500 MW (Ofgem Window 1 minded-to (2026-06) Table 6 p70–73, literature/sources/ldes/window1_projects.csv)"}
+      p_ch_mw: {value: 400, status: sourced, source: "대칭 인버터"}
+      e_mwh: {value: 3373.1, status: sourced, source: "8h × 400 MW ÷ eta_dis"}
+      eta_ch: {value: 0.9487, status: sourced, source: "RTE 90%: Window 1 리튬 8~12시간 중앙값(83~91%, Ofgem 상한 91%, MTD 5.6) → √0.90"}
+      eta_dis: {value: 0.9487, status: sourced, source: "위와 같음"}
+      var_cost: {value: 6.0, status: derived, source: "costs.yaml li_ion central: 가변 운영비 0 + 사이클당 열화 9.47e-5 × 보강 셀 단가 £63.5/kWh × 1000 (gbess.finance.costs). low 2.5, high 12.0"}
+      self_discharge_per_h: {value: 0.0, status: placeholder, source: ""}
+
+  li_ion_16h:        # 리튬 16시간
+    params:
+      p_dis_mw: {value: 400, status: sourced, source: "Window 1 선정 리튬 12시간 이상 6건 200~500 MW, 중앙값 400 MW, 16.05~18.03시간 (Ofgem Window 1 minded-to (2026-06) Table 6 p70–73, literature/sources/ldes/window1_projects.csv)"}
+      p_ch_mw: {value: 400, status: sourced, source: "대칭 인버터"}
+      e_mwh: {value: 6861.5, status: sourced, source: "16h × 400 MW ÷ eta_dis"}
+      eta_ch: {value: 0.9327, status: sourced, source: "RTE 87%: 같은 6건 중앙값(85~90%) → √0.87"}
+      eta_dis: {value: 0.9327, status: sourced, source: "위와 같음"}
+      var_cost: {value: 6.0, status: derived, source: "li_ion과 같음"}
       self_discharge_per_h: {value: 0.0, status: placeholder, source: ""}
 
   psh:
     params:
-      p_dis_mw: {value: 100, status: sourced, source: "대표 단위"}
-      p_ch_mw: {value: 100, status: placeholder, source: "양수 입력 ≈ 발전 출력 (Dinorwig 등록부 비율 약 0.95~1.0)"}
-      e_mwh: {value: 1300, status: placeholder, source: "10h 가정"}
-      eta_ch: {value: 0.87, status: data_estimate, source: "Dinorwig 2025 지시 반영 발전/양수 = 0.758 (gbess.realized.physical). 충·방전에 √ 배분"}
-      eta_dis: {value: 0.87, status: data_estimate, source: "위와 같음"}
-      var_cost: {value: 1.0, status: placeholder, source: "가변 O&M £/MWh"}
-      pump_units: {value: 4, status: placeholder, source: "양수는 유닛 단위 고정 출력. 대표 4기"}
+      p_dis_mw: {value: 1440, status: sourced, source: "Window 1 선정 양수 3건(660, 1,440, 1,800 MW) 중앙값 (Ofgem Window 1 minded-to (2026-06) Table 6 p70–73, literature/sources/ldes/window1_projects.csv)"}
+      p_ch_mw: {value: 1440, status: placeholder, source: "양수 입력 ≈ 발전 출력 (Dinorwig 0.95, Cruachan 1.09)"}
+      e_mwh: {value: 35902.3, status: sourced, source: "22.3h(선정 3건 15~32시간 중앙값) × 1,440 MW ÷ eta_dis"}
+      eta_ch: {value: 0.8944, status: sourced, source: "RTE 80%: 선정 3건 79~82% 중앙값 → √0.80. 기존 Dinorwig 실측 74~76%보다 높다"}
+      eta_dis: {value: 0.8944, status: sourced, source: "위와 같음"}
+      var_cost: {value: 2.3, status: derived, source: "LCP24 Table 7 PSH 가변 O&M £2/MWh(2022년 실질) → 2025년 £2.3 (costs.yaml psh). low: ATB25 $0.61/MWh"}
+      pump_units: {value: 4, status: placeholder, source: "양수는 유닛 단위 고정 출력. 대표 4기(유닛 360 MW). 사업별 유닛 구성은 확인 전"}
 
-  caes_laes:
+  caes_laes:         # 압축 공기 (Window 1 선정 TeesCAES). 액화 공기(LAES)는 Window 1에서 리튬과 섞인 2건뿐이라 따로 두지 않음
     params:
-      p_dis_mw: {value: 100, status: sourced, source: "대표 단위"}
-      p_ch_mw: {value: 100, status: placeholder, source: ""}
-      e_mwh: {value: 1600, status: placeholder, source: "10h × 100 MW / eta_dis"}
-      eta_ch: {value: 0.79, status: placeholder, source: "왕복효율 약 62% 가정 (단열 CAES·LAES 범위). 확인 필요"}
-      eta_dis: {value: 0.79, status: placeholder, source: ""}
-      var_cost: {value: 3.0, status: placeholder, source: ""}
+      p_dis_mw: {value: 50, status: sourced, source: "TeesCAES 50 MW (Window 1 유일한 CAES, 선정) (Ofgem Window 1 minded-to (2026-06) Table 6 p70–73, literature/sources/ldes/window1_projects.csv)"}
+      p_ch_mw: {value: 50, status: placeholder, source: "충전 출력 미공개. 대칭 가정"}
+      e_mwh: {value: 1905.0, status: sourced, source: "30h × 50 MW ÷ eta_dis"}
+      eta_ch: {value: 0.7874, status: sourced, source: "RTE 62% (TeesCAES, Table 6) → √0.62"}
+      eta_dis: {value: 0.7874, status: sourced, source: "위와 같음"}
+      var_cost: {value: 0.0, status: sourced, source: "LCP24 Table 7·MM18 가변비용 0 (costs.yaml caes)"}
 
-  flow:
+  flow:              # 바나듐 흐름전지 8시간
     params:
-      p_dis_mw: {value: 50, status: sourced, source: "대표 단위 (Stream 2 최소 50 MW)"}
-      p_ch_mw: {value: 50, status: placeholder, source: ""}
-      e_mwh: {value: 480, status: placeholder, source: "8h × 50 MW / eta_dis"}
-      eta_ch: {value: 0.84, status: placeholder, source: "왕복효율 약 70% 가정 (바나듐). 확인 필요"}
-      eta_dis: {value: 0.84, status: placeholder, source: ""}
-      var_cost: {value: 2.0, status: placeholder, source: ""}
+      p_dis_mw: {value: 50, status: sourced, source: "Window 1 VFB 5건 50~500 MW, 중앙값 50 MW. VFB/Zn 16건은 65~200 MW (Ofgem Window 1 minded-to (2026-06) Table 6 p70–73, literature/sources/ldes/window1_projects.csv)"}
+      p_ch_mw: {value: 50, status: sourced, source: "대칭"}
+      e_mwh: {value: 481.5, status: sourced, source: "8h × 50 MW ÷ eta_dis"}
+      eta_ch: {value: 0.8307, status: sourced, source: "RTE 69%: Window 1 VFB 5건 모두 69% (VFB/Zn은 62%) → √0.69"}
+      eta_dis: {value: 0.8307, status: sourced, source: "위와 같음"}
+      var_cost: {value: 0.0, status: sourced, source: "PNNL22 p31/9 가변 O&M 0. 스택 교체는 재무층 repex(costs.yaml flow)"}
 
   # 기존 양수발전 (실증층 검증용). 저장 용량은 흔히 인용되는 값이며 1차 자료 확인 필요
   dinorwig:

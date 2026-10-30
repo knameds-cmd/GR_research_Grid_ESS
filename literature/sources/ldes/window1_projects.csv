@@ -1,0 +1,74 @@
+project,technology,region,mw,duration_h,rte_pct,rte_capped,regime_years,first_operation,track,mtd_page,minded_to
+Aberthaw Energy,Li-ion BESS,S_Wales,249,8,91,0,25,2030,1,,0
+Al Boum Photo,Li-ion BESS,NE_England,100,11.11,90,0,25,2032,2,,0
+Bellmoor Energy Park,Li-ion BESS,NE_England,1000,8,85,0,25,2030,1,,0
+Branxton BESS,Li-ion BESS,S_Scotland,480,8,91,0,25,2029,1,,0
+Caithness BESS,Li-ion BESS,N_Scotland,456,8,88,0,25,2030,1,,0
+Canner's Lane,Li-ion BESS,E_Midlands,1000,8,85,0,25,2030,1,,0
+Chessington BESS,Li-ion BESS,London,240,11.17,90,0,25,2029,1,,0
+Chickerell Storage,Li-ion BESS,SW_England,400,8,89,0,25,2029,1,,0
+Coire Glas,PSH,N_Scotland,1440,32,82,0,25,2033,2,,1
+Connahs,Li-ion BESS,N_Wales,500,8,85,0,25,2029,1,,0
+Dalby,Li-ion BESS,E_Midlands,1000,8,85,0,25,2030,1,,0
+Deeside,VFB,N_Wales,50,8,69,0,25,2028,1,,0
+Didcot Parkway,Li-ion BESS,S_Wales,138,8,90,0,25,2029,1,,0
+Drakelow (Innova),Li-ion BESS,W_Midlands,385,8.7,91,1,25,2030,1,,1
+Earba PSH,PSH,N_Scotland,1800,15,79,0,25,2033,2,,1
+East Claydon Storage,Li-ion BESS,E_England,500,12,90,0,25,2030,1,,1
+Enderby (Innova),Li-ion BESS,E_England,310,8.64,91,1,25,2030,1,,0
+Exeter Storage,Li-ion BESS,SW_England,250,8,90,0,25,2028,1,,0
+Field Fyrish,Li-ion BESS,N_Scotland,200,16.5,87,0,25,2030,1,,1
+Field Long Stratton,Li-ion BESS,E_England,400,16.05,90,0,25,2033,2,,1
+Field Netherton,Li-ion BESS,N_Scotland,400,16.3,87,0,25,2030,1,71,1
+Field New Deer,Li-ion BESS,N_Scotland,400,18.03,85,0,25,2030,1,71,1
+Field Rigifa,Li-ion BESS,N_Scotland,200,18.03,85,0,25,2030,1,71,1
+Frontier Astwood,VFB/Zn,E_England,200,8,62,0,25,2030,1,71,0
+Frontier Ayr,VFB/Zn,S_Scotland,200,8,62,0,25,2030,1,71,0
+Frontier Botley,VFB/Zn,S_Wales,200,8,62,0,25,2030,1,71,0
+Frontier Bramford 1,VFB/Zn,E_England,200,8,62,0,25,2030,1,71,0
+Frontier Bramford 2,VFB/Zn,E_England,200,8,62,0,25,2030,1,71,0
+Frontier Busby,VFB/Zn,S_Scotland,150,8,62,0,25,2030,1,71,0
+Frontier Grange Lane,VFB/Zn,W_Midlands,99,8,62,0,25,2030,1,71,0
+Frontier Hockcliffe,VFB/Zn,E_England,200,8,62,0,25,2030,1,71,0
+Frontier Legacy,VFB/Zn,N_Wales,65,8,62,0,25,2029,1,71,1
+Frontier Market,VFB/Zn,E_England,200,8,62,0,25,2030,1,71,0
+Frontier Navenby,VFB/Zn,E_Midlands,200,8,62,0,25,2030,1,71,0
+Frontier Norwich,VFB/Zn,E_England,85,8,62,0,25,2031,2,71,0
+Frontier Pelham,VFB/Zn,E_England,200,8,62,0,25,2030,1,71,0
+Frontier Weaver,VFB/Zn,W_Midlands,120,8,62,0,25,2030,1,71,0
+Frontier Willington,VFB/Zn,W_Midlands,90,8,62,0,25,2030,1,71,0
+Frontier Wymondley,VFB/Zn,E_England,200,8,62,0,25,2030,1,71,0
+Glenmuckloch,PSH,S_Scotland,182,9.1,61,0,25,2030,1,71,0
+Gretna,Li-ion BESS,S_Scotland,400,8,91,0,25,2029,1,71,0
+Hagshaw,VFB,S_Scotland,500,8,69,0,25,2030,1,71,0
+Hawthorn Pit,Li-ion BESS,NE_England,1000,8,85,0,25,2030,1,71,0
+Hunterston,LAES/BESS,S_Scotland,300,8,,0,25,2030,1,71,0
+Killingholme 1,LAES/BESS,E_Midlands,300,8,,0,25,2030,1,72,0
+Kincardine,Li-ion BESS,S_Scotland,145,8,91,0,25,2029,1,72,0
+Lapwing,Li-ion BESS,E_England,249.6,11.68,90,0,25,2030,1,72,0
+LDES Barry,VFB,S_Wales,50,8,69,0,25,2030,1,72,0
+LDES Roosecote,VFB,W_Midlands,50,8,69,0,25,2030,1,72,0
+Loch Kemp Storage,PSH,N_Scotland,660,22.3,80,0,25,2030,1,72,1
+Loch na Cathrach,PSH,N_Scotland,500,8,78,0,25,2030,1,72,0
+Middleton BESS,Li-ion BESS,W_Midlands,100,8,84,0,25,2029,1,72,0
+Mossmorran,Li-ion BESS,S_Scotland,200,8,91,0,25,2029,1,72,0
+Mowbray Energy Park,Li-ion BESS,NE_England,1000,8,85,0,25,2029,1,72,0
+Navenby Energy Park,Li-ion BESS,E_Midlands,1000,8,85,0,25,2030,1,72,0
+Neilston BESS 2,Li-ion BESS,S_Scotland,100,11.11,90,0,25,2029,1,72,0
+Neilston BESS 3,Li-ion BESS,S_Scotland,300,11.22,90,0,25,2030,1,72,0
+Nexus 1,Li-ion BESS,SW_England,1800,8.7,87,0,25,2030,1,72,0
+Ocker Hill BESS,Li-ion BESS,W_Midlands,145,8,91,0,25,2029,1,72,1
+Old Rides,Li-ion BESS,London,1000,8,85,0,25,2030,1,72,0
+Plumpton Energy Park,Li-ion BESS,W_Midlands,1000,8,85,0,25,2030,1,72,0
+Rayleigh BESS,Li-ion BESS,London,290,8,91,0,25,2029,1,72,0
+Solomons Farm BESS,Li-ion BESS,London,240,11.17,90,0,25,2029,1,72,0
+Spirebush,VFB,S_Scotland,100,8,69,0,25,2030,1,72,0
+Springwell,Li-ion BESS,E_Midlands,400,11.1,91,0,25,2030,1,72,1
+Sundon Storage,Li-ion BESS,E_England,500,8,89,0,25,2030,1,72,1
+Swinford Energy Park,Li-ion BESS,E_England,1000,8,85,0,25,2030,1,72,0
+TeesCAES,CAES,NE_England,50,30,62,0,25,2029,1,72,1
+Thornton BESS 2,Li-ion BESS,E_Midlands,100,11.11,90,0,25,2029,1,73,1
+Thorpe Marsh (Fidra),Li-ion BESS,E_Midlands,341,10,91,0,25,2030,1,73,0
+Thorpe Marsh 1 (Innova),Li-ion BESS,E_Midlands,354,8.7,91,1,25,2030,1,73,0
+Thorpe Marsh 2 (Innova),Li-ion BESS,E_Midlands,336,8.7,91,1,25,2033,2,73,0
+Westport Energy Storage,Li-ion BESS,S_Scotland,150,10.2,83,0,25,2030,1,73,0

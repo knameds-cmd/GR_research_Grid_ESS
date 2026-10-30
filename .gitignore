@@ -26,3 +26,4 @@ get_data.log
 literature/sources/**/*.pdf
 literature/sources/**/*.txt
 logs/
+literature/sources/**/*.xlsx

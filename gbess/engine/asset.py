@@ -1,7 +1,8 @@
 """
 저장장치 자산 매개변수. 기술 중립 4종(리튬, 양수, CAES/LAES, 흐름전지)을 같은 틀로 표현한다.
 
-값마다 출처(source)와 상태(status)를 둔다. status가 "placeholder"인 값으로 낸 결과에는 엔진이 경고를 붙인다.
+값마다 출처(source)와 상태(status)를 둔다. status가 "sourced"(1차 자료)나 "derived"(1차 자료 값으로 계산)가 아닌 값으로
+낸 결과에는 엔진이 경고를 붙인다.
 값은 gbess/config/technologies.yaml에서 읽는다.
 """
 from dataclasses import dataclass, field, replace
@@ -40,7 +41,7 @@ class Asset:
         return self.e_mwh * self.eta_dis / self.p_dis_mw
 
     def placeholders(self):
-        return sorted(k for k, v in self.status.items() if v != "sourced")
+        return sorted(k for k, v in self.status.items() if v not in ("sourced", "derived"))
 
     def scaled(self, p_mw, duration_h):
         """같은 기술로 출력·지속시간만 바꾼 자산."""

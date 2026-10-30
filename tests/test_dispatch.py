@@ -59,8 +59,8 @@ def test_energy_balance_invariant():
 def test_placeholders_reported():
     tech = load_technologies()
     out, info = solve(prices([10, 100]), tech["li_ion"])
-    assert "eta_ch" in info["placeholders"]
-    assert set(tech) >= {"li_ion", "psh", "caes_laes", "flow"}
+    assert "self_discharge_per_h" in info["placeholders"]
+    assert set(tech) >= {"li_ion", "li_ion_16h", "psh", "caes_laes", "flow"}
 
 
 def test_reserve_headroom_caps_discharge_and_keeps_energy():

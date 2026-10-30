@@ -106,3 +106,16 @@ def test_irr_defined_when_cap_payback_comes_after_last_year():
     merchant = irr(np.r_[-1e6, R - 2e4])
     assert r["investor_cf"][-1] < 0
     assert 0.0748 - 0.01 < r["irr_real"] < merchant
+
+
+def test_repex_and_residual_value_keep_floor_irr_at_floor_rate():
+    # repex는 RAV에 들어가고 잔존가치는 RAV에서 빠진다. 수익이 floor 수준이면 IRR은 여전히 floor 수익률
+    rep = np.zeros(25)
+    rep[[9, 19]] = 200.0
+    f = evaluate(np.zeros(25), CAPEX, OPEX, repex=rep, residual_value=300.0)["floor_level"]
+    r = evaluate(np.full(25, f), CAPEX, OPEX, repex=rep, residual_value=300.0)
+    assert r["irr_real"] == pytest.approx(0.0447, abs=1e-6)
+    assert r["consumer_cost_pv"] == pytest.approx(0, abs=1e-6)
+    base = evaluate(np.zeros(25), CAPEX, OPEX)
+    assert evaluate(np.zeros(25), CAPEX, OPEX, repex=rep)["floor_level"] > base["floor_level"]
+    assert evaluate(np.zeros(25), CAPEX, OPEX, residual_value=300.0)["floor_level"] < base["floor_level"]
