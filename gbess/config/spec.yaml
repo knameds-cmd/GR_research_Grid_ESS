@@ -1,0 +1,266 @@
+# 사전등록 (M1, A안). 결과를 보기 전에 확정한다. 구현 지시: docs/IMPLEMENTATION_A_KO.md, 결정 기록: docs/12_decisions_2026-11_KO.md
+#
+# 이 파일은 연구자 승인 뒤 고치지 않는다. 바꿔야 할 이유가 생기면 이유를 적어 연구자에게 묻고, 바꾼 기록은 changelog와
+# 12 문서의 "바꾼 기록" 칸에 남긴다. 결과를 보고 지표·설계안·통과 기준·go/no-go 규칙을 바꾸지 않는다.
+#
+# status (항목마다)
+#   confirmed           = 연구자가 정함 (2026-11-05, 지시서 1.1절)
+#   default_unconfirmed = 지시서·보고서의 기본값. 연구자 확인 전
+#   pending_T3/T4       = 그 작업에서 근거와 함께 제안 → 연구자 승인 뒤 채움 (승인 뒤 채우는 것도 changelog에 기록)
+#   question            = 연구자에게 물어 정할 것 (선택지는 options)
+# 출처 약칭: IMPL = docs/IMPLEMENTATION_A_KO.md, R04 = review_2026-11-04/04_검증_판정_기준_보고서_KO.md,
+#   R02 = review_2026-11-04/02_결정해야_할_것_KO.md, R03 = review_2026-11-04/03_진행_방법_KO.md
+# 금액 단위: 2025년 실질 £ (gbess/finance/costs.py와 같음).
+
+spec_version: 0.1
+status: approved                   # 연구자 승인 2026-11-05. 이 뒤로는 고치지 않음 (바꿀 이유가 생기면 연구자에게 묻고 changelog에 기록)
+approved_on: "2026-11-05"
+tag: prereg-m1
+
+question:
+  id: A
+  text: "전국 단일가격 아래에서 B6 북쪽 장주기 자산이 전국 가격에 맞춰 운전하면 송전 제약이 악화되고, NESO 재급전 비용을 소비자가 낸다. 이 왜곡은 얼마나 크고, 어떤 설계 보완이 줄이나?"
+  status: confirmed                # D2
+
+claim:
+  form: design_ranking_with_bounds # 설계 순위 + 범위 (점 추정 아님). M1 헤드라인은 [D_ii, D_W1] 범위 (R04 3장)
+  estimand: system_level           # 계통 수준. 한계 자산 결과는 보조
+  status: confirmed      # D3
+
+# ---------------------------------------------------------------------------------------------------------------
+# 모형 (IMPL 2장)
+# ---------------------------------------------------------------------------------------------------------------
+model:
+  solver: highs                    # scipy.optimize 또는 highspy, 희소 행렬. status: confirmed (D9)
+  zones:
+    count: pending_T3              # 3 또는 5. 방사형 사슬(구역 순위치로 경계 조류가 유일)을 기본으로 함 (IMPL 2.1)
+    definition: pending_T3
+    north_zones: pending_T3        # "북쪽 구역". W1 북쪽 사업, S1a·S1b 대상, E_bind가 이 정의를 씀
+    status: confirmed_choice_pending_T3
+  boundary_limit_2030:
+    value: pending_T4              # T4에서 감산 계수 후보 2~3개를 근거와 함께 제안 → 연구자 승인 (R04 6장 3번: 2025 B6 관측 중앙값 3,800 MW = 명목 6,800 MW의 약 56%)
+    sensitivity_multipliers: [0.8, 1.0, 1.2]   # status: confirmed (D9, D14, D17)
+  time:
+    year: 2030
+    resolution: 1h
+    hours: 8760                    # 2030년은 윤년 아님
+    horizon: full_year_single_solve  # 주 단위 분할은 저장 경계 문제가 있어 쉽게 바꾸지 않음. 1년 풀이가 1시간 넘으면 연구자에게 물음 (T5)
+    status: confirmed
+  market: two_stage                # 1단계 전국 시장(구리판) → 2단계 비용 최소 재급전 + 계획자 최적 기준. status: confirmed (D10)
+  ldes_objective:
+    m1: stage1_cost_min            # 경쟁 가격 수용자의 이익 최대 = 비용 최소 (선형). cap-and-floor 꺾인 목적함수는 M3
+    status: confirmed    # D11
+  info: perfect_foresight_annual   # 시장 운전·계획자 운전 모두. status: confirmed (D12)
+  storage:
+    initial_soc_frac: 0.5          # 시작 저장량 = 저장 용량의 50%
+    terminal_rule: "e[s,T] >= e[s,0]"
+    status: confirmed
+  voll_gbp_mwh:
+    value: 17000                   # IMPL 2.1 "큰 값". 정전이 생기지 않으면 결과에 영향 없음. 정전이 생기면 실행 기록에 표시
+    source: "London Economics (2013-07), The Value of Lost Load (VoLL) for Electricity in Great Britain, Final report for OFGEM and DECC, p. xvii: 'a headline weighted-average VoLL figure of £16,940/MWh for peak winter workdays in GB' (WTA, 가정·중소기업 가중평균). DECC (2013), EMR Annex C: Reliability Standard Methodology, p. 8 Box 2 'the VoLL estimate of £17,000 from London Economics', p. 10 Table 1 중심값 £16,950/MWh"
+    price_base: "2012~2013년 명목 £. 2025년 실질로 올리지 않음 (정전이 없으면 영향 없음)"
+    rejected: {value: 6000, reason: "Ofgem 불균형 정산의 정전·전압 저감 비용. 용량시장이 있어 VoLL 전부를 반영할 필요가 없다는 이유 등으로 정한 값이라 소비자 VoLL이 아님 (DECC Annex C p. 8 Box 2)"}
+    status: sourced
+    decided: "연구자 2026-11-05 (Q5 a)"
+  marginal_costs:
+    thermal: pending_T4            # FES 2025 Holistic Transition 2030 연료·탄소 가정 (출처·쪽 번호는 T4)
+    wind_solar: 0.0                # 비용 기준. 실제 BM의 음수 bid(CfD·ROC)는 넣지 않음 → 재급전 비용은 하한
+    storage: "technologies.yaml var_cost (리튬 £6/MWh 등)"
+    status: confirmed
+  interconnectors:
+    treatment: pending_T4          # T4에서 두 가지 이상 제안 (예: FES 시계열 고정 / 가격 수용 공급원)
+  ramping_unit_commitment: none    # 선형, 기동·최소 출력 없음
+
+scenario_m1:
+  weather_year: 2013               # Ofgem 기준 기상연도
+  fes_pathway: holistic_transition # FES 2025
+  cost_case: central
+  fleet:
+    window1: minded_to_16          # literature/sources/ldes/window1_projects.csv minded_to == 1 (16건, 7,645 MW, 136.9 GWh)
+    window1_location: actual       # 사업별 실제 연결 위치 → 구역 (T3·T4)
+    other_storage: fes_2030        # 단주기 배터리, 기존 양수 4곳 (기존 양수는 technologies.yaml의 실제 사양)
+    status: confirmed              # D14, D15, D20
+  post_2030_projects:              # 첫 운전이 2030년 뒤인 W1 사업 (window1_projects.csv first_operation)
+    projects: ["Coire Glas (1,440 MW, 2033)", "Earba PSH (1,800 MW, 2033)", "Field Long Stratton (400 MW, 2033)"]
+    rule: both                     # 연구자 2026-11-05 (Q2 c)
+    main: include_all              # 2030년에 16건 전부 운전으로 둠 (R04의 D_W1 정의 5,100 MW와 같음). 가상 조건이고 D가 커짐. go/no-go는 이 판으로
+    sensitivity: exclude_post_2030 # 2030년에 운전하는 사업만. 북쪽 W1은 1,860 MW. 보고만 함
+  status: confirmed
+
+scenarios_m3: pending              # 기상연도 30~40개, 2035, FES 경로 등. M3 전에 따로 사전등록 (D7, D13, D17)
+
+# ---------------------------------------------------------------------------------------------------------------
+# 2단계 재급전 (IMPL 2.3)
+# ---------------------------------------------------------------------------------------------------------------
+redispatch:
+  pricing: cost_based              # 조정 단가 = 한계비용, 상향·하향 대칭. 실제 BM 단가보다 낮을 수 있어 결과는 하한
+  variants:
+    i:   {mode: gen_only, desc: "발전기만 조정. 저장은 1단계 그대로"}
+    ii:  {mode: intertemporal, desc: "저장도 1년 전체에 걸쳐 다시 고름. 계통 총비용은 구성상 S6과 같음 (검산)"}
+    iii: {mode: intertemporal, fixed_units: window1_north, desc: "W1 북쪽 사업만 1단계 계획에 고정, 나머지는 ii처럼. D_W1에 씀"}
+  interface: "redispatch(plan, network, mode, fixed_units=None)"   # M3에서 mode='sequential' 추가
+  status: confirmed                # D10
+
+degeneracy:                        # 1단계 해가 하나로 정해지지 않는 문제 (IMPL 2.3a, R04 1장 3번)
+  fix_stage1_cost_rel_tol: 1.0e-6  # 1단계 비용 ≤ C1* × (1 + 1e-6)
+  D_lo:
+    method: joint_lp_min           # "1단계 계획 + 재급전"을 한 LP로 묶어 재급전 비용 최소화 (최소의 최소라 정확한 LP)
+    status: confirmed
+  D_hi:
+    method: extreme_plans          # 연구자 2026-11-05 (Q4 a). 최소비용 재급전의 최대화는 이중 최적화라 정확한 LP가 아님
+    procedure: "1단계 최적 비용을 고정한 채 W1 북쪽 사업의 (a) 연간 충전량 최소 (b) 연간 방전량 최대 계획을 만들고, 각각에 재급전을 풀어 큰 값을 D_hi로. 정확한 최대의 하한이라 'D_hi(근사)'로 표시"
+    rejected: {id: exact_milp, reason: "재급전 LP의 최적성 조건을 혼합정수로 넣는 방식. 1년 규모에서는 풀리지 않을 가능성이 큼"}
+    status: confirmed
+  decision_uses: D_lo              # 판정에는 D_lo. status: confirmed (R04, IMPL 1.1)
+  applies_to: [S0, S1a, S1b]       # 설계안 비교 C(S0) − C(S1x)도 같은 D_lo 판으로 계산
+  national_price: "1단계 단순 풀이(제약 없는 첫 풀이)의 쌍대 λ[t]를 씀"   # 쌍대도 유일하지 않을 수 있음. status: confirmed
+
+# ---------------------------------------------------------------------------------------------------------------
+# 설계안 (IMPL 2.6). status: confirmed (D6), 매개변수는 따로 표시
+# ---------------------------------------------------------------------------------------------------------------
+designs:
+  S0:  {desc: "현행: 전국 단일가격 → 재급전 i·ii·iii"}
+  S6:  {desc: "계획자 최적: 구역 수지와 경계 한도를 처음부터 넣고 한 번에 풂. 비교 기준"}
+  S1a:
+    desc: "고정 입출력 한도: 1단계에서 북쪽 구역 W1 지원 장주기의 ch ≤ X·Pch, d ≤ X·Pdis. 그 뒤 재급전 i·ii·iii"
+    params: {X: 0.5}               # 충·방전 모두 정격의 50%
+    status: confirmed
+  S1b:
+    desc: "제약 연동 입출력 한도: (1) S0 1단계에서 표시 시간을 정함 (2) 다시 푼 1단계에서 표시 시간에 북쪽 W1 지원 장주기 d = 0 (충전 허용) (3) 재급전 i·ii·iii"
+    params:
+      beta: 1.0                    # 표시 조건: 암묵적 경계 조류 f¹(l,t) ≥ β·F_l
+      beta_sensitivity: [0.95]
+      boundaries: north_chain      # 그 사업의 구역에서 남쪽으로 가는 길의 경계 중 하나라도 조건을 만족하면 표시 (사슬 구조)
+      blocks: discharge_only
+      iterate: false               # 표시는 한 번만 (S0 1단계 기준). 다시 반복하지 않음
+    status: confirmed    # beta, boundaries. blocks·iterate는 confirmed (연구자가 고른 형태)
+  S5:  {desc: "지역 가격(상한 비교용): 1단계를 구역 시장으로. 계통 총비용 = S6이 정상 (검산). 의미는 소비자 지급과 구역 가격"}
+  not_in_m1: [S2, S3, S4]          # 위치 신호, 운전 의무, 정산 변형 → M3
+  research_note: "S1a·S1b는 출력을 막는 설계라 '덜 충전'형 왜곡은 줄이지 못할 수 있음. 그 결과는 그대로 보고. 새 설계안을 임의로 추가하지 않음 (IMPL 2.6)"
+
+# ---------------------------------------------------------------------------------------------------------------
+# 지표 (IMPL 2.5). 주 지표·보조 지표 구분은 confirmed (D5), 세부 정의는 따로 표시
+# ---------------------------------------------------------------------------------------------------------------
+metrics:
+  primary: [system_cost, consumer_payment]
+  secondary: [redispatch_cost, operator_revenue_distribution, curtailment]
+  units: [gbp_m_per_year, gbp_per_mwh_demand]
+  definitions:
+    system_cost: "Σ c_g · 최종 발전량 + VoLL · shed. S0·S1x = 1단계 비용 + 재급전 비용"
+    redispatch_cost: "2단계 목적함수 값 (재급전 변형별)"
+    distortion: "C(S0) − C(S6), 재급전 i·ii·iii 각각. ii는 구성상 0"
+    D_W1: "C(S0, iii) − C(S6). D_lo와 D_hi"
+    E_bind: "S0 1단계에서 B4 또는 B6 구간의 암묵적 조류 ≥ 한도인 시간에 W1 북쪽 장주기의 순방전량 Σ max(d − ch, 0) (TWh)"
+    curtailment: "Σ (cap · avail − 최종 발전량), 풍력·태양광"
+    operator_revenue_distribution: "W1 사업별 그해 수익과 floor 대비 비율"
+  consumer_payment:
+    formula: "도매 지급 + 재급전 지급 + cap-and-floor 보전 − cap 환수"
+    wholesale: "Σ_t λ[t] · D[t] (S5는 Σ 구역 가격 × 구역 수요)"
+    redispatch_payment:
+      rule: pay_as_cost            # 연구자 2026-11-05 (Q3 a). 조정량 × 한계비용 (= 재급전 비용). 저장장치 조정(한계비용 0)은 지급 0
+      sensitivity: zonal_shadow_price   # 2단계 구역 수지의 쌍대가격 × 조정량. 보고만 함 (제안한 대로 민감도로 둠)
+    s6_consumer_payment: "S6은 계획자 운전이라 시장 지급이 정의되지 않음. 같은 운전의 시장판인 S5로 보고"
+    status: confirmed    # 공식·도매 정의, 재급전 지급 규칙
+  cap_floor_m1:
+    revenue: "사업별 그해 수익 = 도매 Σ λ(d − ch) + 재급전 지급"
+    excluded_revenue: [capacity_market, ancillary_services]   # M1에서는 뺌 → floor 보전은 상한 쪽으로 기움 (보고에 표시)
+    floor_level: "사업별 실제 출력·시간을 gbess.finance.costs.project_costs(tech, MW, h, case='central')에 넣어 cap_floor의 floor·cap 수준(연금 + 운영비)을 계산"
+    tech_map: {"Li-ion BESS": li_ion, PSH: psh, CAES: caes, "VFB/Zn": flow}
+    top_up: "max(floor − revenue, 0)"
+    clawback: "0.70 × max(revenue − cap, 0)"   # cap 초과 70% 환수 (NERA 인용, 원문 미확인 — FACTS 2장)
+    availability_condition: assumed_met
+    settlement: one_year_approximation        # 5년 묶음·이월은 M3 (gbess.finance.cap_floor)
+    status: confirmed
+
+# ---------------------------------------------------------------------------------------------------------------
+# 검증 (R04 5장 블록을 가져와 연구자 결정대로 고침). D16
+# ---------------------------------------------------------------------------------------------------------------
+calibration_2025:                  # R04 6장 7번: 2025년을 모형 보정에 쓰면 V1은 보정이 되고 진짜 검증은 V5뿐
+  rule: only_if_v1_fails           # 연구자 2026-11-05 (Q1 c)
+  procedure: "먼저 보정 없이 V1을 판정하고 그대로 보고. 떨어졌을 때만 경계 한도 배율 하나를 맞추고, 그 뒤의 V1은 표본 안(보정) 결과로 표시. 그 경우 진짜 검증은 V5"
+  allowed_parameters: [boundary_limit_multiplier]   # 하나만. 다른 매개변수는 맞추지 않음
+  status: confirmed
+
+validation:
+  data_rules:
+    da_flows_start: "2024-05-01"     # 2024-04-22에 정의가 바뀜(그 전엔 조류가 한도에서 잘림). 2023은 제약 발생 비율에 쓰지 않음
+    invalid_limit: {le: 0, ge: 9999} # 자리채움 값은 뺌
+    aggregation: hourly_mean         # 30분 대비 차이 0.5%p 미만
+    binding_rule: "flow >= limit"    # 0.95×한도로 바꾸면 +2.5%p: 민감도로만 보고
+    boundary_map: {B6: SCOTEX, B4: [SSE_SP, SSE_SP2], alt_north: [SSEN_S, NKILGRMO, SSE_GRMO], B7: [SSHARN, SSHARN3]}  # NESO YA 한도 페이지, OTF 2026
+    neso_snapshot: "data/raw/neso_sql/ (2026-10-24까지). 포털은 최근 3년 + 올해만 남기므로 덮어쓰지 않음 (sql_cached force=False)"
+  V1_constraints:
+    year: 2025
+    limits_input: observed_da_hourly # 한도 오차와 조류 오차를 분리
+    binding_freq: {B6_obs: 0.325, B4_obs: 0.402, tol_abs: 0.08}        # 12개월 창 범위 7~10%p
+    exceedance_TWh: {obs_max_B4_B6: 7.42, ratio_band: [0.70, 1.30]}    # 12개월 창 변동계수 12%, 기상에 따른 해마다 변화 약 25%
+    monthly_corr_min: 0.6
+    cost: {obs_thermal_gbp_m: 1831, scot_share: 0.60, scot_share_iqr: [0.50, 0.67], ratio_band: [0.30, 1.20]}  # 비용 기준 모형은 낮게 나올 것으로 예상, 실제 단가 £148/MWh
+    order_check_band: [0.333, 3.0]   # M1-9(T8): 밖이면 입력 재점검
+    on_fail: "D를 경계 표현 조건부로. 부호와 D/R_S0만 주장. 한도 보정은 calibration_2025 규칙을 따르고 표본 안으로 표시, V5에서 검증"
+  V2_cruachan:
+    year: 2025
+    boundary: B6                     # Cruachan은 B4 남쪽·B6 북쪽으로 보이나 확인 못 함. 보조는 B4 또는 B6
+    pn_volume_ratio_band: [0.67, 1.5]           # 완전예측은 과하게 돎 (Dinorwig 1.3~3.4배)
+    bid_in_binding_share_min: 0.70              # 자료만으로 하는 메커니즘 시험
+    bid_lift_over_base_min: 1.5                 # 기저 비율 0.325
+    variant_ii_bid_ratio_band: [0.5, 2.0]       # 관측 373 GWh. 2022~25년 179~415, 교차 검증 1.74배
+    report: f_obs                               # 실제가 두 경계 사이 어디에 있는지
+  V3_bsuos_backtest:
+    metric: breakeven_spread_shift   # 연간 발전량은 잡음(±30~57%)에 묻힘
+    windows_months: 12
+    predicted_shift_gbp_mwh: {CMP281: 9.2, CMP308: 9.3}   # 6.91/0.75, 9.31 (FY 평균 BSUoS)
+    pass: "부호가 맞고 관측/예측이 [0.5, 2] 안이거나, 예측이 관측 90% 신뢰구간 안"
+    inconclusive_if: "관측 90% 신뢰구간이 0을 포함 -> 판정 불가, 실패 아님"
+  V4_prices:
+    top8_minus_bottom8_median_ratio: [0.7, 1.3]
+    top8_minus_bottom8_p90_ratio: [0.6, 1.4]
+    nonpositive_hours_tol_abs: 0.05
+    within_day_spearman_median_min: 0.6        # 추론으로만 정함, 자료로 확인 안 함
+  V5_holdout:
+    freeze_tag_before: "2026-11-05"  # 연구자 결정: spec.yaml 승인일에 태그 prereg-m1 (R04 원안 2026-10-31은 이미 지남)
+    window: ["2026-11-06", "2027-05-05"]   # 승인 다음 날부터 6개월
+    no_peek: "승인 전에는 2026-10-25 이후의 NESO 하루 전 조류 자료를 받거나 보지 않음"
+    binding_tol_abs: 0.10            # 6개월 창 범위 B6 25~43%, B4 30~55%
+    exceedance_ratio_band: [0.65, 1.35]
+    benchmark: persistence_same_months_last_year
+  V6_published:
+    kappa: "2025년의 관측 단가 / 모형 단가 (V1에서)"
+    band_2030_gbp_bn: [1.3, 8.9]     # 0.3×4.3(LCP 중심) ~ 1.2×7.4(NESO FES24 HT)
+    on_out_of_band: "가정을 맞춘 민감도로 차이의 절반 이상을 설명"
+  required_in_m1: [V1]               # M1에서는 T8의 V1 기본 점검만. V2~V6는 M2 (IMPL 4장)
+  status: confirmed        # 숫자는 R04 제안 그대로. 연구자 승인으로 확정
+
+# ---------------------------------------------------------------------------------------------------------------
+# go/no-go (R04 3장, 연구자 결정 반영)
+# ---------------------------------------------------------------------------------------------------------------
+go_no_go:
+  metric: D_W1                       # C(S0, 재급전 iii) − C(S6). 연구자 결정 2026-11-05 (iii 추가)
+  degeneracy: {fix_stage1_cost_rel_tol: 1.0e-6, use: D_lo}   # 1단계 해의 범위 [D_lo, D_hi]
+  materiality_M_gbp_m: 25            # 연구자 결정 2026-11-05 (R04 제안 50에서 낮춤)
+  go_multiple: 3                     # = £75m/년. 상한의 1/3 이상이 현실에 남아야 함 (값 판단)
+  limit_sensitivity: [0.8, 1.2]      # V1 오차 또는 계절 감산 0.8~0.85
+  invariants:                        # 하나라도 어기면 버그로 보고하고 판정하지 않음
+    - "C_S6 <= C_S0_ii <= C_S0_iii <= C_S0_i"
+    - "abs(C_S0_ii - C_S6) <= 1e-6 * C_S6"
+    - "abs(C_S5 - C_S6) <= 1e-6 * C_S6"
+    - "C_S1a >= C_S6 and C_S1b >= C_S6"
+    - "D_lo <= D_hi"
+  rules:
+    no_go: "D_lo < M at limits x1.0 and x0.8"
+    go: "D_lo >= 3M at x1.0 and D_lo >= M at x1.2 and E_bind > 0 and max(C_S0 - C_S1a, C_S0 - C_S1b) > 0"
+    conditional: "otherwise -> 순차 재급전 + 바람 많은 기상연도 1개 추가 후 다시 판정. 순차 재급전의 D가 M보다 작으면 no-go"
+  decided_by: researcher             # Claude Code는 규칙대로 계산한 값만 냄 (IMPL T9)
+  on_no_go: ["2035 또는 보강 지연으로 한 번 다시 실행", "B안 포트폴리오 견고성", "C안 지속시간 요건"]
+  report_only: "LDES 때문에 늘어난 B4·B6 초과량 ΔX가 V1 초과량 오차보다 작으면 '수준 오차 > 효과' 표시 (판정에 쓰지 않음)"
+  headline_form: "M1은 [D_ii, D_W1] 범위. 점추정 아님"
+  status: confirmed                  # M, 배수, 지표, 규칙. 단 invariants의 iii 포함 순서는 IMPL 2.3에서 가져옴
+
+run_record:                          # 07 문서 E7
+  file: run.json
+  fields: [git_commit, spec_sha256, input_sha256, solver_status, solve_seconds]
+
+changelog:
+  - {date: "2026-11-05", change: "초안 작성 (T2)", by: "Claude Code"}
+  - {date: "2026-11-05", change: "연구자 답 반영: calibration_2025 = only_if_v1_fails, post_2030 = both, 재급전 지급 = pay_as_cost, D_hi = extreme_plans, VoLL = 17000 (출처 쪽 번호 확인). 기본값 표 전부 confirmed", by: "연구자 결정, Claude Code 기록"}
+  - {date: "2026-11-05", change: "연구자 승인 (status approved, V5 창 2026-11-06~2027-05-05, 태그 prereg-m1)", by: "연구자"}
