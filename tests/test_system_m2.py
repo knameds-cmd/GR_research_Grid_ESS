@@ -114,3 +114,13 @@ def test_era5_convert_and_indices():
     lat = np.arange(90, -90.001, -0.25)
     li = en.lat_index(lat)
     assert lat[li[0]] == pytest.approx(60.75) and lat[li[-1]] == pytest.approx(50.0) and len(li) == 44
+
+
+def test_embedded_split_by_hand():
+    # ND 100, E&W 90 → 스코틀랜드 송전 수요 10. 배전망 풍력 20, 태양광 10. 몫 0.5, 0.1 → 스코틀랜드 10 + 10 + 1 = 21
+    # 실제 소비 130 → EW 109. N:S = 1:3 → N 5.25, S 15.75
+    h = pd.DataFrame({"ND": [100.0], "ENGLAND_WALES_DEMAND": [90.0], "EMBEDDED_WIND_GENERATION": [20.0],
+                      "EMBEDDED_SOLAR_GENERATION": [10.0]})
+    d = bc.zone_demand_embedded_split(h, ["N", "S", "EW"], {"N": 0.25, "S": 0.75}, 0.5, 0.1)
+    assert d[:, 0] == pytest.approx([5.25, 15.75, 109.0])
+    assert d[:, 0].sum() == pytest.approx(130.0)

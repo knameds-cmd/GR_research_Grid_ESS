@@ -299,3 +299,181 @@ if __name__ == "__main__":
     for t in (t1, t2, t4):
         print(t.round(3).to_string(index=False))
     print(json.dumps(extra, indent=1))
+
+
+# ---------------------------------------------------------------------------------------------------- V1 오차 원인 진단
+DUKES_2025_LF = {"onshore_wind": 0.2402, "offshore_wind": 0.3612}   # DUKES 2026 Table 6.3 행 7·8, 2025 (연초·연말 설비 평균 기준)
+
+
+def _replace_gens(net, fn):
+    return Network(net.zones, net.demand, net.limits, [fn(g) for g in net.gens], net.stores)
+
+
+def _cap_weighted_cf(net, kind):
+    gs = [g for g in net.gens if g.name.startswith(kind + "_")]
+    return sum(g.cap * float(np.mean(g.avail)) for g in gs) / sum(g.cap for g in gs)
+
+
+def diag_variants(net):
+    """보고용 진단 판 {이름: Network}. 판정·보정에 쓰지 않는다. 1단계 조류만 보면 되므로 한도는 그대로 둔다."""
+    from dataclasses import replace
+    fc, zc = load_cfg()
+    bb = load_bb(zc, BB)
+    out = {"base": net}
+    # (1) 육상 풍력 이용률을 DUKES 2025 수준으로 (구역마다 같은 배율). DUKES는 제약 감축 뒤 발전량이라 낮춘 쪽 끝
+    k_on = DUKES_2025_LF["onshore_wind"] / _cap_weighted_cf(net, "onshore_wind")
+    out["1_onshore_to_dukes"] = _replace_gens(net, lambda g: replace(g, avail=np.asarray(g.avail) * k_on)
+                                              if g.name.startswith("onshore_wind_") else g)
+    # (3) 재생·배터리 설비를 FES 2024·2025 열의 평균으로 (DUKES 이용률과 같은 "연초·연말 평균" 정의)
+    from gbess.system.fleet import bb_by_zone
+    ratio = {}
+    for k, r in fc["renewables"].items():
+        c24, c25 = bb_by_zone(bb, r["bb"], net.zones, "2024"), bb_by_zone(bb, r["bb"], net.zones, "2025")
+        ratio[k] = {z: (c24[z] + c25[z]) / 2 / c25[z] if c25[z] > 0 else 1.0 for z in net.zones}
+    out["3_capacity_midyear"] = _replace_gens(
+        net, lambda g: replace(g, cap=g.cap * ratio[g.name.rsplit("_", 1)[0]][g.name.rsplit("_", 1)[1]])
+        if g.renewable else g)
+    # (4) 스코틀랜드 수요를 FES BB Dem_BB003 2025 연간 구역 합에 맞춤 (EW는 그대로)
+    d = bb[bb["Building Block ID Number"] == fc["demand"]["bb"]].groupby("zone")["2025"].sum() * 1e3   # MWh
+    h = demand_hourly()
+    base_dem = zone_demand_2025(h, net.zones, {"N": d["N"] / (d["N"] + d["S"]), "S": d["S"] / (d["N"] + d["S"])})
+    scale = np.array([d[z] / base_dem[i].sum() if z != "EW" else 1.0 for i, z in enumerate(net.zones)])
+    dem4 = base_dem * scale[:, None] - interconnector_injection(h, net.zones)
+    out["4_scot_demand_fes"] = Network(net.zones, dem4, net.limits, net.gens, net.stores)
+    # (5) 바이오매스를 FUELHH 실측대로 늘 돌게 함 (비용 0, 가용률 = 실측 ÷ 설비)
+    bio = fuelhh_hourly("BIOMASS").to_numpy()
+    bcap = sum(g.cap for g in net.gens if g.name.startswith("biomass_"))
+    out["5_biomass_must_run"] = _replace_gens(
+        net, lambda g: replace(g, cost=0.0, avail=np.clip(bio / bcap, 0, 1)) if g.name.startswith("biomass_") else g)
+    # 모두 합침: (1) + (3) + (5)  ((4)는 방향이 반대라 뺌)
+    n = out["1_onshore_to_dukes"]
+    n = _replace_gens(n, lambda g: replace(g, cap=g.cap * ratio[g.name.rsplit("_", 1)[0]][g.name.rsplit("_", 1)[1]])
+                      if g.renewable else g)
+    n = _replace_gens(n, lambda g: replace(g, cost=0.0, avail=np.clip(bio / bcap, 0, 1))
+                      if g.name.startswith("biomass_") else g)
+    out["1+3+5"] = n
+    return out, {"onshore_scale": k_on, "capacity_ratio": ratio, "scot_demand_scale": scale.tolist()}
+
+
+def diagnose(out=OUT, log=print):
+    from gbess.system.stage1 import solve_stage1
+    net, _meta = build_network_2025()
+    obs_row, obs_monthly = obs.v1_observed(YEAR)
+    nets, info = diag_variants(net)
+    rows = []
+    for name, n in nets.items():
+        p = solve_stage1(n)
+        m, mm = v1_model(n, p)
+        rows.append({"variant": name, "B6_binding": m["B6_binding"], "B4_binding": m["B4_binding"],
+                     "exceed_twh": m["exceed_max_B4_B6_twh"], "exceed_ratio": m["exceed_max_B4_B6_twh"] / obs_row["exceed_max_B4_B6_twh"],
+                     "monthly_corr": float(np.corrcoef(mm.to_numpy(), obs_monthly.to_numpy())[0, 1]),
+                     "mean_flow_B6": float(p.flows[1].mean()), "mean_flow_B4": float(p.flows[0].mean()),
+                     "onshore_cf": _cap_weighted_cf(n, "onshore_wind"), "price_mean": float(np.mean(p.prices))})
+        log(f"  {name}: {rows[-1]['exceed_twh']:.2f} TWh")
+    df = pd.DataFrame(rows)
+    df.to_csv(Path(out) / "v1_diagnosis.csv", index=False)
+    (Path(out) / "v1_diagnosis.json").write_text(json.dumps(info, indent=1, default=float), encoding="utf-8")
+    return df
+
+
+# (6) 배전망 풍력의 스코틀랜드 몫. 기본 판(zone_demand_2025)은 배전망 풍력·태양광을 시간마다 ND 비율(스코틀랜드 약 8%)로
+#     나눠 실제 소비에 되돌린다. 그런데 NESO가 보지 못하는 배전망 풍력은 스코틀랜드에 몰려 있다.
+#     스코틀랜드 몫 = (DUKES 스코틀랜드 육상 평균 용량 − TEC 등록부의 스코틀랜드 Built 육상 용량) ÷ NESO 배전망 풍력 용량
+#       DUKES: DESNZ "Regional renewable electricity in 2025"(2026-09-29) 3쪽 22.0 TWh, 4쪽 Table 2 이용률 24.1% → 10,421 MW
+#       TEC 등록부 2026-11-03: SHET·SPT Built 육상 송전 직접 6,885 MW, 배전 연결(TEC 계약) 1,141 MW
+#       NESO 2025 EMBEDDED_WIND_CAPACITY 6,606 MW
+#     → (10,421 − 8,026) ÷ 6,606 = 0.36 (TEC 배전 연결분이 송전망에서 보임) ~ (10,421 − 6,885) ÷ 6,606 = 0.53 (보이지 않음)
+#     태양광 몫 0.045 = FES BB 2025 태양광 (N + S) ÷ 전체.
+# (1') 스코틀랜드 풍력(N·S 육상·해상) 이용률 배율 = 감축 전 실제 발전량 ÷ 모형 발전량
+#     감축 전 = 육상 22.0 TWh + 해상 (모형 N 설비 3,598 MW × 23.5%, Table 2) + 감축 9.75 TWh
+#     감축 = 스코틀랜드 육상 3,947,783 MWh (REF 자료, Shetland News 2026-01-06 "Viking responsible for a quarter of Scotland's
+#     wasted...") + 해상 세 단지 Seagreen 2.7 + Moray East 1.7 + Moray West 1.4 TWh (Modo Energy 2026-03-04 "Constraints in
+#     Great Britain: Scottish wind curtailment and what it means for BESS"). 나머지 해상 단지를 빼서 하한. 04 보고서의 LCP GB 10.4 TWh와 맞음
+EMB_SCOT_WIND_SHARE = (0.36, 0.53)
+EMB_SCOT_SOLAR_SHARE = 0.045
+SCOT_WIND_PRECURTAIL_TWH = 22.0 + 3598 * 8760 * 0.235 / 1e6 + 3.948 + 2.7 + 1.7 + 1.4
+SCOT_WIND = ("onshore_wind_N", "onshore_wind_S", "offshore_wind_N", "offshore_wind_S")
+
+
+def zone_demand_embedded_split(h, zones, scot_ns, wind_share, solar_share=EMB_SCOT_SOLAR_SHARE):
+    """(Z, T) 실제 소비. 스코틀랜드 = (ND − 잉글랜드·웨일스 수요) + 몫 × 배전망 풍력·태양광, 나머지는 EW."""
+    under = h["ND"] + h["EMBEDDED_WIND_GENERATION"] + h["EMBEDDED_SOLAR_GENERATION"]
+    scot = ((h["ND"] - h["ENGLAND_WALES_DEMAND"]).clip(lower=0) + wind_share * h["EMBEDDED_WIND_GENERATION"]
+            + solar_share * h["EMBEDDED_SOLAR_GENERATION"])
+    out = {"EW": under - scot, "N": scot * scot_ns["N"], "S": scot * scot_ns["S"]}
+    return np.array([out[z].to_numpy() for z in zones])
+
+
+def diagnose_combined(out=OUT, log=print):
+    """보고용: (6) 배전망 풍력 몫 × (1') 스코틀랜드 풍력 배율 × (3)+(5)의 조합. 판정·보정에 쓰지 않는다."""
+    from dataclasses import replace
+    from gbess.system.stage1 import solve_stage1
+    net, meta = build_network_2025()
+    obs_row, obs_monthly = obs.v1_observed(YEAR)
+    h = demand_hourly()
+    ic = interconnector_injection(h, net.zones)
+    nets, _info = diag_variants(net)
+    g3 = {g.name: g for g in nets["3_capacity_midyear"].gens}
+    g5 = {g.name: g for g in nets["5_biomass_must_run"].gens}
+    model_sc = sum(g.cap * np.sum(g.avail) for g in net.gens if g.name in SCOT_WIND) / 1e6
+    k = SCOT_WIND_PRECURTAIL_TWH / model_sc
+    rows = []
+    for sw in (None, *EMB_SCOT_WIND_SHARE, float(np.mean(EMB_SCOT_WIND_SHARE))):
+        for wind in (False, True):
+            for extra in (False, True):
+                gens = net.gens
+                if extra:
+                    gens = [g5[g.name] if g.name.startswith("biomass_") else g3[g.name] for g in gens]
+                if wind:
+                    gens = [replace(g, avail=np.asarray(g.avail) * k) if g.name in SCOT_WIND else g for g in gens]
+                dem = net.demand if sw is None else zone_demand_embedded_split(h, net.zones, meta["scot_ns"], sw) - ic
+                n = Network(net.zones, dem, net.limits, gens, net.stores)
+                p = solve_stage1(n)
+                m, mm = v1_model(n, p)
+                rows.append({"emb_scot_wind_share": sw, "scot_wind_scale": k if wind else 1.0, "midyear_and_biomass": extra,
+                             "exceed_twh": m["exceed_max_B4_B6_twh"],
+                             "exceed_ratio": m["exceed_max_B4_B6_twh"] / obs_row["exceed_max_B4_B6_twh"],
+                             "B6_binding": m["B6_binding"], "B4_binding": m["B4_binding"],
+                             "monthly_corr": float(np.corrcoef(mm.to_numpy(), obs_monthly.to_numpy())[0, 1])})
+    df = pd.DataFrame(rows)
+    df.to_csv(Path(out) / "v1_diagnosis_combined.csv", index=False)
+    log(f"스코틀랜드 풍력 배율 {k:.3f} (모형 {model_sc:.1f} TWh → 감축 전 {SCOT_WIND_PRECURTAIL_TWH:.1f} TWh)")
+    return df
+
+
+def m1_input_sensitivity(weather_year, limit_mult=1.0, share=0.445, wind_scale=None, out=OUT, log=print):
+    """보고용: 2025 진단에서 근거를 찾은 두 입력 보정을 2030 M1 망에 넣고 D_W1(D_lo)을 다시 구한다. 판정에 쓰지 않음.
+    (6) 스코틀랜드 수요 모양 = (ND − E&W) + share × 배전망 풍력 + 0.045 × 배전망 태양광 (연간 합은 FES 그대로),
+    (1') 스코틀랜드 풍력 이용률 × wind_scale (기본: 2025년 감축 전 실제 ÷ 모형 = SCOT_WIND_PRECURTAIL_TWH 기준 배율)."""
+    from dataclasses import replace
+    from gbess.system.inputs import build_network_2030, demand_path
+    from gbess.system.planner import solve_planner
+    from gbess.system.redispatch import redispatch_lo
+    if wind_scale is None:
+        n25, _m = build_network_2025()
+        wind_scale = SCOT_WIND_PRECURTAIL_TWH / (sum(g.cap * np.sum(g.avail) for g in n25.gens if g.name in SCOT_WIND) / 1e6)
+    t0 = time.perf_counter()
+    net, meta = build_network_2030(weather_year=weather_year)
+    d = pd.read_csv(demand_path(weather_year))
+    k = len(d) // 2 * 2
+
+    def hr(x):
+        return np.asarray(x, float)[:k].reshape(-1, 2).mean(1)[:net.T]
+    gb = d["ND"] + d["EMBEDDED_WIND_GENERATION"] + d["EMBEDDED_SOLAR_GENERATION"]
+    sc = hr((d["ND"] - d["ENGLAND_WALES_DEMAND"]).clip(lower=0) + share * d["EMBEDDED_WIND_GENERATION"]
+            + EMB_SCOT_SOLAR_SHARE * d["EMBEDDED_SOLAR_GENERATION"])
+    ew = hr(gb) - sc
+    dem = np.array([(ew if z == "EW" else sc) / (ew if z == "EW" else sc).sum() * net.demand[i].sum()
+                    for i, z in enumerate(net.zones)])
+    gens = [replace(g, avail=np.asarray(g.avail) * wind_scale) if g.name in SCOT_WIND else g for g in net.gens]
+    n = Network(net.zones, dem, net.limits, gens, net.stores).scaled_limits(limit_mult)
+    s6 = solve_planner(n)
+    lo = redispatch_lo(n, "intertemporal", meta["w1_north"], infeasible="min_deviation")
+    r = {"weather_year": weather_year, "limit_mult": limit_mult, "emb_scot_wind_share": share, "scot_wind_scale": wind_scale,
+         "C_S6_gbp_m": s6.cost / 1e6, "C_S0_iii_lo_gbp_m": lo.cost / 1e6, "D_lo_gbp_m": (lo.cost - s6.cost) / 1e6,
+         "fixed_deviation_gwh": lo.extra.get("fixed_deviation_mwh", 0.0) / 1e3, "seconds": time.perf_counter() - t0,
+         "status": [s6.status, lo.status]}
+    Path(out).mkdir(parents=True, exist_ok=True)
+    (Path(out) / f"m1_input_sensitivity_{weather_year}_x{limit_mult}.json").write_text(json.dumps(r, indent=1, default=str))
+    log(r)
+    return r

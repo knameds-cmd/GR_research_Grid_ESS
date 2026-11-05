@@ -1,0 +1,15 @@
+{
+ "weather_year": 2013,
+ "limit_mult": 1.0,
+ "emb_scot_wind_share": 0.445,
+ "scot_wind_scale": 0.9435209934331857,
+ "C_S6_gbp_m": 1599.4635788664893,
+ "C_S0_iii_lo_gbp_m": 1645.6411533042003,
+ "D_lo_gbp_m": 46.177574437711,
+ "fixed_deviation_gwh": 1.0000017452790044e-09,
+ "seconds": 1161.62177529186,
+ "status": [
+  "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+  "Optimization terminated successfully. (HiGHS Status 7: Optimal)"
+ ]
+}
