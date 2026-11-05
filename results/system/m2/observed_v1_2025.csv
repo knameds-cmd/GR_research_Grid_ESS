@@ -1,0 +1,13 @@
+,value
+B4_binding,0.4021291208791209
+B4_exceed_mwh,5338680.0
+B4_hours,8736.0
+B6_binding,0.3248196760080407
+B6_exceed_mwh,5622460.5
+B6_hours,8457.0
+exceed_max_B4_B6_twh,7.3656565
+either_binding,0.44494047619047616
+both_binding,0.2876602564102564
+thermal_cost_gbp_m,1830.904768
+thermal_volume_twh,12.547607
+cost_days,364.0

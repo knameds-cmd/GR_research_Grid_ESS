@@ -48,8 +48,8 @@ def load_bb(zones, path=BB):
     return b.dropna(subset=["zone"])
 
 
-def bb_by_zone(bb, ids, zones_order):
-    s = bb[bb["Building Block ID Number"].isin(ids)].groupby("zone")[YEAR].sum()
+def bb_by_zone(bb, ids, zones_order, year=YEAR):
+    s = bb[bb["Building Block ID Number"].isin(ids)].groupby("zone")[year].sum()
     return {z: float(s.get(z, 0.0)) for z in zones_order}
 
 
@@ -78,8 +78,11 @@ def window1_projects(include_post_2030=True, path=W1):
     return w
 
 
-def build_fleet(include_post_2030=True, bb_path=BB):
+def build_fleet(include_post_2030=True, bb_path=BB, year=YEAR, fuel=None, battery_shares=None, window1=True):
+    """year·fuel·battery_shares·window1은 2025년 과거 재현(gbess.system.backcast)용. 기본값은 2030년 설비."""
     fc, zc = load_cfg()
+    if fuel is not None:
+        fc["fuel"] = {**fc["fuel"], **fuel}
     Z = zone_ids(zc)
     zi = {z: i for i, z in enumerate(Z)}
     bb = load_bb(zc, bb_path)
@@ -87,24 +90,24 @@ def build_fleet(include_post_2030=True, bb_path=BB):
     for key, t in fc["thermal"].items():
         if not isinstance(t, dict):
             continue
-        cap = bb_by_zone(bb, t["bb"], Z)
+        cap = bb_by_zone(bb, t["bb"], Z, year)
         mc = marginal_cost(t, fc["fuel"])
         av = v(t["availability"]) if "availability" in t else None
         for z, mw in cap.items():
             if mw > 0:
                 gens.append(Gen(f"{key}_{z}", zi[z], mw, mc, None if av is None else np.full(1, av)))
-    ren = {k: bb_by_zone(bb, r["bb"], Z) for k, r in fc["renewables"].items()}
+    ren = {k: bb_by_zone(bb, r["bb"], Z, year) for k, r in fc["renewables"].items()}
 
     st = fc["storage"]
     soc0 = st["soc0"]
     b = st["batteries"]
-    bat = bb_by_zone(bb, b["bb"], Z)
+    bat = bb_by_zone(bb, b["bb"], Z, year)
     for z, mw in bat.items():
-        for h, sh in zip(b["durations_h"], v(b["shares"])):
+        for h, sh in zip(b["durations_h"], v(b["shares"]) if battery_shares is None else battery_shares):
             if mw * sh > 0:
                 stores.append(_store(f"bess{h}h_{z}", zi[z], mw * sh, h, v(b["rte"]), v(b["var_cost"]), soc0))
     o = st["other_laes"]
-    for z, mw in bb_by_zone(bb, o["bb"], Z).items():
+    for z, mw in bb_by_zone(bb, o["bb"], Z, year).items():
         if mw > 0:
             stores.append(_store(f"laes_{z}", zi[z], mw, v(o["duration_h"]), v(o["rte"]), o["var_cost"], soc0))
     tech = load_technologies()
@@ -119,14 +122,14 @@ def build_fleet(include_post_2030=True, bb_path=BB):
                                 soc0, e["var_cost"], frozenset({"existing_psh"})))
     w1 = fc["window1"]
     projects = []
-    for _, r in window1_projects(include_post_2030).iterrows():
+    for _, r in (window1_projects(include_post_2030) if window1 else pd.DataFrame()).iterrows():
         z = w1["zone_by_region"].get(r["region"], w1["zone_by_region"]["default"])
         tags = {"w1"} | ({"north"} if z == "N" else set())
         stores.append(_store(r["project"], zi[z], r["mw"], r["duration_h"], r["rte_pct"] / 100,
                              w1["var_cost_by_tech"][r["technology"]], soc0, tags))
         projects.append((r["project"], r["technology"], r["mw"], r["duration_h"]))
     return {"zones": Z, "gens": gens, "stores": stores, "renewable_mw": ren,
-            "demand_gwh": bb_by_zone(bb, [fc["demand"]["bb"]], Z), "w1_projects": projects}
+            "demand_gwh": bb_by_zone(bb, [fc["demand"]["bb"]], Z, year), "w1_projects": projects}
 
 
 def summary(f):

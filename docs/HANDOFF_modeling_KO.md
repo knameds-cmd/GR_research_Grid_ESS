@@ -80,7 +80,7 @@
 
 `docs/IMPLEMENTATION_A_KO.md`의 T 순서를 따릅니다. 각 작업의 "멈추고 물어볼 지점"에서는 연구자에게 묻고 기다립니다.
 
-0. **2026-11-05 현황**: T0~T7·T9 1차 완료 (결과 `docs/notes/m1_results_KO.md`, 규칙 결과 "조건부" `docs/notes/m1_go_no_go_KO.md`, 판정은 연구자). T8(2025 기본 점검)은 2025년 기상 자료가 없어 남음. 연구자가 조건부 절차(A)를 골라 순차 재급전과 2020년을 더했다(`docs/notes/m1_conditional_KO.md`). 연구자 판정: **M2로 진행**(2026-11-05)
+0. **2026-11-05 현황**: T0~T7·T9 1차 완료 (결과 `docs/notes/m1_results_KO.md`, 규칙 결과 "조건부" `docs/notes/m1_go_no_go_KO.md`, 판정은 연구자). T8(2025 기본 점검)은 2025년 기상 자료가 없어 남음. 연구자가 조건부 절차(A)를 골라 순차 재급전과 2020년을 더했다(`docs/notes/m1_conditional_KO.md`). 연구자 판정: **M2로 진행**(2026-11-05). M2 검증과 T8 1차 계산 끝(`docs/notes/m2_validation_KO.md`): V1 떨어짐(보정 여부 연구자 판단 대기), V2c·V6 통과, V2a·V4 떨어짐, V2b·V3는 해석을 연구자에게 물음. 2025 재현: `.venv/bin/python -m gbess.system.backcast`, ERA5 2025: `gbess.system.era5_ncar`
 1. T0 환경 점검 (2026-11-05 완료), T1 문서 정리
 2. T2 사전등록 `gbess/config/spec.yaml`. **승인 전에는 T5 이후 모형을 돌리지 않음.** 승인 전에는 2026-10-25 이후 NESO 하루 전 조류 자료를 받거나 보지 않음
 3. T3 구역 선택 메모 (3구역 또는 5구역, 연구자 승인)

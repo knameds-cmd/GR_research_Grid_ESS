@@ -7,6 +7,7 @@ cpsat-logutils==1.0.0
 cycler==0.12.1
 et_xmlfile==2.0.0
 fonttools==4.67.0
+h5py==3.16.0
 highspy==1.15.1
 idna==3.20
 iniconfig==2.3.1

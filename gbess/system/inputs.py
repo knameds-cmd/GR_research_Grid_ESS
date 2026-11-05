@@ -116,8 +116,10 @@ def wind_cf(wnd100, z0, kind, vr=None):
     return power_curve(vh, w["vi"], w["vr"] if vr is None else vr, w["vo"]) * w["loss"]
 
 
-def renewable_cf(path=ERA5, zones=("N", "S", "EW"), offshore_vr=None, solar_pr=None):
-    """{'onshore_wind': (Z, T), 'offshore_wind': (Z, T), 'solar': (Z, T)} 이용률과 칸 수 진단."""
+def renewable_cf(path=ERA5, zones=("N", "S", "EW"), offshore_vr=None, solar_pr=None, sites=None):
+    """{'onshore_wind': (Z, T), 'offshore_wind': (Z, T), 'solar': (Z, T)} 이용률과 칸 수 진단.
+    sites: 해상 단지 위치(기본 OFFSHORE_SITES). 일사 변수가 없는 파일(gbess.system.era5_ncar)이면 'solar'를 빼고 돌려준다."""
+    sites = OFFSHORE_SITES if sites is None else sites
     import xarray as xr
     ds = xr.open_dataset(path)
     ds = ds.isel(time=slice(0, T))
@@ -130,21 +132,28 @@ def renewable_cf(path=ERA5, zones=("N", "S", "EW"), offshore_vr=None, solar_pr=N
     z0 = ds["roughness"].values
     z0 = z0 if z0.ndim == 3 else np.broadcast_to(z0, w100.shape)
     cf_on = wind_cf(w100, z0, "onshore")
-    ghi = (ds["influx_direct"].values + ds["influx_diffuse"].values) / 1000.0
-    tc = ds["temperature"].values - 273.15 if "temperature" in ds else np.full_like(ghi, 15.0)
-    pv_raw = np.clip(ghi * (1 - 0.004 * np.maximum(tc - 25.0, 0.0)), 0, None)
+    has_solar = "influx_direct" in ds
+    if has_solar:
+        ghi = (ds["influx_direct"].values + ds["influx_diffuse"].values) / 1000.0
+        tc = ds["temperature"].values - 273.15 if "temperature" in ds else np.full_like(ghi, 15.0)
+        pv_raw = np.clip(ghi * (1 - 0.004 * np.maximum(tc - 25.0, 0.0)), 0, None)
     out = {k: np.zeros((len(zones), T)) for k in ("onshore_wind", "offshore_wind", "solar")}
     diag = {}
     for i, z in enumerate(zones):
         m = land & (zone_grid == z)
         diag[z] = int(m.sum())
         out["onshore_wind"][i] = cf_on[:, m].mean(axis=1)
-        out["solar"][i] = pv_raw[:, m].mean(axis=1)
+        if has_solar:
+            out["solar"][i] = pv_raw[:, m].mean(axis=1)
         cells = []
-        for la, lo in OFFSHORE_SITES[z]:
+        for la, lo in sites[z]:
             iy, ix = int(np.abs(lat - la).argmin()), int(np.abs(lon - lo).argmin())
             cells.append(wind_cf(w100[:, iy, ix], z0[:, iy, ix], "offshore", offshore_vr))
-        out["offshore_wind"][i] = np.mean(cells, axis=0)
+        out["offshore_wind"][i] = np.mean(cells, axis=0) if cells else 0.0
+    if not has_solar:
+        del out["solar"]
+        ds.close()
+        return out, diag
     pr = SOLAR_TARGET_CF / out["solar"].mean() if solar_pr is None else solar_pr
     out["solar"] = np.clip(out["solar"] * pr, 0, 1)
     diag["solar_performance_ratio"] = float(pr)
