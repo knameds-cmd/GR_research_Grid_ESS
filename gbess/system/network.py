@@ -183,6 +183,8 @@ class Block:
     balance_rows: np.ndarray       # 쌍대를 읽을 등식 행 번호. 1단계: (T,), 망: (Z, T)
     cost_idx: np.ndarray
     cost_coef: np.ndarray
+    store_rows: object = None      # (S, T) 저장 수지 등식 행 번호. 쌍대의 부호를 바꾸면 그 구간에 쓸 수 있는 에너지 1 MWh의 값(물 가치)
+    terminal_rows: object = None   # (S,) 끝 저장량 제약(≤) 행 번호
 
 
 def add_dispatch(lp, net, network, fixed=None, caps=None):
@@ -210,18 +212,22 @@ def add_dispatch(lp, net, network, fixed=None, caps=None):
         lp.set_bounds(d[i], lb=df, ub=df)
 
     # 저장 수지
+    store_rows = terminal_rows = None
     if S:
         eta_c = np.array([s.eta_ch for s in net.stores]).reshape(S, 1)
         eta_d = np.array([s.eta_dis for s in net.stores]).reshape(S, 1)
         e0 = np.array([s.soc0 * s.e_mwh for s in net.stores])
-        lp.eq.add(e0, [(e[:, 0], 1.0), (ch[:, 0], -dt * eta_c[:, 0]), (d[:, 0], dt / eta_d[:, 0])])
+        r0 = lp.eq.add(e0, [(e[:, 0], 1.0), (ch[:, 0], -dt * eta_c[:, 0]), (d[:, 0], dt / eta_d[:, 0])])
+        store_rows = np.zeros((S, T), int)
+        store_rows[:, 0] = r0
         if T > 1:
             R = S * (T - 1)
-            lp.eq.add(np.zeros(R), [(e[:, 1:].ravel(), 1.0), (e[:, :-1].ravel(), -1.0),
+            rows_t = lp.eq.add(np.zeros(R), [(e[:, 1:].ravel(), 1.0), (e[:, :-1].ravel(), -1.0),
                                     (ch[:, 1:].ravel(), np.broadcast_to(-dt * eta_c, (S, T - 1)).ravel()),
                                     (d[:, 1:].ravel(), np.broadcast_to(dt / eta_d, (S, T - 1)).ravel())])
+            store_rows[:, 1:] = rows_t.reshape(S, T - 1)
         if net.terminal == "geq_init":
-            lp.le.add(-e0, [(e[:, -1], -1.0)])
+            terminal_rows = lp.le.add(-e0, [(e[:, -1], -1.0)])
 
     # 수지
     gz = np.array([g.zone for g in net.gens], int)
@@ -244,7 +250,8 @@ def add_dispatch(lp, net, network, fixed=None, caps=None):
     cost_idx = np.concatenate([p.ravel(), d.ravel(), shed.ravel()])
     cost_coef = np.concatenate([np.broadcast_to(gc * dt, (G, T)).ravel(), np.broadcast_to(vc * dt, (S, T)).ravel(),
                                 np.full(Z * T, net.voll * dt)])
-    return Block(p, ch, d, e, shed, f, rows, cost_idx, cost_coef)
+    return Block(p, ch, d, e, shed, f, rows, cost_idx, cost_coef, store_rows if S else None,
+                 terminal_rows if S and net.terminal == "geq_init" else None)
 
 
 def implicit_flows(net, p, ch, d, shed):
@@ -266,7 +273,15 @@ def read(net, lp_res, blk, network):
     prices = None
     if lp_res.eqlin is not None and lp_res.eqlin.marginals is not None and len(lp_res.eqlin.marginals):
         prices = lp_res.eqlin.marginals[blk.balance_rows] / net.dt
-    return Dispatch(p, ch, d, e, shed, cost, flows, prices, lp_res.message, lp_res.seconds)
+    out = Dispatch(p, ch, d, e, shed, cost, flows, prices, lp_res.message, lp_res.seconds)
+    if prices is not None and blk.store_rows is not None:
+        # 저장 수지 행 t의 우변은 구간 t 끝 저장량에 넣는 에너지라, 쌍대의 부호를 바꾸면 그 1 MWh의 값이다 (£/MWh)
+        out.extra["water_value"] = -lp_res.eqlin.marginals[blk.store_rows]
+        wv_end = np.zeros(len(net.stores))
+        if blk.terminal_rows is not None:
+            wv_end = -lp_res.ineqlin.marginals[blk.terminal_rows]   # 연말 저장량 1 MWh의 값
+        out.extra["water_value_end"] = wv_end
+    return out
 
 
 def solve_dispatch(net, network, fixed=None, caps=None):

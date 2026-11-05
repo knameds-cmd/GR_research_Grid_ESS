@@ -5,7 +5,14 @@
       mode="gen_only"      변형 (i)  : 저장은 모두 1단계 계획 그대로, 발전기(와 정전)만 조정
       mode="intertemporal" 변형 (ii) : 저장도 1년 전체에 걸쳐 다시 고름. fixed_units를 주면 그 저장만 1단계 계획에 묶음
                            변형 (iii): mode="intertemporal", fixed_units = W1 북쪽 사업
-      M3에서 mode="sequential"(구간별 순차 재급전)을 더한다.
+      mode="sequential"    구간별 순차 재급전 (M1 조건부 판정용, 2026-11-05 연구자 위임으로 정의): NESO는 한 시간씩, 앞을 보지
+                           않고 재급전한다. 그 시간에는 발전기와 모든 저장(W1 북쪽 포함)을 조정할 수 있다. 발전기는 한계비용,
+                           저장은 1단계 시장 해의 물 가치(저장 수지 쌍대)로 값을 매긴다: 시간 t 끝에 남은 에너지 1 MWh는 1단계의
+                           t+1 물 가치(마지막 시간은 연말 저장량 제약의 쌍대)만큼의 값이다. 조정 뒤의 실제 저장량을 다음 시간으로
+                           넘긴다. 연말 저장량이 1단계 계획과 다르면 그 차이를 연말 물 가치로 정산해 비용에 더한다.
+                           (저장이 BM에 기회비용 단가를 낸다는 관행. 앞을 보지 않으므로 계획자 최적보다 비싸질 수 있다)
+                           지시가 없으면 발전소는 제출한 계획(FPN = 1단계 계획)을 따르므로, 저장이 계획에서 벗어나는 양에 MWh당
+                           FPN_TIE(£0.01)를 붙여 같은 비용의 해 중에서는 계획을 따르게 한다. 이 몫은 비용 집계에 넣지 않는다.
 
 조정 단가는 한계비용, 상향·하향 대칭이다. 그러면 "Σ c·(u − w)를 최소화"하는 것은 "최종 운전의 비용을 최소화"하는 것과
 같으므로 최종 운전을 변수로 둔다. 재급전 비용 = 최종 운전 비용 − 1단계 계획 비용 (실제 BM 단가보다 낮을 수 있어 하한).
@@ -25,12 +32,14 @@
 """
 import numpy as np
 
-from gbess.system.network import LP, add_dispatch, read
+from gbess.system.network import LP, Gen, Network, Store, add_dispatch, read
+from gbess.system.network import Dispatch
 from gbess.system.stage1 import REL_TOL, cost_cap_row, solve_stage1, stage1_extreme
 
-MODES = ("gen_only", "intertemporal")
+MODES = ("gen_only", "intertemporal", "sequential")
 INFEASIBLE = ("strict", "min_deviation")
 DEV_TOL = 1e-6
+FPN_TIE = 0.01                     # £/MWh. 순차 재급전에서 저장이 1단계 계획에서 벗어나는 양에 붙이는 동률 깨기 비용
 
 
 def _fixed_names(net, mode, fixed_units):
@@ -78,6 +87,10 @@ def _solve(lp, c, dev, infeasible):
 
 
 def redispatch(plan, net, mode, fixed_units=None, infeasible="strict"):
+    if mode == "sequential":
+        if fixed_units:
+            raise ValueError("sequential은 모든 저장을 조정한다 (fixed_units 없음)")
+        return redispatch_sequential(plan, net)
     if infeasible not in INFEASIBLE:
         raise ValueError(f"infeasible는 {INFEASIBLE}")
     names = net.store_names()
@@ -131,3 +144,45 @@ def redispatch_hi(net, mode, extreme_units, fixed_units=None, c1=None, caps=None
     best = max(runs, key=lambda r: r.extra["redispatch_cost"])
     best.extra["candidates"] = {r.extra["extreme"]: r.extra["redispatch_cost"] for r in runs}
     return best
+
+
+def redispatch_sequential(plan, net, log_every=None):
+    """구간별 순차 재급전 (모듈 머리말). plan은 쌍대(water_value)가 있는 1단계 첫 풀이여야 한다."""
+    if "water_value" not in plan.extra:
+        raise ValueError("1단계 계획에 물 가치(water_value)가 없음: solve_stage1의 첫 풀이를 넘길 것")
+    import time
+    t0 = time.perf_counter()
+    wv, wv_end = plan.extra["water_value"], plan.extra["water_value_end"]
+    G, S, Z, T, dt = len(net.gens), len(net.stores), net.Z, net.T, net.dt
+    ub = net.gen_ub()
+    E = np.array([s.e_mwh for s in net.stores])
+    e_prev = np.array([s.soc0 * s.e_mwh for s in net.stores])
+    p, ch, d, e = np.zeros((G, T)), np.zeros((S, T)), np.zeros((S, T)), np.zeros((S, T))
+    shed, flows = np.zeros((Z, T)), np.zeros((Z - 1, T))
+    for t in range(T):
+        gens = [Gen(g.name, g.zone, 1.0, g.cost, [ub[i, t]], g.renewable) for i, g in enumerate(net.gens)]
+        stores = [Store(s.name, s.zone, s.p_ch, s.p_dis, s.e_mwh, s.eta_ch, s.eta_dis,
+                        float(e_prev[k] / E[k]) if E[k] > 0 else 0.0, s.var_cost, s.tags) for k, s in enumerate(net.stores)]
+        sub = Network(net.zones, net.demand[:, t:t + 1], net.limits[:, t:t + 1], gens, stores, net.voll, dt, terminal=None)
+        lp = LP()
+        b = add_dispatch(lp, sub, network=True)
+        names = sub.store_names()
+        dev = _link(lp, sub, b, names, {u: (plan.ch[k, t:t + 1], plan.d[k, t:t + 1]) for k, u in enumerate(names)}, True)
+        c = lp.cost_vector()
+        value = wv[:, t + 1] if t + 1 < T else wv_end
+        c[b.e[:, 0]] -= value
+        c[dev] = FPN_TIE * dt
+        x = lp.solve(c_override=c).x
+        p[:, t], ch[:, t], d[:, t], e[:, t] = x[b.p[:, 0]], x[b.ch[:, 0]], x[b.d[:, 0]], x[b.e[:, 0]]
+        shed[:, t], flows[:, t] = x[b.shed[:, 0]], x[b.f[:, 0]]
+        e_prev = e[:, t]
+        if log_every and (t + 1) % log_every == 0:
+            print(f"    순차 재급전 {t + 1}/{T}시간", flush=True)
+    gc = np.array([g.cost for g in net.gens])[:, None]
+    vc = np.array([s.var_cost for s in net.stores])[:, None]
+    run_cost = float((gc * p).sum() * dt + (vc * d).sum() * dt + net.voll * shed.sum() * dt)
+    terminal_adj = float(-(wv_end * (e[:, -1] - plan.e[:, -1])).sum())
+    out = Dispatch(p, ch, d, e, shed, run_cost + terminal_adj, flows, None, "sequential", time.perf_counter() - t0)
+    out.extra.update(redispatch_cost=out.cost - plan.cost, stage1_cost=plan.cost, mode="sequential", fixed_units=[],
+                     terminal_adjustment=terminal_adj, running_cost=run_cost, fixed_deviation_mwh=0.0)
+    return out

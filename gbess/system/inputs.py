@@ -35,6 +35,15 @@ from gbess.system.network import Gen, Network
 RAW = ROOT / "data" / "raw" / "system"
 ERA5 = RAW / "era5" / "uk-2013.nc"
 DEMAND = RAW / "demanddata_2013.csv"
+CALIBRATION = "calibration_2013.json"   # 2013년에 정한 해상 정격 풍속·태양광 성능 비율. 다른 기상연도에 그대로 씀
+
+
+def era5_path(year):
+    return RAW / "era5" / f"uk-{year}.nc"
+
+
+def demand_path(year):
+    return RAW / f"demanddata_{year}.csv"
 OUT = ROOT / "data" / "processed" / "system"
 T = 8760
 WIND = {"onshore": dict(hub=100.0, vi=3.0, vr=12.5, vo=25.0, loss=0.90),
@@ -52,11 +61,18 @@ OFFSHORE_SITES = {               # (위도, 경도). 2030년 운전 단지, 연�
 
 
 # ---------------------------------------------------------------------------------------------------------------
-def demand_shapes(path=DEMAND):
-    """(EW, 스코틀랜드) 1시간 평균 MW 모양, 길이 8,760."""
+def demand_shapes(path=DEMAND, underlying=False):
+    """(EW, 스코틀랜드) 1시간 평균 MW 모양, 길이 8,760 (윤년은 12월 31일을 뺌).
+    underlying=False: EW = ENGLAND_WALES_DEMAND, 스코틀랜드 = ND − EW (2013년 주 결과).
+    underlying=True: 배전망 풍력·태양광이 줄여 준 몫을 되돌린 실제 소비 GB = ND + EMBEDDED_WIND + EMBEDDED_SOLAR를
+    시간마다 EW/ND 비율로 나눔. 배전망 태양광이 큰 해(2020년 13 GW)에는 모형의 태양광 발전기와 두 번 세지 않으려고 쓴다."""
     d = pd.read_csv(path)
     ew = d["ENGLAND_WALES_DEMAND"].to_numpy(float)
     sc = d["ND"].to_numpy(float) - ew
+    if underlying:
+        nd = d["ND"].to_numpy(float)
+        gb = nd + d["EMBEDDED_WIND_GENERATION"].to_numpy(float) + d["EMBEDDED_SOLAR_GENERATION"].to_numpy(float)
+        ew, sc = gb * ew / nd, gb * (1 - ew / nd)
     n = len(d) // 2 * 2
     ew, sc = ew[:n].reshape(-1, 2).mean(1), sc[:n].reshape(-1, 2).mean(1)
     if len(ew) < T:
@@ -64,8 +80,8 @@ def demand_shapes(path=DEMAND):
     return ew[:T], sc[:T]
 
 
-def zone_demand(annual_gwh, zones, path=DEMAND):
-    ew, sc = demand_shapes(path)
+def zone_demand(annual_gwh, zones, path=DEMAND, underlying=False):
+    ew, sc = demand_shapes(path, underlying)
     rows = []
     for z in zones:
         shape = ew if z == "EW" else sc
@@ -100,7 +116,7 @@ def wind_cf(wnd100, z0, kind, vr=None):
     return power_curve(vh, w["vi"], w["vr"] if vr is None else vr, w["vo"]) * w["loss"]
 
 
-def renewable_cf(path=ERA5, zones=("N", "S", "EW"), offshore_vr=None):
+def renewable_cf(path=ERA5, zones=("N", "S", "EW"), offshore_vr=None, solar_pr=None):
     """{'onshore_wind': (Z, T), 'offshore_wind': (Z, T), 'solar': (Z, T)} 이용률과 칸 수 진단."""
     import xarray as xr
     ds = xr.open_dataset(path)
@@ -129,7 +145,7 @@ def renewable_cf(path=ERA5, zones=("N", "S", "EW"), offshore_vr=None):
             iy, ix = int(np.abs(lat - la).argmin()), int(np.abs(lon - lo).argmin())
             cells.append(wind_cf(w100[:, iy, ix], z0[:, iy, ix], "offshore", offshore_vr))
         out["offshore_wind"][i] = np.mean(cells, axis=0)
-    pr = SOLAR_TARGET_CF / out["solar"].mean()
+    pr = SOLAR_TARGET_CF / out["solar"].mean() if solar_pr is None else solar_pr
     out["solar"] = np.clip(out["solar"] * pr, 0, 1)
     diag["solar_performance_ratio"] = float(pr)
     ds.close()
@@ -147,8 +163,18 @@ def offshore_target_cf(cf_2013_level, path=None):
     return (c25 * cf_2013_level + (c30 - c25) * OFFSHORE_NEW_CF) / c30
 
 
-def write_processed(zones=("N", "S", "EW")):
+def write_processed(zones=("N", "S", "EW"), year=2013):
+    """2013년은 해상 정격 풍속·태양광 성능 비율을 정해 calibration_2013.json에 남긴다. 다른 해는 그 값을 그대로 쓰고,
+    수요 모양은 배전망 발전을 되돌린 실제 소비(underlying)로 만든다."""
+    import json
     f = build_fleet()
+    if year != 2013:
+        cal = json.loads((OUT / CALIBRATION).read_text())
+        dem = zone_demand(f["demand_gwh"], zones, demand_path(year), underlying=True)
+        cf, diag = renewable_cf(era5_path(year), zones, offshore_vr=cal["offshore_vr"], solar_pr=cal["solar_performance_ratio"])
+        diag.update(calibration=cal)
+        _save(zones, year, dem, cf)
+        return dem, cf, diag
     dem = zone_demand(f["demand_gwh"], zones)
     w = np.array([f["renewable_mw"]["offshore_wind"][z] for z in zones])
     cf, diag = renewable_cf(zones=zones)
@@ -165,17 +191,27 @@ def write_processed(zones=("N", "S", "EW")):
     cf["offshore_wind"] = c["offshore_wind"]
     diag.update(offshore_cf_2013_level=level, offshore_target=target, offshore_vr=mid,
                 offshore_cf=float(w @ c["offshore_wind"].mean(axis=1) / w.sum()))
-    OUT.mkdir(parents=True, exist_ok=True)
-    idx = pd.RangeIndex(T, name="hour")
-    pd.DataFrame(dem.T, index=idx, columns=zones).to_csv(OUT / "demand_2030_mw.csv")
-    for k, a in cf.items():
-        pd.DataFrame(a.T, index=idx, columns=zones).to_csv(OUT / f"cf_{k}_2013.csv")
+    _save(zones, 2013, dem, cf)
+    (OUT / CALIBRATION).write_text(json.dumps({"offshore_vr": mid, "solar_performance_ratio": diag["solar_performance_ratio"],
+                                               "offshore_target": target, "offshore_cf_2013_level": level}, indent=1))
     return dem, cf, diag
 
 
-def load_processed(zones=("N", "S", "EW")):
-    dem = pd.read_csv(OUT / "demand_2030_mw.csv", index_col=0)[list(zones)].to_numpy().T
-    cf = {k: pd.read_csv(OUT / f"cf_{k}_2013.csv", index_col=0)[list(zones)].to_numpy().T
+def processed_files(year):
+    return [OUT / f"demand_2030_mw_{year}.csv"] + [OUT / f"cf_{k}_{year}.csv" for k in ("onshore_wind", "offshore_wind", "solar")]
+
+
+def _save(zones, year, dem, cf):
+    OUT.mkdir(parents=True, exist_ok=True)
+    idx = pd.RangeIndex(T, name="hour")
+    pd.DataFrame(dem.T, index=idx, columns=zones).to_csv(OUT / f"demand_2030_mw_{year}.csv")
+    for k, a in cf.items():
+        pd.DataFrame(a.T, index=idx, columns=zones).to_csv(OUT / f"cf_{k}_{year}.csv")
+
+
+def load_processed(zones=("N", "S", "EW"), year=2013):
+    dem = pd.read_csv(OUT / f"demand_2030_mw_{year}.csv", index_col=0)[list(zones)].to_numpy().T
+    cf = {k: pd.read_csv(OUT / f"cf_{k}_{year}.csv", index_col=0)[list(zones)].to_numpy().T
           for k in ("onshore_wind", "offshore_wind", "solar")}
     return dem, cf
 
@@ -186,10 +222,10 @@ def boundary_limits(mult=1.0, nominal=False):
     return np.array([v(b[key]) for b in zc["boundaries"]]) * mult
 
 
-def build_network_2030(limit_mult=1.0, include_post_2030=True, nominal_limits=False):
+def build_network_2030(limit_mult=1.0, include_post_2030=True, nominal_limits=False, weather_year=2013):
     f = build_fleet(include_post_2030=include_post_2030)
     zones = f["zones"]
-    dem, cf = load_processed(zones)
+    dem, cf = load_processed(zones, weather_year)
     gens = []
     for g in f["gens"]:
         av = None if g.avail is None else np.full(T, float(np.ravel(g.avail)[0]))
@@ -202,9 +238,8 @@ def build_network_2030(limit_mult=1.0, include_post_2030=True, nominal_limits=Fa
     from gbess.system.run_m1 import floor_cap_levels
     meta = {"w1_north": net.store_names("north"), "w1_all": net.store_names("w1"),
             "levels": floor_cap_levels(f["w1_projects"]), "bind_boundaries": [0, 1],
-            "inputs": [p for p in [OUT / "demand_2030_mw.csv", OUT / "cf_onshore_wind_2013.csv",
-                                   OUT / "cf_offshore_wind_2013.csv", OUT / "cf_solar_2013.csv",
-                                   CFG / "zones.yaml", CFG / "fleet_2030.yaml", RAW / "fes2025_bb1_v006.csv"]]}
+            "inputs": processed_files(weather_year) + [CFG / "zones.yaml", CFG / "fleet_2030.yaml",
+                                                      RAW / "fes2025_bb1_v006.csv"]}
     return net, meta
 
 
@@ -222,10 +257,12 @@ def checklist(net, f=None):
 
 
 if __name__ == "__main__":
+    import sys
     pd.set_option("display.width", 200)
-    dem, cf, diag = write_processed()
-    print("칸 수·태양광 성능 비율", diag)
-    net, meta = build_network_2030()
+    year = int(sys.argv[1]) if len(sys.argv) > 1 else 2013
+    dem, cf, diag = write_processed(year=year)
+    print("칸 수·보정", diag)
+    net, meta = build_network_2030(weather_year=year)
     d, r = checklist(net)
     print(d.round(2).to_string(index=False))
     print(r.round(3).to_string())

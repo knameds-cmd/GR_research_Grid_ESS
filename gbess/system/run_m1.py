@@ -133,7 +133,7 @@ def _row(design, variant, mult, r, c6, net, extra=None):
 
 
 def run_one_limit(net, mult, w1_north, w1_all, levels, bind_boundaries, X=0.5, beta=1.0, infeasible="strict",
-                  log=print, lo_variants=("i", "iii"), designs=("S0", "S1a", "S1b")):
+                  log=print, lo_variants=("i", "iii"), designs=("S0", "S1a", "S1b"), sequential=False):
     n = net.scaled_limits(mult)
     rows = []
     t0 = time.perf_counter()
@@ -161,6 +161,11 @@ def run_one_limit(net, mult, w1_north, w1_all, levels, bind_boundaries, X=0.5, b
             lo = redispatch_lo(n, mode, fu, c1=plan.cost, caps=caps, infeasible=infeasible)
             pay = payments_national(n, plan.prices, lo.extra["plan"], lo, w1_all, levels)
             rows.append(_row(dname, v, mult, lo, c6, n, {**pay, "plan": "D_lo"}))
+        if dname == "S0" and sequential:
+            sq = redispatch(plan, n, "sequential")
+            pay = payments_national(n, plan.prices, plan, sq, w1_all, levels)
+            rows.append(_row(dname, "seq", mult, sq, c6, n, {**pay, "plan": "first_solve",
+                                                               "terminal_adjustment": sq.extra["terminal_adjustment"]}))
         if dname == "S0":
             hi = redispatch_hi(n, "intertemporal", w1_north, w1_north, c1=plan.cost, infeasible=infeasible)
             rows.append(_row(dname, "iii", mult, hi, c6, n, {"plan": "D_hi_approx", "extreme": hi.extra["extreme"]}))
@@ -170,21 +175,21 @@ def run_one_limit(net, mult, w1_north, w1_all, levels, bind_boundaries, X=0.5, b
 
 def run_m1(net, w1_north, w1_all, levels, bind_boundaries, out_dir, inputs=(), limit_mults=(0.8, 1.0, 1.2),
            X=0.5, beta=1.0, infeasible="strict", log=print, lo_variants=("i", "iii"), label=None,
-           designs=("S0", "S1a", "S1b")):
+           designs=("S0", "S1a", "S1b"), sequential=False, weather_year=2013):
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     t0 = time.perf_counter()
     rows = []
     for m in limit_mults:
         rows += run_one_limit(net, m, w1_north, w1_all, levels, bind_boundaries, X, beta, infeasible, log, lo_variants,
-                              designs)
+                              designs, sequential)
     record = {
         "git_commit": git_commit(), "spec_sha256": file_sha256(SPEC),
         "input_sha256": {str(p): file_sha256(p) for p in inputs},
         "solver_status": sorted({r["status"] for r in rows}), "solve_seconds": time.perf_counter() - t0,
-        "label": label,
+        "label": label, "weather_year": weather_year,
         "options": {"limit_mults": list(limit_mults), "X": X, "beta": beta, "infeasible": infeasible,
-                    "lo_variants": list(lo_variants), "designs": list(designs),
+                    "lo_variants": list(lo_variants), "designs": list(designs), "sequential": sequential,
                     "w1_north": list(w1_north), "bind_boundaries": list(bind_boundaries)},
     }
     (out_dir / "run.json").write_text(json.dumps(record, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -209,12 +214,16 @@ def main():
     ap.add_argument("--beta", type=float, default=1.0)
     ap.add_argument("--label", default="main")
     ap.add_argument("--designs", nargs="+", default=["S0", "S1a", "S1b"], help="S6·S5는 늘 함께 계산")
+    ap.add_argument("--weather-year", type=int, default=2013)
+    ap.add_argument("--sequential", action="store_true", help="S0에 구간별 순차 재급전 판 추가")
     a = ap.parse_args()
-    net, meta = build_network_2030(include_post_2030=not a.exclude_post_2030, nominal_limits=a.nominal_limits)
+    net, meta = build_network_2030(include_post_2030=not a.exclude_post_2030, nominal_limits=a.nominal_limits,
+                                   weather_year=a.weather_year)
     out = ROOT / "results" / "system" / "m1" / a.label
     print(f"판 {a.label}: 구역 {net.zones}, 한도 {net.limits[:, 0].tolist()} MW × {a.mult}, W1 북쪽 {len(meta['w1_north'])}건")
     run_m1(net, meta["w1_north"], meta["w1_all"], meta["levels"], meta["bind_boundaries"], out, inputs=meta["inputs"],
            limit_mults=a.mult, beta=a.beta, infeasible="min_deviation", lo_variants=a.lo, label=a.label, designs=a.designs,
+           sequential=a.sequential, weather_year=a.weather_year,
            log=lambda *x: print(*x, flush=True))
     print(f"결과: {out.relative_to(ROOT)}")
 
@@ -375,3 +384,25 @@ def figure_bars(df, out_dir, limit_mult=1.0):
     fig.savefig(p, dpi=150)
     plt.close(fig)
     return p
+
+
+def run_sequential_only(limit_mults=(0.8, 1.0, 1.2), weather_year=2013, out=None, log=print):
+    """이미 돌린 판에 S0 순차 재급전 행만 더한다(1단계 첫 풀이 + 순차 재급전, 판마다 수십 초). results_sequential.csv"""
+    import pandas as pd
+    from gbess.system.inputs import build_network_2030
+    rows = []
+    for m in limit_mults:
+        net, meta = build_network_2030(limit_mult=m, weather_year=weather_year)
+        c6 = solve_planner(net).cost
+        s0 = solve_stage1(net)
+        sq = redispatch(s0, net, "sequential")
+        pay = payments_national(net, s0.prices, s0, sq, meta["w1_all"], meta["levels"])
+        row = _row("S0", "seq", m, sq, c6, net, {**pay, "plan": "first_solve", "weather_year": weather_year,
+                                                 "terminal_adjustment": sq.extra["terminal_adjustment"]})
+        row.pop("operator_revenue", None)
+        rows.append(row)
+        log(f"  ×{m}: D_seq £{row['D'] / 1e6:.1f}m ({sq.seconds:.0f}s)")
+    df = pd.DataFrame(rows)
+    out = Path(out or ROOT / "results" / "system" / "m1" / f"results_sequential_{weather_year}.csv")
+    df.to_csv(out, index=False)
+    return df

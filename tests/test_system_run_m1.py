@@ -164,3 +164,16 @@ def test_collect_split_runs(tmp_path):
     df = collect(tmp_path)
     assert (df["design"] == "S6").sum() == 1 and set(df["design"]) == {"S6", "S5", "S0", "S1a"}
     assert check_invariants(df) == []
+
+
+def test_underlying_demand_shape(tmp_path):
+    from gbess.system.inputs import demand_shapes
+    import pandas as pd
+    n = 8760 * 2
+    pd.DataFrame({"ND": np.full(n, 100.0), "ENGLAND_WALES_DEMAND": np.full(n, 90.0),
+                  "EMBEDDED_WIND_GENERATION": np.full(n, 5.0), "EMBEDDED_SOLAR_GENERATION": np.full(n, 15.0)}
+                 ).to_csv(tmp_path / "d.csv", index=False)
+    ew, sc = demand_shapes(tmp_path / "d.csv", underlying=False)
+    assert ew[0] == pytest.approx(90) and sc[0] == pytest.approx(10)
+    ew, sc = demand_shapes(tmp_path / "d.csv", underlying=True)     # GB 120을 EW/ND = 0.9로 나눔
+    assert ew[0] == pytest.approx(108) and sc[0] == pytest.approx(12)

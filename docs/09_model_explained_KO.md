@@ -948,10 +948,10 @@ BM 층은 3.5절에 구현했고, 검증 결과는 5.6절에 있습니다. BM �
 | `gbess/finance/costs.py`, `config/costs.yaml` | 기술·비용 입력 → 2025년 실질 £의 capex·opex·repex·잔존가치·가변비용 (4.4절). 출처 `literature/sources/tech/TECH_SOURCES.md` |
 | `literature/sources/ldes/window1_projects.csv` | Ofgem Window 1 신청 사업 73건(MW·시간·RTE·첫 운전·선정 여부, 쪽 번호) |
 | `data/raw/macro/` | CPIH 지수(ONS L522)와 연평균 환율(영국은행) |
-| `tests/` | 이 문서의 예제와 불변식 62개 + 구조층(`test_system_*.py`, 손계산 E1~E4는 `docs/notes/model_examples_KO.md`) 32개 = 94개 |
+| `tests/` | 이 문서의 예제와 불변식 62개 + 구조층(`test_system_*.py`, 손계산 E1~E4는 `docs/notes/model_examples_KO.md`) 38개 = 100개 |
 
 ```bash
-.venv/bin/python -m pytest -q tests                       # 시험 94개
+.venv/bin/python -m pytest -q tests                       # 시험 100개
 .venv/bin/python -m gbess.finance.costs                   # 기술·비용 표 (몇 초)
 .venv/bin/python -m gbess.realized.psh --start 2016-09 --end 2026-10
 .venv/bin/python -m gbess.realized.ancillary

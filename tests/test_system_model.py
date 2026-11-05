@@ -186,3 +186,38 @@ def test_e4_fixed_storage_infeasible_unless_deviation_allowed():
     assert a.cost == pytest.approx(b.cost, abs=1e-3)
     lo = redispatch_lo(net, "gen_only", infeasible="min_deviation")
     assert lo.extra["fixed_deviation_mwh"] == pytest.approx(50, abs=1e-3)   # 1단계 비용 허용 오차 안에서 조금 움직임
+
+
+def test_water_values_e1_e2():
+    # 저장 수지 행 t의 쌍대 = t 시간에 쓸 수 있는 에너지 1 MWh의 값. E2: t1 £150(비싼 가스) − 0.01, t2 £50 − 0.01
+    assert solve_stage1(e2()).extra["water_value"][0].tolist() == pytest.approx([149.99, 49.99])
+    assert solve_stage1(e1()).extra["water_value"][0].tolist() == pytest.approx([99.99, 99.99])
+
+
+@pytest.mark.parametrize("make", [e1, e2])
+def test_sequential_recovers_planner_in_e1_e2(make):
+    # E1: t1에 1단계 물 가치(£99.99)로 에너지를 남기는 쪽이 이득 → 100 충전, t2에 100 방전 = S6 (£25,000)
+    # E2: t1 끝 에너지의 값은 t2 물 가치 £49.99. t1 방전은 풍력만 줄이므로 남겨 두고 t2에 방전 = S6 (£45,000)
+    net = make()
+    r = redispatch(solve_stage1(net), net, "sequential")
+    assert r.cost == pytest.approx(solve_planner(net).cost, abs=TOL)
+    assert np.all(np.abs(r.flows) <= net.limits + 1e-6)
+
+
+@pytest.mark.parametrize("seed", [0, 1])
+def test_sequential_invariants(seed):
+    from gbess.system.network import implicit_flows
+    net = random_net(seed)
+    s1 = solve_stage1(net)
+    r = redispatch(s1, net, "sequential")
+    assert np.all(np.abs(r.flows) <= net.limits + 1e-6)
+    assert np.allclose(implicit_flows(net, r.p, r.ch, r.d, r.shed), r.flows, atol=1e-5)
+    E = np.array([s.e_mwh for s in net.stores])[:, None]
+    assert np.all(r.e >= -1e-6) and np.all(r.e <= E + 1e-6)
+    # 저장량이 시간마다 이어짐: e[t] = e[t−1] + η_ch·ch − d/η_dis
+    eta_c = np.array([s.eta_ch for s in net.stores])[:, None]
+    eta_d = np.array([s.eta_dis for s in net.stores])[:, None]
+    e0 = np.array([s.soc0 * s.e_mwh for s in net.stores])[:, None]
+    prev = np.hstack([e0, r.e[:, :-1]])
+    assert np.allclose(r.e, prev + eta_c * r.ch - r.d / eta_d, atol=1e-5)
+    assert r.extra["redispatch_cost"] == pytest.approx(r.cost - s1.cost)

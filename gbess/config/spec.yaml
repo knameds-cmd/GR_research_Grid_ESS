@@ -90,6 +90,11 @@ scenario_m1:
     sensitivity: exclude_post_2030 # 2030년에 운전하는 사업만. 북쪽 W1은 1,860 MW. 보고만 함
   status: confirmed
 
+conditional_windy_year:           # go_no_go.rules.conditional의 "바람 많은 기상연도 1개". 연구자 위임 2026-11-05
+  year: 2020                       # DUKES 2026 Table 6.3 "unchanged configuration basis" 풍력 이용률 2010~2024 중 최대 35.5% (2015년 33.3%, 2013년 31.0%)
+  weather: "ERA5 uk-2020.nc (Zenodo 18325225). 해상 정격 풍속·태양광 성능 비율은 2013년 값(calibration_2013.json) 그대로"
+  demand_shape: "NESO 2020: ND + 배전망 풍력 + 배전망 태양광(실제 소비)을 EW/ND 비율로 나눔. 2020년 배전망 태양광 13 GW라 ND를 그대로 쓰면 태양광을 두 번 셈. 코로나 봉쇄로 수요 모양이 평소와 다름(한계로 보고)"
+  leap_year: "8,784시간 중 앞 8,760시간(12월 31일 뺌)"
 scenarios_m3: pending              # 기상연도 30~40개, 2035, FES 경로 등. M3 전에 따로 사전등록 (D7, D13, D17)
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -102,6 +107,10 @@ redispatch:
     ii:  {mode: intertemporal, desc: "저장도 1년 전체에 걸쳐 다시 고름. 계통 총비용은 구성상 S6과 같음 (검산)"}
     iii: {mode: intertemporal, fixed_units: window1_north, desc: "W1 북쪽 사업만 1단계 계획에 고정, 나머지는 ii처럼. D_W1에 씀"}
   interface: "redispatch(plan, network, mode, fixed_units=None)"   # M3에서 mode='sequential' 추가
+  sequential:                      # go_no_go.rules.conditional의 "순차 재급전" 정의 (spec에 이름만 있던 것). 연구자 위임 2026-11-05
+    definition: "NESO가 한 시간씩 앞을 보지 않고 재급전. 발전기와 모든 저장(W1 북쪽 포함)을 조정. 발전기는 한계비용, 저장은 1단계 첫 풀이의 물 가치(저장 수지 쌍대; 시간 t 끝 에너지는 t+1 값, 마지막은 연말 제약 쌍대). 지시가 없으면 FPN(1단계 계획)을 따르도록 저장의 계획 이탈에 £0.01/MWh. 실제 저장량을 다음 시간으로 넘기고, 연말 저장량 차이는 연말 물 가치로 정산"
+    plan: first_solve                # 쌍대가 있는 1단계 첫 풀이를 FPN으로 씀
+    note: "D_seq에는 W1 북쪽만이 아니라 모든 저장의 앞을 보지 않는 운전 비용이 함께 들어감. W1 북쪽의 몫은 W1 북쪽을 뺀 구역망과의 차이로 따로 보고(판정에 쓰지 않음)"
   infeasible_fixed: min_deviation  # spec이 정하지 않았던 경우(T5에서 발견): 묶은 저장 때문에 발전기만으로 풀 수 없으면, 묶은 저장의 계획 이탈량 Σ|Δch|+|Δd|를 먼저 최소화하고 그 안에서 비용 최소. 이탈량은 결과에 따로 보고. 연구자 위임 2026-11-05
   status: confirmed                # D10
 
@@ -269,3 +278,4 @@ changelog:
   - {date: "2026-11-05", change: "연구자 답 반영: calibration_2025 = only_if_v1_fails, post_2030 = both, 재급전 지급 = pay_as_cost, D_hi = extreme_plans, VoLL = 17000 (출처 쪽 번호 확인). 기본값 표 전부 confirmed", by: "연구자 결정, Claude Code 기록"}
   - {date: "2026-11-05", change: "연구자 승인 (status approved, V5 창 2026-11-06~2027-05-05, 태그 prereg-m1)", by: "연구자"}
   - {date: "2026-11-05", change: "T3·T4 빈칸 채움: zones = 3구역(N/S/EW), boundary_limit_2030 = B4 3,940 / B6 5,740 MW(관측 감산 계수), interconnectors = excluded, marginal_costs.thermal = fleet_2030.yaml, redispatch.infeasible_fixed = min_deviation(spec에 없던 경우의 처리). 지표·설계안·통과 기준·go/no-go 규칙은 바꾸지 않음", by: "연구자 위임(근거가 확실한 범위에서 Claude 추천값 적용), Claude Code 기록"}
+  - {date: "2026-11-05", change: "M1 규칙 결과 조건부 → 연구자가 A(spec 조건부 절차) 선택. 정의가 없던 redispatch.sequential과 conditional_windy_year(2020)를 채움. 지표·설계안·통과 기준·규칙은 바꾸지 않음", by: "연구자 위임, Claude Code 기록"}
