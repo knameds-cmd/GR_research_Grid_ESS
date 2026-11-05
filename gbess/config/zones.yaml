@@ -1,0 +1,36 @@
+# 구역과 경계 (T3·T4, docs/notes/zones_choice_KO.md). 북 → 남 사슬. 코드: gbess/system/inputs.py
+# status: sourced = 1차 자료에서 읽음 / derived = 1차 자료 값으로 계산 / placeholder = 확인 전 임시값
+# 결정: 연구자가 2026-11-05 Claude 추천값 적용을 위임함 (spec.yaml changelog, docs/12_decisions_2026-11_KO.md)
+
+zones:
+  - id: N
+    name: "북스코틀랜드 (B4 북쪽, SSEN Transmission)"
+    fes_areas: ["SSEN (SHEPD)", "SHETL"]      # FES 2025 Building Blocks의 DNO License Area 값
+  - id: S
+    name: "남스코틀랜드 (B4~B6, SP Transmission)"
+    fes_areas: ["SPEN", "SPTL"]
+  - id: EW
+    name: "잉글랜드·웨일스 (B6 남쪽, NGET)"
+    fes_areas: ["Electricity North West", "NGED East Midlands", "NGED South Wales", "NGED South West", "NGED West Midlands",
+                "NPg Northeast", "NPg Yorkshire", "SPEN Manweb", "SSEN South", "UKPN Eastern", "UKPN London",
+                "UKPN South East", "NGET"]
+zones_basis:
+  status: sourced
+  source: "FES 2025 BB의 송전 직접 연결 행이 Direct(SHETL)/Direct(SPTL)/Direct(NGET)로 나뉨. B4 = SSEN|SPT, B6 = SPT|NGET 경계 (ETYS 2024 p.28, p.30). SPEN Manweb(북웨일스·머지사이드)은 잉글랜드·웨일스"
+
+boundaries:   # 경계 l은 zones[l] | zones[l+1]
+  - id: B4
+    neso_group: SSE_SP2
+    etys_base_mw: {value: 4000, status: sourced, source: "ETYS 2024 p.28 'limited to 4 GW due to thermal constraint on the Tealing - Westfield 275kV circuit'"}
+    etys_2030_mw: {value: 7300, status: sourced, source: "ETYS 2024 B4 boundary chart (NESO doc 351896), Holistic Transition 2030 capability. Beyond 2030 보강 전제"}
+    derate: {value: 0.539, status: derived, source: "NESO 하루 전 한도(SSE_SP2) 1시간 평균 ÷ 4,000 MW의 평균, 2024-05-01~2026-10-24 (gbess.system.zones_analysis). 중앙값 0.50, P10 0.40, P90 0.71"}
+    limit_2030_mw: {value: 3940, status: derived, source: "7,300 × 0.539 = 3,935 → 3,940"}
+  - id: B6
+    neso_group: SCOTEX
+    etys_base_mw: {value: 6700, status: sourced, source: "ETYS 2024 p.30 'limited to 6.7 GW due to thermal constraint on the Harker-Moffat 400kV circuit'"}
+    etys_2030_mw: {value: 10200, status: sourced, source: "ETYS 2024 B6 boundary chart (NESO doc 351906), HT 2030. EGL1(2030)·EGL2(2029) HVDC 포함 (CP2030 Annex 2 Table 2 p.9)"}
+    derate: {value: 0.563, status: derived, source: "SCOTEX 하루 전 한도 ÷ 6,700 MW의 평균, 2024-05-01~2026-10-24. 중앙값 0.52, P10 0.35, P90 0.84"}
+    limit_2030_mw: {value: 5740, status: derived, source: "10,200 × 0.563 = 5,743 → 5,740"}
+
+report_only_sensitivity:
+  nominal_etys_2030: "감산 없이 B4 7,300 / B6 10,200 MW (판정에 쓰지 않음)"

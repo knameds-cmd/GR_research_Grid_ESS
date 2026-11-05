@@ -33,12 +33,14 @@ claim:
 model:
   solver: highs                    # scipy.optimize 또는 highspy, 희소 행렬. status: confirmed (D9)
   zones:
-    count: pending_T3              # 3 또는 5. 방사형 사슬(구역 순위치로 경계 조류가 유일)을 기본으로 함 (IMPL 2.1)
-    definition: pending_T3
-    north_zones: pending_T3        # "북쪽 구역". W1 북쪽 사업, S1a·S1b 대상, E_bind가 이 정의를 씀
-    status: confirmed_choice_pending_T3
+    count: 3                       # 방사형 사슬 N | B4 | S | B6 | EW (docs/notes/zones_choice_KO.md)
+    definition: "gbess/config/zones.yaml: N = B4 북쪽(SSEN), S = B4~B6(SPT), EW = 잉글랜드·웨일스(NGET)"
+    north_zones: [N]               # W1 북쪽 = N 구역 7건 5,100 MW (TEC 2026-11-03로 모두 B4 북쪽 확인)
+    status: confirmed              # T3. 연구자 위임 2026-11-05 (changelog)
   boundary_limit_2030:
-    value: pending_T4              # T4에서 감산 계수 후보 2~3개를 근거와 함께 제안 → 연구자 승인 (R04 6장 3번: 2025 B6 관측 중앙값 3,800 MW = 명목 6,800 MW의 약 56%)
+    value: {B4: 3940, B6: 5740}    # ETYS 2024 HT 2030 용량(B4 7,300, B6 10,200) × 관측 감산 계수(B4 0.539, B6 0.563 = 2024-05~2026-10 하루 전 한도 ÷ ETYS 기준 용량의 평균). zones.yaml
+    report_only_nominal: {B4: 7300, B6: 10200}   # 감산 없는 명목. 보고만 하는 민감도(판정에 쓰지 않음)
+    status: confirmed              # T4. 연구자 위임 2026-11-05 (changelog)
     sensitivity_multipliers: [0.8, 1.0, 1.2]   # status: confirmed (D9, D14, D17)
   time:
     year: 2030
@@ -63,12 +65,13 @@ model:
     status: sourced
     decided: "연구자 2026-11-05 (Q5 a)"
   marginal_costs:
-    thermal: pending_T4            # FES 2025 Holistic Transition 2030 연료·탄소 가정 (출처·쪽 번호는 T4)
+    thermal: "gbess/config/fleet_2030.yaml: 연료·탄소 FES 2025 Economics CP.01(2030), 효율 FES E.08·DESNZ 2025. CCGT £86.8/MWh"   # T4
     wind_solar: 0.0                # 비용 기준. 실제 BM의 음수 bid(CfD·ROC)는 넣지 않음 → 재급전 비용은 하한
     storage: "technologies.yaml var_cost (리튬 £6/MWh 등)"
     status: confirmed
   interconnectors:
-    treatment: pending_T4          # T4에서 두 가지 이상 제안 (예: FES 시계열 고정 / 가격 수용 공급원)
+    treatment: excluded            # T4. 시간별 물량·외국 가격 자료 없음. 남쪽 흡수처가 줄어 D가 작게 나오는 쪽. 가격 수용 판은 M2 민감도
+    status: confirmed              # 연구자 위임 2026-11-05 (changelog)
   ramping_unit_commitment: none    # 선형, 기동·최소 출력 없음
 
 scenario_m1:
@@ -99,6 +102,7 @@ redispatch:
     ii:  {mode: intertemporal, desc: "저장도 1년 전체에 걸쳐 다시 고름. 계통 총비용은 구성상 S6과 같음 (검산)"}
     iii: {mode: intertemporal, fixed_units: window1_north, desc: "W1 북쪽 사업만 1단계 계획에 고정, 나머지는 ii처럼. D_W1에 씀"}
   interface: "redispatch(plan, network, mode, fixed_units=None)"   # M3에서 mode='sequential' 추가
+  infeasible_fixed: min_deviation  # spec이 정하지 않았던 경우(T5에서 발견): 묶은 저장 때문에 발전기만으로 풀 수 없으면, 묶은 저장의 계획 이탈량 Σ|Δch|+|Δd|를 먼저 최소화하고 그 안에서 비용 최소. 이탈량은 결과에 따로 보고. 연구자 위임 2026-11-05
   status: confirmed                # D10
 
 degeneracy:                        # 1단계 해가 하나로 정해지지 않는 문제 (IMPL 2.3a, R04 1장 3번)
@@ -264,3 +268,4 @@ changelog:
   - {date: "2026-11-05", change: "초안 작성 (T2)", by: "Claude Code"}
   - {date: "2026-11-05", change: "연구자 답 반영: calibration_2025 = only_if_v1_fails, post_2030 = both, 재급전 지급 = pay_as_cost, D_hi = extreme_plans, VoLL = 17000 (출처 쪽 번호 확인). 기본값 표 전부 confirmed", by: "연구자 결정, Claude Code 기록"}
   - {date: "2026-11-05", change: "연구자 승인 (status approved, V5 창 2026-11-06~2027-05-05, 태그 prereg-m1)", by: "연구자"}
+  - {date: "2026-11-05", change: "T3·T4 빈칸 채움: zones = 3구역(N/S/EW), boundary_limit_2030 = B4 3,940 / B6 5,740 MW(관측 감산 계수), interconnectors = excluded, marginal_costs.thermal = fleet_2030.yaml, redispatch.infeasible_fixed = min_deviation(spec에 없던 경우의 처리). 지표·설계안·통과 기준·go/no-go 규칙은 바꾸지 않음", by: "연구자 위임(근거가 확실한 범위에서 Claude 추천값 적용), Claude Code 기록"}

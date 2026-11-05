@@ -1,0 +1,114 @@
+# 2030년 설비 (T4, M1-2). FES 2025 Holistic Transition + Window 1 잠정 16건 + 기존 양수 4곳. 코드: gbess/system/fleet.py
+# 금액은 2025년 실질 £(FES 2025 경제 입력의 GDP 디플레이터 2025=100 기준). 한계비용 = 연료 ÷ 효율 + 탄소 × 배출계수 ÷ 효율 + 가변 운영비.
+# status: sourced / derived / placeholder.  결정: 연구자가 2026-11-05 Claude 추천값 적용을 위임함
+# 자료 약칭: BB = data/raw/system/fes2025_bb1_v006.csv (FES 2025 Building Blocks, NESO Open Data Licence, 열 "2030", pathway "Holistic Transition")
+#            ECON = literature/sources/tech/neso_fes2025_econ_inputs.xlsx (FES 2025 Economics Inputs)
+#            DESNZ25 = DESNZ/GHD "Electricity Generation Cost Study" 2025-03-31 (assets.publishing.service.gov.uk/media/696616c68d599f4c09e1ffae)
+#            DUKES = data/raw/system/DUKES_2026_5.10.xlsx (DUKES 2026 Table 5.10)
+
+fuel:
+  gas_gbp_mwh_lhv: {value: 26.02, status: sourced, source: "ECON CP.01 행 19 'Wholesale price (£/MWh) Gas fuel price LHV Natural gas' 2030"}
+  oil_light_gbp_mwh_lhv: {value: 41.80, status: derived, source: "ECON CP.01 행 13 Light oil £11.61/GJ (2030) × 3.6"}
+  biomass_gbp_mwh: {value: 38.0, status: sourced, source: "ECON CP.01 행 20 'Long-run variable cost (p/KWh) Biofuel price LHV Biomass' 2030 = 3.8 p/kWh"}
+  carbon_gbp_t: {value: 92.15, status: sourced, source: "ECON CP.01 행 57 'Carbon price (£/tCO₂e) Traded carbon CO₂ - GB' 2030"}
+  ef_gas_t_mwh: {value: 0.203, status: sourced, source: "ECON E.08 행 34 Natural gas carbon content 0.203 tCO2e/MWh LHV (IPCC 2006 Vol.2 Ch.2 Table 2.2의 56,100 kg/TJ = 0.202와 같음)"}
+  ef_oil_t_mwh: {value: 0.26676, status: sourced, source: "IPCC 2006 Vol.2 Ch.2 Table 2.2 gas/diesel oil 74,100 kg CO2/TJ (NCV)"}
+
+thermal:   # bb: FES BB 행. zone 배분은 BB의 GSP/DNO 구역 그대로
+  ccgt:
+    bb: [Gen_BB009, Gen_BB001, Gen_BB002]   # CCGT(non CHP) + 비재생 CHP(≥1 MW, <1 MW)
+    fuel: gas
+    efficiency: {value: 0.53, status: sourced, source: "ECON E.08 행 22 Gas CCGT Efficiency 0.53 (DESNZ Electricity Generation Costs 2023 기준). 교차 확인: DUKES 2026 Table 5.10.C 발전소군 열효율(GCV) 2025 47.99% ÷ 0.90(NCV/GCV) = 53.3% LHV. 신규 H급은 60.2% (DESNZ25 Table 3.2 p.17). CHP는 CCGT와 같은 비용으로 둠(단순화)"}
+    vom: {value: 2.372, status: sourced, source: "ECON E.03 행 110 Variable OpEx Gas CCGT 2030"}
+  ocgt:
+    bb: [Gen_BB008]
+    fuel: gas
+    efficiency: {value: 0.389, status: sourced, source: "DESNZ25 Table 3.12 p.23 OCGT net efficiency (%, LHV) 38.9 (Medium)"}
+    vom: {value: 1.186, status: sourced, source: "ECON E.03 행 122 OCGT"}
+  gas_engine:
+    bb: [Gen_BB006]
+    fuel: gas
+    efficiency: {value: 0.446, status: sourced, source: "DESNZ25 Table 3.24 p.30 reciprocating engine net efficiency 44.6% LHV"}
+    vom: {value: 0.0, status: sourced, source: "ECON E.03 행 112 Gas recip 0"}
+  diesel_engine:
+    bb: [Gen_BB005]
+    fuel: oil
+    efficiency: {value: 0.446, status: placeholder, source: "가스 엔진 값(DESNZ25 Table 3.24)을 빌림. 0.86 GW로 작음"}
+    vom: {value: 0.0, status: sourced, source: "ECON E.03 행 107 Diesel 0"}
+  biomass:
+    bb: [Gen_BB010]
+    fuel: biomass
+    efficiency: {value: 0.3588, status: derived, source: "ECON E.01 HT 2030 바이오매스 발전 8.241 TWh(송전 6.381 + 송전 CHP 0.160 + 배전 1.660 + 배전 CHP 0.040) ÷ 바이오매스 연료 82,695 TJ(22.97 TWh, 행 573)"}
+    vom: {value: 8.301, status: sourced, source: "ECON E.03 행 104 Biomass"}
+  waste:
+    bb: [Gen_BB011]
+    fuel: none
+    vom: {value: 32.018, status: sourced, source: "ECON E.03 행 128 Waste. 연료비 0(CP.01 Dry wastes 0), 탄소 비용 없음(단순화)"}
+  renewable_engine:
+    bb: [Gen_BB004]
+    fuel: none
+    vom: {value: 69.965, status: sourced, source: "ECON E.03 행 102 AD. 연료(바이오가스)는 자체 생산으로 보고 0 (단순화)"}
+  nuclear:
+    bb: [Gen_BB020]
+    fuel: none
+    vom: {value: 6.768, status: sourced, source: "ECON E.03 행 120 Nuclear large"}
+    availability: {value: 0.916, status: derived, source: "ECON E.01 HT 2030 원자력 발전 29.756 TWh ÷ (3.71 GW × 8,760 h)"}
+  hydro:
+    bb: [Gen_BB018]
+    fuel: none
+    vom: {value: 4.743, status: sourced, source: "ECON E.03 행 115 Hydro"}
+    availability: {value: 0.209, status: derived, source: "ECON E.01 HT 2030 수력 발전 3.456 TWh(저수지 0.746 + 소수력 1.726 + 0.984) ÷ (BB 1.889 GW × 8,760 h). 시간 내내 같은 값으로 둠(단순화: 저수지 운용 없음)"}
+  marine:
+    bb: [Gen_BB017]
+    fuel: none
+    vom: {value: 0.0, status: sourced, source: "ECON E.03 행 127 Tidal 0"}
+    availability: {value: 0.169, status: derived, source: "ECON E.01 HT 2030 조력 발전 0.511 TWh ÷ (0.344 GW × 8,760 h)"}
+  excluded: "Gen_BB007 연료전지 0, Gen_BB019 지열 11 MW, Gen_BB021 석탄 0, Gen_BB023 수소 145 MW, Gen_BB024 망 밖 해상풍력: 작거나 0이라 뺌"
+
+renewables:   # 한계비용 0 (spec.yaml model.marginal_costs.wind_solar). 시간별 이용률은 inputs.py (ERA5 2013)
+  offshore_wind: {bb: [Gen_BB014]}
+  onshore_wind: {bb: [Gen_BB015, Gen_BB016]}
+  solar: {bb: [Gen_BB012, Gen_BB013]}
+
+interconnectors:
+  treatment: excluded
+  status: derived
+  source: "FES 2025 BB Gen_BB022 2030 HT 11.7 GW (EW 11.2, S 0.5). 시간별 물량·외국 가격 자료가 없어(ECON E.07은 수출입 금액만: 2030 수입 £2.87bn, 수출 £2.17bn) 주 결과에서 뺌. 남쪽 흡수처가 줄어 1단계 B6 조류가 작게 나오는 쪽(D 작게)으로 치우칠 것"
+
+storage:
+  batteries:
+    bb: [Srg_BB001, Srg_BB002]
+    durations_h: [1, 2, 4]
+    shares: {value: [0.6256, 0.3317, 0.0423], status: derived, source: "ECON E.01 HT 2030 배터리 출력: 1h 14.495 GW(배전 7.516 + 송전 6.158 + 마이크로 0.821), 2h 7.684 GW, 4h 0.981 GW (6h·9h 0.009 GW는 4h에 넣음). 합 23.17 GW = BB 22.19 + 0.975 GW"}
+    rte: {value: 0.90, status: sourced, source: "technologies.yaml li_ion (Window 1 리튬 중앙값). 단주기에도 같은 값"}
+    var_cost: {value: 6.0, status: derived, source: "technologies.yaml li_ion var_cost"}
+    note: "FES 배터리에는 8시간 이상이 거의 없다(9h 0.008 GW). 그래서 W1 리튬(8~18h)은 두 번 세지 않고 따로 더한다"
+  other_laes:
+    bb: [Srg_BB004]
+    duration_h: {value: 7.6, status: derived, source: "ECON E.01 HT 2030 액화공기 6h 0.555 GW + 9h 0.600 GW의 가중 평균"}
+    rte: {value: 0.62, status: placeholder, source: "TeesCAES RTE(technologies.yaml caes_laes)를 빌림"}
+    var_cost: 0.0
+  pumped_hydro_fes: "FES Srg_BB003(4.1 GW)은 쓰지 않음. 기존 4곳(아래)과 W1 양수를 실제 사양으로 넣음"
+  existing_psh:
+    dinorwig: {zone: EW, tech_key: dinorwig}
+    ffestiniog: {zone: EW, tech_key: ffestiniog}
+    cruachan: {zone: S, tech_key: cruachan, source: "TEC 'Cruachan 275kV Substation' Host TO SPT → B4 남쪽 (docs/notes/zones_choice_KO.md 3장)"}
+    foyers:
+      zone: N
+      p_mw: {value: 300, status: sourced, source: "TEC 'Foyers 275kV Substation' 300 MW, SHET"}
+      e_mwh_discharge: {value: 6300, status: placeholder, source: "review_2026-11-04/01 문서 2.1 '약 6.3 GWh (미확인)'"}
+      rte: {value: 0.75, status: placeholder, source: "양수 일반값 (Cruachan과 같은 가정)"}
+      var_cost: 1.0
+  soc0: 0.5   # spec.yaml model.storage.initial_soc_frac
+
+window1:
+  source: "literature/sources/ldes/window1_projects.csv minded_to == 1 (Ofgem MTD Table 6). MW·시간·RTE는 Ofgem 값 (TEC와 다른 사업 있음: docs/notes/zones_choice_KO.md 3장)"
+  zone_by_region: {N_Scotland: N, default: EW}   # 북쪽 7건 모두 B4 북쪽 SHET 변전소 (TEC 2026-11-03)
+  var_cost_by_tech: {"Li-ion BESS": 6.0, PSH: 2.3, CAES: 0.0, "VFB/Zn": 0.0}   # technologies.yaml li_ion, psh, caes_laes, flow
+  post_2030: [Coire Glas, Earba PSH, Field Long Stratton]   # 첫 운전 2033. spec: 주 결과 포함, 민감도 제외
+
+demand:
+  bb: Dem_BB003    # GSP 단위 연간 소비 + 손실 (GWh)
+  shape_source: "data/raw/system/demanddata_2013.csv (NESO Historic Demand Data 2013): EW = ENGLAND_WALES_DEMAND, 스코틀랜드(N·S) = ND − ENGLAND_WALES_DEMAND, 30분 → 1시간 평균, 구역별 연간 합을 FES 값에 맞춤"
+  status: derived
+  limitation: "2030년의 전기차·열펌프 수요 모양 변화는 넣지 않음. 송전 직접 연결 수요는 BB에 없음"

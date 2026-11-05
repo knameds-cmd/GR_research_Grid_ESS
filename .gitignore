@@ -27,3 +27,8 @@ literature/sources/**/*.pdf
 literature/sources/**/*.txt
 logs/
 literature/sources/**/*.xlsx
+
+# 구조층 원자료: ERA5 기상 묶음(약 765 MB)과 xlsx는 git 제외 (data/raw/system/MANIFEST.csv에 출처·sha256)
+data/raw/system/era5/
+data/raw/system/*.xlsx
+data/processed/system/
