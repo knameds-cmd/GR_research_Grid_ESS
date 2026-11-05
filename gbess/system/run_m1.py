@@ -406,3 +406,28 @@ def run_sequential_only(limit_mults=(0.8, 1.0, 1.2), weather_year=2013, out=None
     out = Path(out or ROOT / "results" / "system" / "m1" / f"results_sequential_{weather_year}.csv")
     df.to_csv(out, index=False)
     return df
+
+
+def run_sequential_w1n_increment(limit_mults=(0.8, 1.0, 1.2), weather_year=2013, out=None, log=print):
+    """W1 북쪽이 늘린 D_seq (보고만, docs/notes/m1_conditional_KO.md 2장): 같은 구역망에서 W1 북쪽 저장을 뺀 판과의 차이.
+    열: limit_mult, fleet(with_W1N / without_W1N), C_S6, D_seq, D_i (£m). D_i = C(S0, 재급전 i) − C(S6)."""
+    import pandas as pd
+    from gbess.system.inputs import build_network_2030
+    from gbess.system.network import Network
+    rows = []
+    for m in limit_mults:
+        net, meta = build_network_2030(limit_mult=m, weather_year=weather_year)
+        wo = Network(net.zones, net.demand, net.limits, net.gens,
+                     [s for s in net.stores if s.name not in meta["w1_north"]], net.voll, net.dt, net.terminal)
+        for fleet, n in (("with_W1N", net), ("without_W1N", wo)):
+            c6 = solve_planner(n).cost
+            s0 = solve_stage1(n)
+            sq = redispatch(s0, n, "sequential")
+            ri = redispatch(s0, n, "gen_only", infeasible="min_deviation")
+            rows.append({"limit_mult": m, "fleet": fleet, "C_S6": c6 / 1e6, "D_seq": (sq.cost - c6) / 1e6,
+                         "D_i": (ri.cost - c6) / 1e6})
+            log(f"  ×{m} {fleet}: D_seq £{rows[-1]['D_seq']:.1f}m")
+    df = pd.DataFrame(rows)
+    out = Path(out or ROOT / "results" / "system" / "m1" / f"results_sequential_w1n_increment_{weather_year}.csv")
+    df.to_csv(out, index=False)
+    return df

@@ -36,6 +36,17 @@ RAW = ROOT / "data" / "raw" / "system"
 ERA5 = RAW / "era5" / "uk-2013.nc"
 DEMAND = RAW / "demanddata_2013.csv"
 CALIBRATION = "calibration_2013.json"   # 2013년에 정한 해상 정격 풍속·태양광 성능 비율. 다른 기상연도에 그대로 씀
+# 2026-11-05 M2 V1 원인 점검(docs/notes/m2_validation_KO.md 7장) 뒤 연구자 결정 ②로 넣은 두 입력 수정 (status: derived)
+# (6) 배전망 풍력의 스코틀랜드 몫 = (DESNZ 2025 스코틀랜드 육상 평균 용량 10,421 MW − TEC 2026-11-03 SHET·SPT Built 육상
+#     6,885~8,026 MW) ÷ NESO 2025 배전망 풍력 용량 6,606 MW = 0.36~0.53의 가운데. 태양광 몫 = FES BB 2025 태양광 스코틀랜드 비율
+EMB_SCOT_WIND_SHARE = 0.445
+EMB_SCOT_SOLAR_SHARE = 0.045
+# (1') 스코틀랜드(N·S) 육상 풍력 이용률 배율 = 감축 전 실제 이용률 ÷ 모형 이용률 (2025년, ERA5 2025 같은 출력 곡선)
+#     감축 전 실제 = (DESNZ "Regional renewable electricity in 2025" 22.0 TWh + REF 스코틀랜드 육상 감축 3.948 TWh)
+#                   ÷ (10,421 MW × 8,760 h) = 28.43%.  모형 = 31.77% (gbess.system.backcast, FES 2025 설비 가중) → 0.895
+#     해상은 바꾸지 않음: 2025 스코틀랜드 해상 평균 설비를 몰라 근거가 약하고, 2030 해상 곡선은 GB 목표 이용률에 따로 맞춤
+SCOT_ONSHORE_CF_SCALE = 0.895
+SCOT_ZONES = ("N", "S")
 
 
 def era5_path(year):
@@ -61,17 +72,21 @@ OFFSHORE_SITES = {               # (위도, 경도). 2030년 운전 단지, 연�
 
 
 # ---------------------------------------------------------------------------------------------------------------
-def demand_shapes(path=DEMAND, underlying=False):
+def demand_shapes(path=DEMAND, underlying="regional"):
     """(EW, 스코틀랜드) 1시간 평균 MW 모양, 길이 8,760 (윤년은 12월 31일을 뺌).
-    underlying=False: EW = ENGLAND_WALES_DEMAND, 스코틀랜드 = ND − EW (2013년 주 결과).
-    underlying=True: 배전망 풍력·태양광이 줄여 준 몫을 되돌린 실제 소비 GB = ND + EMBEDDED_WIND + EMBEDDED_SOLAR를
-    시간마다 EW/ND 비율로 나눔. 배전망 태양광이 큰 해(2020년 13 GW)에는 모형의 태양광 발전기와 두 번 세지 않으려고 쓴다."""
+    underlying="regional" (주 결과, 2026-11-05 M2 V1 원인 점검 뒤 연구자 결정 ②): 실제 소비 GB = ND + 배전망 풍력 + 배전망
+      태양광. 스코틀랜드 = (ND − EW) + EMB_SCOT_WIND_SHARE × 배전망 풍력 + EMB_SCOT_SOLAR_SHARE × 배전망 태양광, EW = 나머지.
+    underlying=True (이전 판): 실제 소비를 시간마다 EW/ND 비율로 나눔. underlying=False (이전 2013 판): ND 그대로."""
     d = pd.read_csv(path)
     ew = d["ENGLAND_WALES_DEMAND"].to_numpy(float)
     sc = d["ND"].to_numpy(float) - ew
-    if underlying:
-        nd = d["ND"].to_numpy(float)
-        gb = nd + d["EMBEDDED_WIND_GENERATION"].to_numpy(float) + d["EMBEDDED_SOLAR_GENERATION"].to_numpy(float)
+    nd = d["ND"].to_numpy(float)
+    gb = nd + d["EMBEDDED_WIND_GENERATION"].to_numpy(float) + d["EMBEDDED_SOLAR_GENERATION"].to_numpy(float)
+    if underlying == "regional":
+        sc = (np.clip(sc, 0, None) + EMB_SCOT_WIND_SHARE * d["EMBEDDED_WIND_GENERATION"].to_numpy(float)
+              + EMB_SCOT_SOLAR_SHARE * d["EMBEDDED_SOLAR_GENERATION"].to_numpy(float))
+        ew = gb - sc
+    elif underlying:
         ew, sc = gb * ew / nd, gb * (1 - ew / nd)
     n = len(d) // 2 * 2
     ew, sc = ew[:n].reshape(-1, 2).mean(1), sc[:n].reshape(-1, 2).mean(1)
@@ -80,7 +95,7 @@ def demand_shapes(path=DEMAND, underlying=False):
     return ew[:T], sc[:T]
 
 
-def zone_demand(annual_gwh, zones, path=DEMAND, underlying=False):
+def zone_demand(annual_gwh, zones, path=DEMAND, underlying="regional"):
     ew, sc = demand_shapes(path, underlying)
     rows = []
     for z in zones:
@@ -172,16 +187,24 @@ def offshore_target_cf(cf_2013_level, path=None):
     return (c25 * cf_2013_level + (c30 - c25) * OFFSHORE_NEW_CF) / c30
 
 
+def scale_scot_onshore(cf, zones, k=SCOT_ONSHORE_CF_SCALE):
+    for i, z in enumerate(zones):
+        if z in SCOT_ZONES:
+            cf["onshore_wind"][i] = np.clip(cf["onshore_wind"][i] * k, 0, 1)
+    return cf
+
+
 def write_processed(zones=("N", "S", "EW"), year=2013):
-    """2013년은 해상 정격 풍속·태양광 성능 비율을 정해 calibration_2013.json에 남긴다. 다른 해는 그 값을 그대로 쓰고,
-    수요 모양은 배전망 발전을 되돌린 실제 소비(underlying)로 만든다."""
+    """2013년은 해상 정격 풍속·태양광 성능 비율을 정해 calibration_2013.json에 남긴다. 다른 해는 그 값을 그대로 쓴다.
+    모든 해: 수요 모양은 배전망 발전을 지역 몫대로 되돌린 실제 소비(demand_shapes "regional"), 스코틀랜드 육상 이용률 × 0.895."""
     import json
     f = build_fleet()
     if year != 2013:
         cal = json.loads((OUT / CALIBRATION).read_text())
-        dem = zone_demand(f["demand_gwh"], zones, demand_path(year), underlying=True)
+        dem = zone_demand(f["demand_gwh"], zones, demand_path(year))
         cf, diag = renewable_cf(era5_path(year), zones, offshore_vr=cal["offshore_vr"], solar_pr=cal["solar_performance_ratio"])
-        diag.update(calibration=cal)
+        scale_scot_onshore(cf, zones)
+        diag.update(calibration=cal, scot_onshore_cf_scale=SCOT_ONSHORE_CF_SCALE)
         _save(zones, year, dem, cf)
         return dem, cf, diag
     dem = zone_demand(f["demand_gwh"], zones)
@@ -198,7 +221,8 @@ def write_processed(zones=("N", "S", "EW"), year=2013):
         else:
             hi = mid
     cf["offshore_wind"] = c["offshore_wind"]
-    diag.update(offshore_cf_2013_level=level, offshore_target=target, offshore_vr=mid,
+    scale_scot_onshore(cf, zones)
+    diag.update(scot_onshore_cf_scale=SCOT_ONSHORE_CF_SCALE, offshore_cf_2013_level=level, offshore_target=target, offshore_vr=mid,
                 offshore_cf=float(w @ c["offshore_wind"].mean(axis=1) / w.sum()))
     _save(zones, 2013, dem, cf)
     (OUT / CALIBRATION).write_text(json.dumps({"offshore_vr": mid, "solar_performance_ratio": diag["solar_performance_ratio"],

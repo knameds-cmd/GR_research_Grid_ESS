@@ -1,0 +1,67 @@
+{
+  "git_commit": "9f2f940cb808bc838927d23c62cb662c898d8ca7",
+  "spec_sha256": "598f60c53cd8ba4daa708cd1d22f614daa003c08d124ec6b4cc99710e95bf5ac",
+  "input_sha256": {
+    "/Users/knameds/GR_research_Grid_ESS/data/raw/system/demanddata_2025.csv": "8b8be946bbb084bc28fbf95a71fad0fceb5543b98e02755235130a42beaee4e0",
+    "/Users/knameds/GR_research_Grid_ESS/data/raw/system/era5/uk-2025-ncar.nc": "6b114f56153625865b79bf88d078f6e57de756df39b99503b9cbf681d3520665",
+    "/Users/knameds/GR_research_Grid_ESS/data/raw/system/fes2025_bb1_v006.csv": "1d582ecd0a9cccdeb6cdbdb75a8d0accadf5dfdac7d52dc5485d9fb67370eb5f"
+  },
+  "solver_status": [
+    "Optimization terminated successfully. (HiGHS Status 7: Optimal)"
+  ],
+  "solve_seconds": 265.5018472918309,
+  "meta": {
+    "corrected": true,
+    "scot_ns": {
+      "N": 0.29973934040621086,
+      "S": 0.7002606595937891
+    },
+    "limits_filled_hours": {
+      "B4": 24,
+      "B6": 303
+    },
+    "cf_diag": {
+      "N": 353,
+      "S": 89,
+      "EW": 487
+    },
+    "cf_mean": {
+      "onshore_wind": [
+        0.31679023519192745,
+        0.26386745402101314,
+        0.26796686969060646
+      ],
+      "offshore_wind": [
+        0.36425976488188816,
+        0.35154103738339304,
+        0.35885446185232855
+      ],
+      "solar": [
+        0.10265722290899183,
+        0.10265722290899183,
+        0.10265722290899183
+      ]
+    },
+    "nuclear_twh": 34.1353935,
+    "hydro_avail_mean": 0.32659201214033573,
+    "interconnector_net_import_twh": 29.1383315,
+    "underlying_demand_twh": 264.899257,
+    "inputs": [
+      "/Users/knameds/GR_research_Grid_ESS/data/raw/system/demanddata_2025.csv",
+      "/Users/knameds/GR_research_Grid_ESS/data/raw/system/era5/uk-2025-ncar.nc",
+      "/Users/knameds/GR_research_Grid_ESS/data/raw/system/fes2025_bb1_v006.csv"
+    ]
+  },
+  "summary": {
+    "stage1_cost_gbp_m": 7317.404617583923,
+    "redispatch_i_cost_gbp_m": 665.3080122681876,
+    "redispatch_ii_cost_gbp_m": 582.8687929689712,
+    "planner_cost_gbp_m": 7900.273410552894,
+    "redispatch_i_volume_twh": 10.40785089782678,
+    "model_unit_gbp_mwh": 63.923668661232234,
+    "observed_unit_gbp_mwh": 145.91664912680164,
+    "kappa": 2.282670131154341,
+    "f_obs": 0.8794259001953468,
+    "min_deviation_gwh": 9.999828869784303e-10
+  }
+}

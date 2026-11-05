@@ -107,12 +107,36 @@ def test_zone_demand_scales_to_annual_totals(tmp_path):
     from gbess.system.inputs import zone_demand
     import pandas as pd
     n = 8760 * 2
-    pd.DataFrame({"ND": np.full(n, 30.0), "ENGLAND_WALES_DEMAND": np.r_[np.full(n // 2, 20.0), np.full(n // 2, 26.0)]}
+    pd.DataFrame({"ND": np.full(n, 30.0), "ENGLAND_WALES_DEMAND": np.r_[np.full(n // 2, 20.0), np.full(n // 2, 26.0)],
+                  "EMBEDDED_WIND_GENERATION": np.zeros(n), "EMBEDDED_SOLAR_GENERATION": np.zeros(n)}
                  ).to_csv(tmp_path / "d.csv", index=False)
     d = zone_demand({"N": 7.0, "S": 17.0, "EW": 235.0}, ["N", "S", "EW"], tmp_path / "d.csv")
     assert d.sum(axis=1).tolist() == pytest.approx([7e3, 17e3, 235e3])
     assert d[2, 0] < d[2, -1]                # EW 모양 그대로 (뒤 절반이 큼)
     assert d[0, 0] > d[0, -1]                # 스코틀랜드 = ND − EW (앞 절반이 큼)
+
+
+def test_demand_shapes_regional_split_by_hand(tmp_path):
+    from gbess.system.inputs import EMB_SCOT_SOLAR_SHARE, EMB_SCOT_WIND_SHARE, demand_shapes
+    import pandas as pd
+    # 30분 두 구간이 같은 값: ND 100, E&W 90, 배전망 풍력 20, 태양광 10
+    # 스코틀랜드 = 10 + 0.445 × 20 + 0.045 × 10 = 19.35, EW = 130 − 19.35 = 110.65
+    n = 8760 * 2
+    pd.DataFrame({"ND": np.full(n, 100.0), "ENGLAND_WALES_DEMAND": np.full(n, 90.0),
+                  "EMBEDDED_WIND_GENERATION": np.full(n, 20.0), "EMBEDDED_SOLAR_GENERATION": np.full(n, 10.0)}
+                 ).to_csv(tmp_path / "d.csv", index=False)
+    ew, sc = demand_shapes(tmp_path / "d.csv")
+    assert EMB_SCOT_WIND_SHARE == 0.445 and EMB_SCOT_SOLAR_SHARE == 0.045
+    assert sc[0] == pytest.approx(19.35) and ew[0] == pytest.approx(110.65)
+    ew0, sc0 = demand_shapes(tmp_path / "d.csv", underlying=False)       # 이전 2013 판: ND 그대로
+    assert (ew0[0], sc0[0]) == (90.0, 10.0)
+
+
+def test_scale_scot_onshore():
+    from gbess.system.inputs import scale_scot_onshore
+    cf = {"onshore_wind": np.array([[0.4, 1.0], [0.3, 0.2], [0.5, 0.5]])}
+    scale_scot_onshore(cf, ["N", "S", "EW"], k=0.5)
+    assert cf["onshore_wind"].tolist() == [[0.2, 0.5], [0.15, 0.1], [0.5, 0.5]]   # N·S만 바뀜
 
 
 def test_marginal_cost_hand_calc():

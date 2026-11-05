@@ -1,7 +1,8 @@
 """
 2025년 과거 재현 (T8 = M1-9 기본 점검, M2 검증 V1·V2·V4·V6). 같은 3구역망을 2025년 설비·기상·수요와 NESO 관측 한도로 푼다.
 
-    .venv/bin/python -m gbess.system.backcast            # results/system/m2/backcast_2025/ 에 결과와 V1·V2·V4 표
+    .venv/bin/python -m gbess.system.backcast            # 주 결과(입력 수정 ②): results/system/m2/backcast_2025_in_sample/
+    .venv/bin/python -m gbess.system.backcast raw        # 처음 판(보정 없음): results/system/m2/backcast_2025/
 
 입력 (모두 2025년, 시각은 UTC 1시간. 정의를 정한 근거는 docs/notes/m2_backcast_KO.md)
 - 설비: FES 2025 Building Blocks Holistic Transition의 "2025" 열(fleet.build_fleet(year="2025")). W1 사업은 없음(2025년 운전 0).
@@ -32,7 +33,8 @@ from gbess.system.inputs import RAW, renewable_cf
 from gbess.system.network import Gen, Network
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "results" / "system" / "m2" / "backcast_2025"
+OUT = ROOT / "results" / "system" / "m2" / "backcast_2025"                 # 처음 판(보정 없음)과 V1 원인 진단
+OUT_IN_SAMPLE = ROOT / "results" / "system" / "m2" / "backcast_2025_in_sample"   # 입력 수정 ② 판 (주 결과)
 YEAR = 2025
 T0 = pd.Timestamp(f"{YEAR}-01-01", tz="UTC")
 HOURS = pd.date_range(T0, T0 + pd.DateOffset(years=1), freq="h", inclusive="left")
@@ -110,7 +112,10 @@ def observed_limits(year=YEAR):
     return np.array(rows), filled
 
 
-def build_network_2025(era5=ERA5_2025, limits="observed"):
+def build_network_2025(era5=ERA5_2025, limits="observed", corrected=True):
+    """corrected=True (주 결과, 연구자 결정 ② 2026-11-05): 수요를 배전망 풍력 지역 몫대로 나누고(inputs.EMB_SCOT_WIND_SHARE),
+    스코틀랜드 육상 이용률에 inputs.SCOT_ONSHORE_CF_SCALE을 곱한다. 이 두 수정은 V1을 본 뒤 넣었으므로 V1은 표본 안 결과다.
+    corrected=False: 처음 판(보정 없음). V1 원인 진단(diagnose, diagnose_combined)은 이 판에서 출발한다."""
     f = build_fleet(year=str(YEAR), fuel=FUEL_2025, battery_shares=BATTERY_SHARES_2025, window1=False)
     zones = f["zones"]
     fc, zc = load_cfg()
@@ -118,8 +123,14 @@ def build_network_2025(era5=ERA5_2025, limits="observed"):
     d = bb[bb["Building Block ID Number"] == fc["demand"]["bb"]].groupby("zone")[str(YEAR)].sum()
     scot_ns = {"N": d["N"] / (d["N"] + d["S"]), "S": d["S"] / (d["N"] + d["S"])}
     h = demand_hourly()
-    dem = zone_demand_2025(h, zones, scot_ns) - interconnector_injection(h, zones)
+    if corrected:
+        from gbess.system.inputs import EMB_SCOT_WIND_SHARE, scale_scot_onshore
+        dem = zone_demand_embedded_split(h, zones, scot_ns, EMB_SCOT_WIND_SHARE) - interconnector_injection(h, zones)
+    else:
+        dem = zone_demand_2025(h, zones, scot_ns) - interconnector_injection(h, zones)
     cf, diag = renewable_cf(era5, zones, sites=OFFSHORE_SITES_2025)
+    if corrected:
+        scale_scot_onshore(cf, zones)
     cf["solar"] = np.tile(solar_cf(h), (len(zones), 1))
     nuc = (fuelhh_hourly("NUCLEAR") / sum(g.cap for g in f["gens"] if g.name.startswith("nuclear_"))).clip(0, 1)
     hyd = fuelhh_hourly("NPSHYD")
@@ -142,7 +153,7 @@ def build_network_2025(era5=ERA5_2025, limits="observed"):
     else:
         raise ValueError(limits)
     net = Network(zones, dem, lim, gens, f["stores"])
-    meta = {"scot_ns": scot_ns, "limits_filled_hours": filled, "cf_diag": diag,
+    meta = {"corrected": corrected, "scot_ns": scot_ns, "limits_filled_hours": filled, "cf_diag": diag,
             "cf_mean": {k: [float(x) for x in np.asarray(v).mean(axis=1)] for k, v in cf.items()},
             "nuclear_twh": float((nuc * 6076).sum() / 1e6), "hydro_avail_mean": float(hyd.mean()),
             "interconnector_net_import_twh": float(interconnector_injection(h, zones).sum() / 1e6),
@@ -247,7 +258,8 @@ def v4_table(model_p, spec_v4):
     return pd.DataFrame(rows)
 
 
-def run(out=OUT, log=print, era5=ERA5_2025):
+def run(out=None, log=print, era5=ERA5_2025, corrected=True):
+    out = out or (OUT_IN_SAMPLE if corrected else OUT)
     from gbess.system.planner import solve_planner
     from gbess.system.redispatch import redispatch
     from gbess.system.run_m1 import file_sha256, git_commit, load_spec, SPEC
@@ -256,7 +268,7 @@ def run(out=OUT, log=print, era5=ERA5_2025):
     out.mkdir(parents=True, exist_ok=True)
     spec = load_spec()
     t0 = time.perf_counter()
-    net, meta = build_network_2025(era5)
+    net, meta = build_network_2025(era5, corrected=corrected)
     log(f"입력 {time.perf_counter() - t0:.0f}s: {json.dumps({k: meta[k] for k in meta if k != 'cf_diag'}, ensure_ascii=False)}")
     plan = solve_stage1(net)
     log(f"1단계 {plan.status} {time.perf_counter() - t0:.0f}s")
@@ -268,6 +280,7 @@ def run(out=OUT, log=print, era5=ERA5_2025):
     obs_row, obs_monthly = obs.v1_observed(YEAR)
     model, model_monthly = v1_model(net, plan, r_i)
     t1 = v1_table(model, obs_row, model_monthly, obs_monthly, spec["validation"]["V1_constraints"])
+    t1["sample"] = "in_sample (입력 수정 ②, V1을 본 뒤)" if corrected else "out_of_sample (보정 없음)"
     cr = obs.cruachan_pn(YEAR)
     t2, f_obs = v2_model(net, plan, r_ii, spec["validation"]["V2_cruachan"], cr["pn_gen_gwh"], cr["pn_pump_gwh"],
                          cr["boa_down_gwh"])
@@ -292,13 +305,6 @@ def run(out=OUT, log=print, era5=ERA5_2025):
     (out / "run.json").write_text(json.dumps(rec, indent=2, ensure_ascii=False, default=str), encoding="utf-8")
     return t1, t2, t4, extra
 
-
-if __name__ == "__main__":
-    pd.set_option("display.width", 220)
-    t1, t2, t4, extra = run()
-    for t in (t1, t2, t4):
-        print(t.round(3).to_string(index=False))
-    print(json.dumps(extra, indent=1))
 
 
 # ---------------------------------------------------------------------------------------------------- V1 오차 원인 진단
@@ -357,7 +363,7 @@ def diag_variants(net):
 
 def diagnose(out=OUT, log=print):
     from gbess.system.stage1 import solve_stage1
-    net, _meta = build_network_2025()
+    net, _meta = build_network_2025(corrected=False)
     obs_row, obs_monthly = obs.v1_observed(YEAR)
     nets, info = diag_variants(net)
     rows = []
@@ -408,7 +414,7 @@ def diagnose_combined(out=OUT, log=print):
     """보고용: (6) 배전망 풍력 몫 × (1') 스코틀랜드 풍력 배율 × (3)+(5)의 조합. 판정·보정에 쓰지 않는다."""
     from dataclasses import replace
     from gbess.system.stage1 import solve_stage1
-    net, meta = build_network_2025()
+    net, meta = build_network_2025(corrected=False)
     obs_row, obs_monthly = obs.v1_observed(YEAR)
     h = demand_hourly()
     ic = interconnector_injection(h, net.zones)
@@ -450,7 +456,7 @@ def m1_input_sensitivity(weather_year, limit_mult=1.0, share=0.445, wind_scale=N
     from gbess.system.planner import solve_planner
     from gbess.system.redispatch import redispatch_lo
     if wind_scale is None:
-        n25, _m = build_network_2025()
+        n25, _m = build_network_2025(corrected=False)
         wind_scale = SCOT_WIND_PRECURTAIL_TWH / (sum(g.cap * np.sum(g.avail) for g in n25.gens if g.name in SCOT_WIND) / 1e6)
     t0 = time.perf_counter()
     net, meta = build_network_2030(weather_year=weather_year)
@@ -477,3 +483,11 @@ def m1_input_sensitivity(weather_year, limit_mult=1.0, share=0.445, wind_scale=N
     (Path(out) / f"m1_input_sensitivity_{weather_year}_x{limit_mult}.json").write_text(json.dumps(r, indent=1, default=str))
     log(r)
     return r
+
+if __name__ == "__main__":
+    pd.set_option("display.width", 220)
+    import sys
+    t1, t2, t4, extra = run(corrected="raw" not in sys.argv[1:])
+    for t in (t1, t2, t4):
+        print(t.round(3).to_string(index=False))
+    print(json.dumps(extra, indent=1))
