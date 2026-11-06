@@ -136,8 +136,9 @@ def renewable_cf(path=ERA5, zones=("N", "S", "EW"), offshore_vr=None, solar_pr=N
     sites: 해상 단지 위치(기본 OFFSHORE_SITES). 일사 변수가 없는 파일(gbess.system.era5_ncar)이면 'solar'를 빼고 돌려준다."""
     sites = OFFSHORE_SITES if sites is None else sites
     import xarray as xr
-    ds = xr.open_dataset(path)
+    ds = path if isinstance(path, xr.Dataset) else xr.open_dataset(path)   # Dataset이면 그대로(V5 창처럼 여러 파일을 붙인 경우)
     ds = ds.isel(time=slice(0, T))
+    n = ds.sizes["time"]                                 # 1년(8,760)보다 짧은 창이면 그 길이
     lat, lon = ds["y"].values, ds["x"].values
     height = ds["height"].values if "height" in ds else None
     LON, LAT = np.meshgrid(lon, lat)
@@ -152,7 +153,7 @@ def renewable_cf(path=ERA5, zones=("N", "S", "EW"), offshore_vr=None, solar_pr=N
         ghi = (ds["influx_direct"].values + ds["influx_diffuse"].values) / 1000.0
         tc = ds["temperature"].values - 273.15 if "temperature" in ds else np.full_like(ghi, 15.0)
         pv_raw = np.clip(ghi * (1 - 0.004 * np.maximum(tc - 25.0, 0.0)), 0, None)
-    out = {k: np.zeros((len(zones), T)) for k in ("onshore_wind", "offshore_wind", "solar")}
+    out = {k: np.zeros((len(zones), n)) for k in ("onshore_wind", "offshore_wind", "solar")}
     diag = {}
     for i, z in enumerate(zones):
         m = land & (zone_grid == z)

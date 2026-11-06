@@ -62,12 +62,15 @@ def sp_to_utc(dates, periods):
     return d + pd.to_timedelta((np.asarray(periods) - 1) * 30, unit="min")
 
 
-def demand_hourly(path=DEMAND_2025):
-    df = pd.read_csv(path)
+def demand_hourly(path=DEMAND_2025, hours=None):
+    """path는 파일 하나 또는 여러 개(해를 넘는 창). hours를 주면 그 시간만(기본 2025년)."""
+    paths = [path] if isinstance(path, (str, Path)) else list(path)
+    df = pd.concat([pd.read_csv(p) for p in paths], ignore_index=True)
     df.index = pd.DatetimeIndex(sp_to_utc(df["SETTLEMENT_DATE"], df["SETTLEMENT_PERIOD"]))
+    df = df.drop(columns=["FORECAST_ACTUAL_INDICATOR"], errors="ignore")    # 2026 파일에만 있는 글자 열
     num = df.drop(columns=["SETTLEMENT_DATE", "SETTLEMENT_PERIOD"]).apply(pd.to_numeric, errors="coerce")
     h = num.groupby(num.index.floor("h")).mean()
-    return h.reindex(HOURS).interpolate(limit_direction="both")
+    return h.reindex(HOURS if hours is None else hours).interpolate(limit_direction="both")
 
 
 def zone_demand_2025(h, zones, scot_ns):
@@ -91,21 +94,22 @@ def solar_cf(h):
     return (h["EMBEDDED_SOLAR_GENERATION"] / h["EMBEDDED_SOLAR_CAPACITY"]).clip(0, 1).to_numpy()
 
 
-def fuelhh_hourly(fuel, year=YEAR):
+def fuelhh_hourly(fuel, year=YEAR, hours=None):
     from gbess.system.observed import ELEXON
-    parts = [pd.read_parquet(ELEXON / "fuelhh" / f"fuelhh_{m:%Y%m}.parquet")
-             for m in pd.period_range(f"{year}-01", f"{year}-12", freq="M")]
+    hours = HOURS if hours is None else hours
+    months = pd.period_range(hours[0].strftime("%Y-%m"), hours[-1].strftime("%Y-%m"), freq="M")
+    parts = [pd.read_parquet(ELEXON / "fuelhh" / f"fuelhh_{m:%Y%m}.parquet") for m in months]
     f = pd.concat(parts)
     f = f[f["fuelType"] == fuel]
     s = f.assign(t=pd.to_datetime(f["startTime"], utc=True)).drop_duplicates("t").set_index("t")["generation"].astype(float)
-    return s.groupby(s.index.floor("h")).mean().reindex(HOURS).interpolate(limit_direction="both")
+    return s.groupby(s.index.floor("h")).mean().reindex(hours).interpolate(limit_direction="both")
 
 
-def observed_limits(year=YEAR):
+def observed_limits(year=YEAR, hours=None):
     """(2, T) [B4, B6] 1시간 한도 MW와 채운 시간 수."""
     rows, filled = [], {}
     for b in ("B4", "B6"):
-        lim = obs.hourly(obs.da_flows(b))["limit"].reindex(HOURS)
+        lim = obs.hourly(obs.da_flows(b))["limit"].reindex(HOURS if hours is None else hours)
         filled[b] = int(lim.isna().sum())
         med = lim.groupby(lim.index.month).transform("median")
         rows.append(lim.fillna(med).to_numpy())

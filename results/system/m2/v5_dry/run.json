@@ -1,0 +1,80 @@
+{
+  "git_commit": "a951ee9d9a8b0ba12948e4d2057543e83b4e1f5d",
+  "spec_sha256": "e852d463f884eccc8d7deee2afa48e182883af5c1dad92a8da72263b08a608d1",
+  "input_sha256": {
+    "/Users/knameds/GR_research_Grid_ESS/data/raw/system/demanddata_2025.csv": "8b8be946bbb084bc28fbf95a71fad0fceb5543b98e02755235130a42beaee4e0",
+    "/Users/knameds/GR_research_Grid_ESS/data/raw/system/demanddata_2026.csv": "da16f37f92094ec7df9237d2cd8b55990a74ac966e11e4dd4e533486a20309fd",
+    "/Users/knameds/GR_research_Grid_ESS/data/raw/system/era5/uk-2025-ncar.nc": "6b114f56153625865b79bf88d078f6e57de756df39b99503b9cbf681d3520665",
+    "/Users/knameds/GR_research_Grid_ESS/data/raw/system/era5/uk-2026-ncar-m1-2-3-4-5.nc": "f9e12e0b999553052ce58a2e453a747119bca3703ce6284be42374def0624875"
+  },
+  "solver_status": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+  "solve_seconds": 2.8630661661736667,
+  "meta": {
+    "window": [
+      "2025-11-06",
+      "2026-05-06"
+    ],
+    "fes_year": "2025",
+    "hours": 4344,
+    "scot_ns": {
+      "N": 0.29973934040621086,
+      "S": 0.7002606595937891
+    },
+    "limits_filled_hours": {
+      "B4": 0,
+      "B6": 89
+    },
+    "cf_mean": {
+      "onshore_wind": [
+        0.39788983769502373,
+        0.3534656596270812,
+        0.3618673381990739
+      ],
+      "offshore_wind": [
+        0.4858263228469865,
+        0.45556053500349397,
+        0.4737515430580977
+      ],
+      "solar": [
+        0.06675288129887552,
+        0.06675288129887552,
+        0.06675288129887552
+      ]
+    },
+    "nuclear_twh": 17.645432,
+    "interconnector_net_import_twh": 12.5475485,
+    "inputs": [
+      "/Users/knameds/GR_research_Grid_ESS/data/raw/system/demanddata_2025.csv",
+      "/Users/knameds/GR_research_Grid_ESS/data/raw/system/demanddata_2026.csv",
+      "/Users/knameds/GR_research_Grid_ESS/data/raw/system/era5/uk-2025-ncar.nc",
+      "/Users/knameds/GR_research_Grid_ESS/data/raw/system/era5/uk-2026-ncar-m1-2-3-4-5.nc"
+    ]
+  },
+  "model": {
+    "B4_binding": 0.5867863720073665,
+    "B6_binding": 0.4196593001841621,
+    "exceed_twh": 5.83894040184937
+  },
+  "observed": {
+    "B4_binding": 0.548572744014733,
+    "B6_binding": 0.399764982373678,
+    "exceed_twh": 5.0519945
+  },
+  "observed_hours": {
+    "B4": 4344,
+    "B6": 4255
+  },
+  "persistence_window": [
+    "2024-11-06",
+    "2025-05-06"
+  ],
+  "persistence": {
+    "B4_binding": 0.48112338858195214,
+    "B6_binding": 0.36702881435994333,
+    "exceed_twh": 4.0334845
+  },
+  "persistence_hours": {
+    "B4": 4344,
+    "B6": 4234
+  }
+}

@@ -124,3 +124,36 @@ def test_embedded_split_by_hand():
     d = bc.zone_demand_embedded_split(h, ["N", "S", "EW"], {"N": 0.25, "S": 0.75}, 0.5, 0.1)
     assert d[:, 0] == pytest.approx([5.25, 15.75, 109.0])
     assert d[:, 0].sum() == pytest.approx(130.0)
+
+
+# --- V5 보류 표본 (gbess.system.holdout) ---
+from gbess.system import holdout as ho
+
+
+def test_window_hours_and_shift():
+    h = ho.window_hours("2025-11-06", "2025-11-08")
+    assert len(h) == 48 and h[0] == pd.Timestamp("2025-11-06", tz="UTC")
+    assert ho.shift_year("2026-11-06", "2027-05-06") == ("2025-11-06", "2026-05-06")
+
+
+def test_guard_blocks_window_before_it_ends():
+    with pytest.raises(RuntimeError):
+        ho.guard("2026-11-06", "2027-05-06", today="2026-11-06")
+    ho.guard("2026-11-06", "2027-05-06", today="2027-05-06")        # 창이 끝난 뒤에는 읽음
+    ho.guard("2025-11-06", "2026-05-06", today="2026-11-06")        # no-peek 날짜 전 자료는 언제나 읽음
+
+
+def test_v5_metrics_and_table_by_hand():
+    # B4: 조류 5, 12 / 한도 10 → 제약 1/2, 초과 0, 2. B6: 조류 11, 9 / 한도 10 → 제약 1/2, 초과 1, 0
+    # 큰 쪽 초과량: max(0,1) + max(2,0) = 3 MWh
+    m = ho.metrics({"B4": _frame([5, 12], [10, 10]), "B6": _frame([11, 9], [10, 10])})
+    assert m == pytest.approx({"B4_binding": 0.5, "B6_binding": 0.5, "exceed_twh": 3e-6})
+    spec = {"binding_tol_abs": 0.10, "exceedance_ratio_band": [0.65, 1.35]}
+    t = ho.v5_table({"B6_binding": 0.30, "B4_binding": 0.50, "exceed_twh": 4.0},
+                    {"B6_binding": 0.35, "B4_binding": 0.38, "exceed_twh": 3.0},
+                    {"B6_binding": 0.40, "B4_binding": 0.40, "exceed_twh": 3.3}, spec).set_index("metric")
+    assert bool(t.loc["V5 B6 제약 발생 비율", "pass"])                    # |0.30 − 0.35| = 0.05 ≤ 0.10
+    assert not bool(t.loc["V5 B4 제약 발생 비율", "pass"])                # 0.12 > 0.10
+    assert t.loc["V5 B4·B6 큰 쪽 초과량 TWh", "ratio"] == pytest.approx(4 / 3)
+    assert bool(t.loc["V5 B4·B6 큰 쪽 초과량 TWh", "pass"])               # 1.33 ≤ 1.35
+    assert t.loc["V5 B4·B6 큰 쪽 초과량 TWh", "persistence_abs_err"] == pytest.approx(0.3)
