@@ -42,18 +42,30 @@ def test_year_row_by_hand():
     assert row["E_bind_twh"] == pytest.approx(0.5) and row["consumer_payment_S1b"] == pytest.approx(250)
     # D_seq 30, W1 북쪽 몫 30 − 12 = 18. 검산 위반 없음
     assert row["D_seq_x1.0"] == 30 and row["D_seq_W1N_share_x1.0"] == 18 and row["invariant_violations"] == 0
+    assert row["invariant_violations_x1.0"] == 0
 
 
 def test_summarize_by_hand():
-    def r(d, s0, s1a, s1b, bad=0):
-        return {"D_lo_x1.0": d, "system_cost_S0": s0, "system_cost_S1a": s1a, "system_cost_S1b": s1b,
-                "consumer_payment_S0": 1.0, "consumer_payment_S1a": 1.0, "consumer_payment_S1b": 1.0, "invariant_violations": bad}
-    rows = {2013: r(30, 100, 90, 95), 2014: r(10, 100, 90, 95), 2015: r(80, 100, 110, 95, bad=1)}
+    def r(d, d8, s0, s1a, s1b, bad8=0, bad1=0):
+        return {"D_lo_x1.0": d, "D_lo_x0.8": d8, "system_cost_S0": s0, "system_cost_S1a": s1a, "system_cost_S1b": s1b,
+                "consumer_payment_S0": 1.0, "consumer_payment_S1a": 1.0, "consumer_payment_S1b": 1.0,
+                "invariant_violations": bad8 + bad1, "invariant_violations_x0.8": bad8, "invariant_violations_x1.0": bad1}
+    rows = {2013: r(30, 50, 100, 90, 95), 2014: r(10, 20, 100, 90, 95), 2015: r(80, 300, 100, 110, 95, bad8=1)}
     df, out = m3a.summarize(rows, M=25.0)
-    # D_lo 10·30·80: 중앙 30, ≥ 25는 2개, ≥ 75는 1개
+    # ×1.0 D_lo 10·30·80 (2015는 ×0.8만 깨져 ×1.0에는 남음): 중앙 30, ≥ 25는 2개, ≥ 75는 1개
     assert out["D_lo_x1.0"] == {"median": 30.0, "min": 10.0, "max": 80.0, "n": 3}
     assert out["years_D_lo_x1.0_ge_M"] == 2 and out["years_D_lo_x1.0_ge_3M"] == 1
+    # ×0.8은 2015(300)를 비교 불가로 빼서 20·50: 중앙 35, ≥ 25는 1개, ≥ 75는 0개
+    assert out["D_lo_x0.8"] == {"median": 35.0, "min": 20.0, "max": 50.0, "n": 2}
+    assert out["years_D_lo_x0.8_ge_M"] == 1 and out["years_D_lo_x0.8_ge_3M"] == 0
+    assert out["not_comparable_x0.8"] == [2015] and out["not_comparable_x1.0"] == []
     # 2013 순위 (S0, S1a, S1b) = (2, 0, 1). 2015는 (1, 2, 0)으로 뒤집힘. 소비자 지급은 셋 다 같아 (0, 0, 0)으로 모두 유지
     assert out["rank_system_cost"] == {"reference_2013": (2, 0, 1), "same_as_2013": 2, "n": 3, "flipped_years": [2015]}
     assert out["rank_consumer_payment"]["same_as_2013"] == 3
     assert out["invariant_broken_years"] == [2015]
+    # 2015의 ×1.0 판이 깨졌다면: ×1.0 분포와 순위에서 빠짐 (10·30 → 중앙 20, 순위는 2개 해 모두 유지)
+    rows[2015] = r(80, 300, 100, 110, 95, bad1=1)
+    _, out = m3a.summarize(rows, M=25.0)
+    assert out["D_lo_x1.0"]["n"] == 2 and out["D_lo_x1.0"]["median"] == 20.0
+    assert out["rank_system_cost"] == {"reference_2013": (2, 0, 1), "same_as_2013": 2, "n": 2, "flipped_years": []}
+    assert out["not_comparable_x1.0"] == [2015] and out["not_comparable_x0.8"] == []

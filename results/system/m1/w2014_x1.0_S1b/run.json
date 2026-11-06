@@ -1,0 +1,47 @@
+{
+  "git_commit": "a45c5f3bbb69ef0d65c37ca56b392d200c94c776",
+  "spec_sha256": "d8908cc0f60331bb306359b217a50a20ab6ea65ae7b1450a387d4e51596f9d80",
+  "input_sha256": {
+    "/Users/knameds/GR_research_Grid_ESS/data/processed/system/demand_2030_mw_2014.csv": "163ffc42f56dd9d71b2eddd794e51c2c57f429b0c659328ce1c4fa90ad6d06f1",
+    "/Users/knameds/GR_research_Grid_ESS/data/processed/system/cf_onshore_wind_2014.csv": "2300921de284e92dfaaa25c473482d893c059025a0626e7a354d3ae4a23d33ec",
+    "/Users/knameds/GR_research_Grid_ESS/data/processed/system/cf_offshore_wind_2014.csv": "188223e546a01783401a8523fc649b36d0e172536d4b3b3d814945023a17bea3",
+    "/Users/knameds/GR_research_Grid_ESS/data/processed/system/cf_solar_2014.csv": "c1816a6cf00698b162365448c52342321f16e82d47d0346b6695562c62ff99cf",
+    "/Users/knameds/GR_research_Grid_ESS/gbess/config/zones.yaml": "a6b951136c19fa3d84c877836e1e01205fbd325428a84cdeca12b222b11e6b21",
+    "/Users/knameds/GR_research_Grid_ESS/gbess/config/fleet_2030.yaml": "8fb30bfb29541b448300177003b3389b21bdda51ad13149ff1bb6bc93f4ad7aa",
+    "/Users/knameds/GR_research_Grid_ESS/data/raw/system/fes2025_bb1_v006.csv": "1d582ecd0a9cccdeb6cdbdb75a8d0accadf5dfdac7d52dc5485d9fb67370eb5f"
+  },
+  "solver_status": [
+    "Optimization terminated successfully. (HiGHS Status 7: Optimal)"
+  ],
+  "solve_seconds": 1544.698151834309,
+  "label": "w2014_x1.0_S1b",
+  "weather_year": 2014,
+  "options": {
+    "limit_mults": [
+      1.0
+    ],
+    "X": 0.5,
+    "beta": 1.0,
+    "infeasible": "min_deviation",
+    "lo_variants": [
+      "iii"
+    ],
+    "designs": [
+      "S1b"
+    ],
+    "sequential": false,
+    "w1_north": [
+      "Coire Glas",
+      "Earba PSH",
+      "Field Fyrish",
+      "Field Netherton",
+      "Field New Deer",
+      "Field Rigifa",
+      "Loch Kemp Storage"
+    ],
+    "bind_boundaries": [
+      0,
+      1
+    ]
+  }
+}

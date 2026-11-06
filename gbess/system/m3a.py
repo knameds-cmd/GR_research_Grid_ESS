@@ -4,7 +4,7 @@ M3a: 2030년 모형을 기상연도 2010~2024 15개 해로 돌린다 (spec scena
 
     .venv/bin/python -m gbess.system.m3a inputs          # 새 해의 입력 파일 (data/processed/system)
     .venv/bin/python -m gbess.system.m3a jobs [해 ...]   # 실행 명령 목록 (8개 동시에 돌림)
-    .venv/bin/python -m gbess.system.m3a summary         # results/system/m3a/summary_by_year.csv, summary.json
+    .venv/bin/python -m gbess.system.m3a summary         # results/system/m3a/summary_by_year.csv, summary.json, fig_d_by_year.png
 
 - 판 이름은 M1과 같은 규칙: 2013은 x{배율}_{설계안}, 다른 해는 w{해}_x{배율}_{설계안} (results/system/m1/).
 - 순차 재급전은 run_sequential_w1n_increment(한도 ×1.0) → results_sequential_w1n_increment_{해}.csv.
@@ -81,7 +81,10 @@ def year_row(df, seq=None):
         s = seq[seq["limit_mult"] == 1.0].set_index("fleet")
         row["D_seq_x1.0"] = s.loc["with_W1N", "D_seq"]
         row["D_seq_W1N_share_x1.0"] = s.loc["with_W1N", "D_seq"] - s.loc["without_W1N", "D_seq"]
-    row["invariant_violations"] = len(check_invariants(df))
+    bad = check_invariants(df)
+    row["invariant_violations"] = len(bad)
+    for m in g:
+        row[f"invariant_violations_x{m}"] = sum(b[0] == m for b in bad)
     return row
 
 
@@ -100,25 +103,67 @@ def ranking(row, metric):
 
 
 def summarize(rows, M=25.0, go_multiple=3):
-    """rows: {해: year_row}. 분포, D_lo ≥ M·3M 해 수, 순위 유지 비율(2013 기준). 검산이 깨진 해는 따로 셈."""
+    """rows: {해: year_row}. 분포, D_lo ≥ M·3M 해 수, 순위 유지 비율(2013 기준).
+    검산이 깨진 판(해 × 한도 배율)은 그 배율의 분포·해 수에서 빼고 not_comparable_x{배율}에 따로 적는다.
+    순위와 C(S0) − C(S1x)는 ×1.0 판이라 ×1.0이 깨진 해만 뺀다."""
     df = pd.DataFrame.from_dict(rows, orient="index").sort_index()
     out = {"n_years": len(df), "invariant_broken_years": [int(y) for y in df.index[df["invariant_violations"] > 0]]}
+
+    def broken(m):
+        # spec m3a.rules: 검산이 깨진 판은 '비교 불가'로 따로 셈. 배율별 기록이 없으면 그해 전체 위반 수로 판단
+        col = f"invariant_violations_x{m}"
+        return df[col].fillna(0) > 0 if col in df else df["invariant_violations"] > 0
+
+    for m in (0.8, 1.0, 1.2):
+        if f"D_lo_x{m}" in df:
+            out[f"not_comparable_x{m}"] = [int(y) for y in df.index[broken(m)]]
     for col in [c for c in df.columns if c.startswith(("D_", "C_S0_minus"))]:
-        s = df[col].dropna()
+        m = float(col.rsplit("_x", 1)[1]) if "_x" in col else 1.0
+        s = df.loc[~broken(m), col].dropna()
         out[col] = {"median": float(s.median()), "min": float(s.min()), "max": float(s.max()), "n": int(len(s))}
     for m in (0.8, 1.0, 1.2):
         s = df.get(f"D_lo_x{m}")
         if s is not None:
+            s = s[~broken(m)]
             out[f"years_D_lo_x{m}_ge_M"] = int((s >= M).sum())
             out[f"years_D_lo_x{m}_ge_3M"] = int((s >= go_multiple * M).sum())
+    ok_years = set(df.index[~broken(1.0)])
     for metric in ("system_cost", "consumer_payment"):
         ranks = {y: ranking(r, metric) for y, r in rows.items()}
         ref = ranks.get(REF_YEAR)
-        ok = [y for y, r in ranks.items() if r is not None]
+        ok = [y for y, r in ranks.items() if r is not None and y in ok_years]
         out[f"rank_{metric}"] = {"reference_2013": ref,
                                  "same_as_2013": sum(ranks[y] == ref for y in ok), "n": len(ok),
                                  "flipped_years": sorted(int(y) for y in ok if ranks[y] != ref)}
     return df, out
+
+
+def figure_years(df, path, M=25.0, go_multiple=3):
+    """spec m3a.report "해와 D의 관계는 그림만": (왼쪽) 해마다 D_lo ×1.0과 M·3M 선, (오른쪽) 풍력 이용률과 D_lo ×1.0."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from gbess.system.run_m1 import BLUE, INK, MUTED, ORANGE, _style
+    plt.rcParams["font.family"] = ["AppleGothic", "DejaVu Sans"]
+    fig, (a, b) = plt.subplots(1, 2, figsize=(11, 3.8), gridspec_kw={"width_ratios": [1.6, 1]})
+    ys = df.index.astype(int)
+    a.bar(ys, df["D_lo_x1.0"], color=[ORANGE if y == REF_YEAR else BLUE for y in ys], width=0.7)
+    for v, t in ((M, "M £25m"), (go_multiple * M, "3M £75m")):
+        a.hlines(v, ys.min() - 0.6, ys.max() + 0.4, color=MUTED, lw=0.8, ls="--")
+        a.text(ys.max() + 0.5, v, t, color=MUTED, fontsize=8, va="center", ha="left")
+    a.set_xticks(ys, [str(y)[2:] for y in ys])
+    a.set_xlim(ys.min() - 0.6, ys.max() + 2.2)
+    a.set_title("D_W1 (D_lo, 한도 ×1.0), £m/년. 주황 = 2013 (M1 주 결과)", fontsize=9, color=INK, loc="left")
+    b.scatter(df["wind_cf"], df["D_lo_x1.0"], s=40, color=BLUE, edgecolor="white", lw=1.5)
+    for y, r in df.iterrows():
+        b.annotate(str(int(y))[2:], (r["wind_cf"], r["D_lo_x1.0"]), xytext=(4, 2), textcoords="offset points", fontsize=7, color=MUTED)
+    b.set_xlabel("풍력 이용률 (2030 설비 가중)", fontsize=8, color=MUTED)
+    b.set_title("풍력 이용률과 D_lo ×1.0 (회귀 없음)", fontsize=9, color=INK, loc="left")
+    for ax in (a, b):
+        _style(ax)
+    fig.tight_layout()
+    fig.savefig(path, dpi=150)
+    plt.close(fig)
 
 
 def collect_year(year):
@@ -146,6 +191,7 @@ def main(argv):
         df, out = summarize(rows)
         OUT.mkdir(parents=True, exist_ok=True)
         df.to_csv(OUT / "summary_by_year.csv", index_label="weather_year")
+        figure_years(df, OUT / "fig_d_by_year.png")
         (OUT / "summary.json").write_text(json.dumps(out, indent=1, ensure_ascii=False, default=str))
         print(json.dumps(out, indent=1, ensure_ascii=False, default=str))
 
