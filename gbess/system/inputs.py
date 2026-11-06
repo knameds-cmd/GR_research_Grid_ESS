@@ -256,7 +256,9 @@ def boundary_limits(mult=1.0, nominal=False):
     return np.array([v(b[key]) for b in zc["boundaries"]]) * mult
 
 
-def build_network_2030(limit_mult=1.0, include_post_2030=True, nominal_limits=False, weather_year=2013):
+def build_network_2030(limit_mult=1.0, include_post_2030=True, nominal_limits=False, weather_year=2013, interconnectors=None):
+    """interconnectors=None: 주 결과(인터커넥터 제외). "price_taking": 해외 시간별 가격에 사고파는 링크를 더함(민감도,
+    gbess.system.interconnectors, 기상연도와 같은 해의 해외 가격이 있어야 함)."""
     f = build_fleet(include_post_2030=include_post_2030)
     zones = f["zones"]
     dem, cf = load_processed(zones, weather_year)
@@ -268,12 +270,19 @@ def build_network_2030(limit_mult=1.0, include_post_2030=True, nominal_limits=Fa
         for i, z in enumerate(zones):
             if caps[z] > 0:
                 gens.append(Gen(f"{k}_{z}", i, caps[z], 0.0, cf[k][i], renewable=True))
+    extra_inputs = []
+    if interconnectors == "price_taking":
+        from gbess.system import interconnectors as ic
+        gens += ic.link_gens(list(zones), ic.foreign_prices_gbp(weather_year))
+        extra_inputs = [Path(str(ic.PRICES).format(year=weather_year))]
+    elif interconnectors is not None:
+        raise ValueError(interconnectors)
     net = Network(zones, dem, boundary_limits(limit_mult, nominal_limits), gens, f["stores"])
     from gbess.system.run_m1 import floor_cap_levels
     meta = {"w1_north": net.store_names("north"), "w1_all": net.store_names("w1"),
             "levels": floor_cap_levels(f["w1_projects"]), "bind_boundaries": [0, 1],
             "inputs": processed_files(weather_year) + [CFG / "zones.yaml", CFG / "fleet_2030.yaml",
-                                                      RAW / "fes2025_bb1_v006.csv"]}
+                                                      RAW / "fes2025_bb1_v006.csv"] + extra_inputs}
     return net, meta
 
 

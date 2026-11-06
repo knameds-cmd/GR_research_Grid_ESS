@@ -154,13 +154,13 @@ def redispatch_sequential(plan, net, log_every=None):
     t0 = time.perf_counter()
     wv, wv_end = plan.extra["water_value"], plan.extra["water_value_end"]
     G, S, Z, T, dt = len(net.gens), len(net.stores), net.Z, net.T, net.dt
-    ub = net.gen_ub()
+    ub, lb, gcost = net.gen_ub(), net.gen_lb(), net.gen_cost()
     E = np.array([s.e_mwh for s in net.stores])
     e_prev = np.array([s.soc0 * s.e_mwh for s in net.stores])
     p, ch, d, e = np.zeros((G, T)), np.zeros((S, T)), np.zeros((S, T)), np.zeros((S, T))
     shed, flows = np.zeros((Z, T)), np.zeros((Z - 1, T))
     for t in range(T):
-        gens = [Gen(g.name, g.zone, 1.0, g.cost, [ub[i, t]], g.renewable) for i, g in enumerate(net.gens)]
+        gens = [Gen(g.name, g.zone, 1.0, gcost[i, t], [ub[i, t]], g.renewable, lb[i, t]) for i, g in enumerate(net.gens)]
         stores = [Store(s.name, s.zone, s.p_ch, s.p_dis, s.e_mwh, s.eta_ch, s.eta_dis,
                         float(e_prev[k] / E[k]) if E[k] > 0 else 0.0, s.var_cost, s.tags) for k, s in enumerate(net.stores)]
         sub = Network(net.zones, net.demand[:, t:t + 1], net.limits[:, t:t + 1], gens, stores, net.voll, dt, terminal=None)
@@ -178,7 +178,7 @@ def redispatch_sequential(plan, net, log_every=None):
         e_prev = e[:, t]
         if log_every and (t + 1) % log_every == 0:
             print(f"    순차 재급전 {t + 1}/{T}시간", flush=True)
-    gc = np.array([g.cost for g in net.gens])[:, None]
+    gc = gcost
     vc = np.array([s.var_cost for s in net.stores])[:, None]
     run_cost = float((gc * p).sum() * dt + (vc * d).sum() * dt + net.voll * shed.sum() * dt)
     terminal_adj = float(-(wv_end * (e[:, -1] - plan.e[:, -1])).sum())

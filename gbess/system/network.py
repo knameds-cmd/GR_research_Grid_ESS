@@ -27,9 +27,10 @@ class Gen:
     name: str
     zone: int
     cap: float                     # MW
-    cost: float                    # £/MWh
+    cost: object                   # £/MWh. 스칼라 또는 길이 T 배열(인터커넥터: 시간별 해외 가격)
     avail: object = None           # 길이 T 배열(가용률 0~1) 또는 None(늘 1)
     renewable: bool = False        # 출력제한 집계용
+    pmin: object = 0.0             # 출력 하한 MW(스칼라 또는 길이 T). 인터커넥터는 −용량(음수 = 수출, 비용 = 가격 × 출력 < 0)
 
 
 @dataclass
@@ -75,6 +76,13 @@ class Network:
 
     def gen_ub(self):
         return np.array([g.cap * (np.ones(self.T) if g.avail is None else np.asarray(g.avail, float)) for g in self.gens])
+
+    def gen_lb(self):
+        return np.array([np.broadcast_to(np.asarray(g.pmin, float), self.T) for g in self.gens]).reshape(len(self.gens), self.T)
+
+    def gen_cost(self):
+        """(G, T) £/MWh."""
+        return np.array([np.broadcast_to(np.asarray(g.cost, float), self.T) for g in self.gens]).reshape(len(self.gens), self.T)
 
     def store_names(self, tag=None):
         return [s.name for s in self.stores if tag is None or tag in s.tags]
@@ -191,8 +199,8 @@ def add_dispatch(lp, net, network, fixed=None, caps=None):
     """LP에 운전 문제 한 벌을 더한다. 목적함수 계수는 그 벌의 계통 비용으로 들어간다."""
     Z, T, dt = net.Z, net.T, net.dt
     G, S = len(net.gens), len(net.stores)
-    gc = np.array([g.cost for g in net.gens]).reshape(G, 1)
-    p = lp.var((G, T), 0.0, net.gen_ub(), gc * dt)
+    gc = net.gen_cost()
+    p = lp.var((G, T), net.gen_lb(), net.gen_ub(), gc * dt)
     pch = np.array([s.p_ch for s in net.stores]).reshape(S, 1)
     pdis = np.array([s.p_dis for s in net.stores]).reshape(S, 1)
     vc = np.array([s.var_cost for s in net.stores]).reshape(S, 1)
@@ -248,7 +256,7 @@ def add_dispatch(lp, net, network, fixed=None, caps=None):
         rows = lp.eq.add(net.demand.sum(axis=0), [(p.T, 1.0), (d.T, 1.0), (ch.T, -1.0), (shed.T, 1.0)])
 
     cost_idx = np.concatenate([p.ravel(), d.ravel(), shed.ravel()])
-    cost_coef = np.concatenate([np.broadcast_to(gc * dt, (G, T)).ravel(), np.broadcast_to(vc * dt, (S, T)).ravel(),
+    cost_coef = np.concatenate([(gc * dt).ravel(), np.broadcast_to(vc * dt, (S, T)).ravel(),
                                 np.full(Z * T, net.voll * dt)])
     return Block(p, ch, d, e, shed, f, rows, cost_idx, cost_coef, store_rows if S else None,
                  terminal_rows if S and net.terminal == "geq_init" else None)

@@ -58,7 +58,7 @@
 | `data/raw/` | 원자료 CSV (NESO EAC 경매, 용량시장 등록부, Elexon 2026-09 샘플). 약 33MB |
 | `data/processed/` | 가공본 (git 제외) |
 | `gbess/` | **새 모델 패키지**: 데이터 받기(`fetch/`), 가격·유닛·계통 상태(`data/`), 실제 수익 재구성(`realized/`), BM 채택 모형(`model/`), 운전 엔진(`engine/`), 검증(`validation/`), 재무층(`finance/`), 기술·비용 매개변수(`config/`, 출처는 `literature/sources/tech/TECH_SOURCES.md`). 해설은 `docs/09`, 읽는 순서는 `docs/10` |
-| `tests/` | `gbess` 시험 118개 (손계산 예제, 불변식. 구조층 `test_system_*.py` 56개 포함). `.venv/bin/python -m pytest -q tests` |
+| `tests/` | `gbess` 시험 121개 (손계산 예제, 불변식. 구조층 `test_system_*.py` 59개 포함). `.venv/bin/python -m pytest -q tests` |
 | `results/realized/` | 양수발전 실제 수익 패널 (도매, BM, BSUoS, TNUoS 추정, 거래 밖 수입) |
 | `results/validation/` | 엔진 검증 1~5, 채택 모형 검증, 결산서 대조 (검증 6은 스크립트만, 아직 돌리지 않음) |
 | `model/` | **(단주기 프로토타입)** 층 1 완전예측 MILP (`data.py` 입력, `layer1.py` 모델). 실행은 루트의 `run_layer1.py`. 재구축 예정 |

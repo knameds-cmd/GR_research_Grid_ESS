@@ -89,7 +89,7 @@ def settle_cap_floor(revenue, levels, share_returned=0.70):
 def payments_national(net, lam, plan, final, units, levels):
     """S0·S1x: 도매(1단계 λ) + 재급전 지급(pay_as_cost) + floor 보전 − cap 환수. 사업 수익도 돌려준다."""
     dt = net.dt
-    gc = np.array([g.cost for g in net.gens])[:, None]
+    gc = net.gen_cost()
     vc = np.array([s.var_cost for s in net.stores])[:, None]
     wholesale = float((lam * net.demand.sum(axis=0)).sum() * dt)
     redis_pay = float(((final.p - plan.p) * gc).sum() * dt + ((final.d - plan.d) * vc).sum() * dt)
@@ -216,9 +216,11 @@ def main():
     ap.add_argument("--designs", nargs="+", default=["S0", "S1a", "S1b"], help="S6·S5는 늘 함께 계산")
     ap.add_argument("--weather-year", type=int, default=2013)
     ap.add_argument("--sequential", action="store_true", help="S0에 구간별 순차 재급전 판 추가")
+    ap.add_argument("--interconnectors", default=None, choices=["price_taking"],
+                    help="인터커넥터 가격 수용 민감도 (gbess.system.interconnectors, 기상연도 2020만)")
     a = ap.parse_args()
     net, meta = build_network_2030(include_post_2030=not a.exclude_post_2030, nominal_limits=a.nominal_limits,
-                                   weather_year=a.weather_year)
+                                   weather_year=a.weather_year, interconnectors=a.interconnectors)
     out = ROOT / "results" / "system" / "m1" / a.label
     print(f"판 {a.label}: 구역 {net.zones}, 한도 {net.limits[:, 0].tolist()} MW × {a.mult}, W1 북쪽 {len(meta['w1_north'])}건")
     run_m1(net, meta["w1_north"], meta["w1_all"], meta["levels"], meta["bind_boundaries"], out, inputs=meta["inputs"],
@@ -250,7 +252,7 @@ def check_invariants(df, rel=1e-6):
     for m, g in df.groupby("limit_mult"):
         c = {(r.design, r.variant, r.plan): r.system_cost for r in g.itertuples()}
         c6 = c[("S6", "-", "-")]
-        tol = rel * c6
+        tol = rel * abs(c6)                 # 인터커넥터 판은 수출 수입 때문에 C(S6) < 0일 수 있음
         s0 = {v: c.get(("S0", v, "first_solve")) for v in ("i", "ii", "iii")}
         if not (c6 - tol <= s0["ii"] <= s0["iii"] + tol and s0["iii"] <= s0["i"] + tol):
             bad.append((m, "C_S6 <= C_S0_ii <= C_S0_iii <= C_S0_i", s0))
@@ -408,7 +410,7 @@ def run_sequential_only(limit_mults=(0.8, 1.0, 1.2), weather_year=2013, out=None
     return df
 
 
-def run_sequential_w1n_increment(limit_mults=(0.8, 1.0, 1.2), weather_year=2013, out=None, log=print):
+def run_sequential_w1n_increment(limit_mults=(0.8, 1.0, 1.2), weather_year=2013, out=None, log=print, interconnectors=None):
     """W1 북쪽이 늘린 D_seq (보고만, docs/notes/m1_conditional_KO.md 2장): 같은 구역망에서 W1 북쪽 저장을 뺀 판과의 차이.
     열: limit_mult, fleet(with_W1N / without_W1N), C_S6, D_seq, D_i (£m). D_i = C(S0, 재급전 i) − C(S6)."""
     import pandas as pd
@@ -416,7 +418,7 @@ def run_sequential_w1n_increment(limit_mults=(0.8, 1.0, 1.2), weather_year=2013,
     from gbess.system.network import Network
     rows = []
     for m in limit_mults:
-        net, meta = build_network_2030(limit_mult=m, weather_year=weather_year)
+        net, meta = build_network_2030(limit_mult=m, weather_year=weather_year, interconnectors=interconnectors)
         wo = Network(net.zones, net.demand, net.limits, net.gens,
                      [s for s in net.stores if s.name not in meta["w1_north"]], net.voll, net.dt, net.terminal)
         for fleet, n in (("with_W1N", net), ("without_W1N", wo)):
@@ -428,6 +430,7 @@ def run_sequential_w1n_increment(limit_mults=(0.8, 1.0, 1.2), weather_year=2013,
                          "D_i": (ri.cost - c6) / 1e6})
             log(f"  ×{m} {fleet}: D_seq £{rows[-1]['D_seq']:.1f}m")
     df = pd.DataFrame(rows)
-    out = Path(out or ROOT / "results" / "system" / "m1" / f"results_sequential_w1n_increment_{weather_year}.csv")
+    sfx = "" if interconnectors is None else f"_ic_{interconnectors}"
+    out = Path(out or ROOT / "results" / "system" / "m1" / f"results_sequential_w1n_increment_{weather_year}{sfx}.csv")
     df.to_csv(out, index=False)
     return df

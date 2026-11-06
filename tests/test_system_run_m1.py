@@ -178,6 +178,13 @@ def test_invariant_violation_detected():
     assert any("C_S1a >= C_S6" in str(b) for b in check_invariants(bad))
 
 
+def test_invariants_with_negative_system_cost():
+    # 인터커넥터 판: 수출 수입으로 C(S6) = −£4bn. 관계가 모두 맞으면 위반 없음(허용오차는 |C(S6)| 기준)
+    from gbess.system.run_m1 import check_invariants
+    assert check_invariants(_fake_rows(1.0, -4e9, 70e6, 40e6)) == []
+    assert any("C_S1a >= C_S6" in str(b) for b in check_invariants(_fake_rows(1.0, -4e9, 70e6, -5e6)))
+
+
 def test_collect_split_runs(tmp_path):
     from gbess.system.run_m1 import check_invariants, collect
     net = random_net(1, T=24)

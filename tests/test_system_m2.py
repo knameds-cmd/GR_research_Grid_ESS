@@ -157,3 +157,27 @@ def test_v5_metrics_and_table_by_hand():
     assert t.loc["V5 B4·B6 큰 쪽 초과량 TWh", "ratio"] == pytest.approx(4 / 3)
     assert bool(t.loc["V5 B4·B6 큰 쪽 초과량 TWh", "pass"])               # 1.33 ≤ 1.35
     assert t.loc["V5 B4·B6 큰 쪽 초과량 TWh", "persistence_abs_err"] == pytest.approx(0.3)
+
+
+# --- 인터커넥터 가격 수용 민감도 (gbess.system.interconnectors) ---
+from gbess.system import interconnectors as icx
+
+
+def test_fuel_index_by_hand():
+    assert icx.srmc(5.3, 0.0) == pytest.approx(10.0)                         # 5.3 ÷ 0.53
+    assert icx.srmc(0.0, 100.0, eff=0.5, ef=0.2) == pytest.approx(40.0)      # 100 × 0.2 ÷ 0.5
+    # $3.178/MMBtu ÷ 1.141 $/€ ÷ 0.293071 MWh/MMBtu ÷ 0.90 = €10.56/MWh LHV
+    assert icx.gas_2020_eur_mwh_lhv() == pytest.approx(10.56, abs=0.01)
+    assert sum(mw for *_, mw in icx.LINKS_2030) == 11700                    # FES BB Gen_BB022 HT 2030
+
+
+def test_price_taking_link_imports_cheap_exports_dear():
+    from gbess.system.network import Gen, Network
+    from gbess.system.stage1 import solve_stage1
+    # 남쪽 수요 10, 발전기 £50·20 MW, 링크 ±5 MW (해외 £30, £80)
+    # 1시간: 수입 5 @30 + 발전 5 @50 = 400.  2시간: 발전 15 @50 − 수출 5 @80 = 350.  합 750
+    gens = [Gen("g", 1, 20.0, 50.0), Gen("ic", 1, 5.0, np.array([30.0, 80.0]), None, False, -5.0)]
+    net = Network(["N", "S"], [[0.0, 0.0], [10.0, 10.0]], [100.0], gens, [])
+    r = solve_stage1(net)
+    assert r.cost == pytest.approx(750.0)
+    assert r.p[1] == pytest.approx([5.0, -5.0]) and r.p[0] == pytest.approx([5.0, 15.0])
