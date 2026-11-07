@@ -1,8 +1,8 @@
 {
-  "git_commit": "4547cc5b715deb7ff4b3a7ea97facc98016b1e30",
-  "spec_sha256": "d8908cc0f60331bb306359b217a50a20ab6ea65ae7b1450a387d4e51596f9d80",
+  "git_commit": "1f67fe9ad002840dc63040d9545ac99da8813108",
+  "spec_sha256": "32727edcb99e75ed29b40050a6842685fccbc748a89111d8d276f536048d0fe8",
   "input_sha256": {
-    "/Users/knameds/GR_research_Grid_ESS/data/processed/system/demand_2030_mw_2010.csv": "a3911b61141c343472e9a5de4d472e10226d93f0c8647ea0718e03840bd9fa9c",
+    "/Users/knameds/GR_research_Grid_ESS/data/processed/system/demand_2030_mw_2010.csv": "2ecb01422c47a3a052fa05b8bc3c1619c8e99d66abda9f5ccbb159c51ea969a2",
     "/Users/knameds/GR_research_Grid_ESS/data/processed/system/cf_onshore_wind_2010.csv": "f74280efdc3ea649bf27134afea559d0b604479e804c4e367a8eb8d5921b4f53",
     "/Users/knameds/GR_research_Grid_ESS/data/processed/system/cf_offshore_wind_2010.csv": "eca359e7de97395777554b7184f70a29b1d2f389ac73a697cc46031edaaa6adc",
     "/Users/knameds/GR_research_Grid_ESS/data/processed/system/cf_solar_2010.csv": "542de0dc0589bd4db7688be33acee55b4bb0e06f9810ec506e30b6741fd718e1",
@@ -13,7 +13,7 @@
   "solver_status": [
     "Optimization terminated successfully. (HiGHS Status 7: Optimal)"
   ],
-  "solve_seconds": 3373.305841665715,
+  "solve_seconds": 3221.749642666895,
   "label": "w2010_x1.0_S0",
   "weather_year": 2010,
   "options": {

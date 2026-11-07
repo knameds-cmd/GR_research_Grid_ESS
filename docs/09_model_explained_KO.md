@@ -907,7 +907,7 @@ Dinorwig + Ffestiniog(First Hydro Company)는 시장별 구분이 없어서 합�
 | 가상 장주기 자산 4종의 완전예측·롤링 운전, 예비력 보유 단가(시나리오 π = 0, 2, 4; 5.10절) | 리튬 달력 열화, GB 사업의 실제 건설비(비공개), 건설 중 이자율 |
 | 기술·비용 입력: Window 1 대표 크기·효율, 기술별 capex·opex·repex·잔존가치 세 경우와 그것이 정하는 floor·cap(4.4절) | 엔진 운전량(사이클)에 맞춘 보강비, 가상 자산의 수익 경로와 합쳐 IRR·소비자 부담 분포 |
 | 수익 경로에 cap-and-floor 적용, IRR·소비자 부담 | 풍력·수요 예측 기반 롤링 (정보 수준 3) |
-| 가격 결측 자동 감시와 처리 기록 | (구조층의 할 수 있는 것과 못 하는 것은 8장. M3a 기상연도 15개 해 완료(8.13), 2035·S2·S3·cap-and-floor 꺾인 목적함수는 아직) |
+| 가격 결측 자동 감시와 처리 기록 | (구조층의 할 수 있는 것과 못 하는 것은 8장. M3a 기상연도 15개 해·M3c+S3 완료(8.13), 2035·S2는 아직) |
 
 BM 층은 3.5절에 구현했고, 검증 결과는 5.6절에 있습니다. BM 기회는 실제로 지시받은 물량에 기대므로, "새 자산이 들어오면 지시 물량을 나눠 갖는다"는 잠식 효과는 빠집니다. 그 효과는 구조층에서 다룹니다.
 
@@ -948,10 +948,10 @@ BM 층은 3.5절에 구현했고, 검증 결과는 5.6절에 있습니다. BM �
 | `gbess/finance/costs.py`, `config/costs.yaml` | 기술·비용 입력 → 2025년 실질 £의 capex·opex·repex·잔존가치·가변비용 (4.4절). 출처 `literature/sources/tech/TECH_SOURCES.md` |
 | `literature/sources/ldes/window1_projects.csv` | Ofgem Window 1 신청 사업 73건(MW·시간·RTE·첫 운전·선정 여부, 쪽 번호) |
 | `data/raw/macro/` | CPIH 지수(ONS L522)와 연평균 환율(영국은행) |
-| `tests/` | 이 문서의 예제와 불변식 62개 + 구조층(`test_system_*.py`, 손계산 E1~E4는 `docs/notes/model_examples_KO.md`) 63개 = 125개. 구조층 파일 지도는 8.15절 |
+| `tests/` | 이 문서의 예제와 불변식 62개 + 구조층(`test_system_*.py`, 손계산 E1~E4는 `docs/notes/model_examples_KO.md`) 73개 = 135개. 구조층 파일 지도는 8.15절 |
 
 ```bash
-.venv/bin/python -m pytest -q tests                       # 시험 125개
+.venv/bin/python -m pytest -q tests                       # 시험 135개
 .venv/bin/python -m gbess.finance.costs                   # 기술·비용 표 (몇 초)
 .venv/bin/python -m gbess.realized.psh --start 2016-09 --end 2026-10
 .venv/bin/python -m gbess.realized.ancillary
@@ -1154,17 +1154,22 @@ V4가 떨어진 이유를 생각해 보세요. 이 모형은 인터커넥터가 
 ### 8.13 M3: 기상연도를 늘린 결과(M3a)와 다음 단계
 
 - M3는 단계로 나눠 따로 사전등록합니다([`notes/m3_prereg_draft_KO.md`](notes/m3_prereg_draft_KO.md)).
-- **M3a**(2026-11-06 승인, 같은 날 계산 완료): 2030년 모형을 기상연도 **2010~2024년 15개 해**로 돌렸습니다([`notes/m3a_results_KO.md`](notes/m3a_results_KO.md)).
+- **M3a**(2026-11-06 승인, 같은 날 계산 완료, 11-07 수요 자료 정제 뒤 8개 해 다시 계산): 2030년 모형을 기상연도 **2010~2024년 15개 해**로 돌렸습니다([`notes/m3a_results_KO.md`](notes/m3a_results_KO.md)).
   - M3a에는 go/no-go가 없습니다. 아래는 보고 값이고 판정이 아닙니다.
-  - **D_lo ×1.0**: 중앙값 £36.9m, 범위 19.0(2020)~143.9(2018). M(£25m) 이상인 해 13개, 3M(£75m) 이상은 2018 하나. 2013(47.4)은 15개 중 위에서 4번째입니다.
-  - ×1.2는 3M 이상인 해가 없습니다(최대 37.3). ×0.8은 15개 해 모두 묶은 저장 이탈이 있고, 그중 4개 해(2016·2017·2021·2022)는 검산이 깨져 "비교 불가"입니다(8.7과 같은 이유).
+  - **D_lo ×1.0**: 중앙값 £34.0m, 범위 19.0(2020)~144.1(2018). M(£25m) 이상인 해 12개, 3M(£75m) 이상은 2018 하나. 2013(47.4)은 15개 중 위에서 3번째입니다.
+  - ×1.2는 3M 이상인 해가 없습니다(최대 37.3). ×0.8은 15개 해 모두 묶은 저장 이탈이 있고, 그중 4개 해(2016·2017·2021·2022)는 검산이 깨져 "비교 불가"입니다(8.7과 같은 이유). 연구자 결정으로 뺀 값(중앙값 42.3, 11개 해)을 주 값으로, 넣은 값(99.2, 15개 해)을 함께 냅니다.
   - **설계안 순위**: S1b는 14개 해에서 가장 비쌉니다. S0과 S1a는 대부분 £10m 안에서 엎치락뒤치락해서, 계통 총비용 순위가 2013과 같은 해는 5개뿐입니다. 소비자 지급 순위는 11개 해에서 2013과 같습니다.
-  - **정전 비용**: 2018의 큰 D_lo(143.9)는 대부분 S0에서 생긴 정전 6.62 GWh × VoLL(£112.5m)입니다. S1a가 S0보다 크게 싼 해(2013·2018·2024)는 S0에 정전이 있는 해와 겹칩니다.
-- **M3c**(cap-and-floor 꺾인 목적함수)를 위해 Ofgem 면허·지침 초안(2026-07)을 원문으로 확인했습니다([`notes/m3c_licence_KO.md`](notes/m3c_licence_KO.md)).
-  - 충전 전기값과 순환 비용을 수익에서 빼고, floor를 노린 보류를 금지합니다.
-  - 그래서 floor 아래 사업자도 시장 이익 최대 운전(M1 가정)이 원문에 가장 가깝습니다.
-  - B6 같은 송전 제약에 대한 LDES 전용 규칙은 없습니다.
-- 나머지(2035년, S2 위치 신호, S3 운전 의무, 견고성 축)는 근거 자료를 확인한 뒤 사전등록합니다.
+  - **입력 자료 오류와 정제**: NESO 수요 자료에서 잉글랜드·웨일스 수요가 0이거나 전국 수요보다 큰 반시간 칸이 2010~2012·2014~2018에 1~4칸씩 있어, 그 시간 스코틀랜드 수요가 부풀었습니다(2013·2019~2025는 없음). 연구자 결정으로 그 칸의 스코틀랜드 몫을 앞뒤 칸으로 잇는 정제(`inputs.clean_ew`)를 넣고 8개 해를 다시 계산했습니다. 크게 바뀐 것은 2011년(D_lo 52.3 → 20.7)뿐이고 순위는 그대로입니다.
+  - **'충전 정전'**: 2013·2018·2024 S0의 큰 D_lo에는 북쪽 정전 비용이 들어 있습니다(2018은 6.63 GWh × VoLL = £112.7m). W1 북쪽 장주기가 전국 시장 계획대로 약 5.1 GW로 **충전**하는데 북쪽 바람이 거의 없어, 충전 전기가 B4를 넘어 북쪽으로 와야 하고 한도에 걸립니다. (iii)은 W1 북쪽 계획을 못 바꾸게 두므로 모형이 충전 대신 소비자 공급을 끊습니다. M1 주 결과(2013 D_lo 47.4)에도 이 몫 £18.0m가 들어 있었습니다.
+    - 연구자 결정으로 "정전을 막을 때만 W1 북쪽에 지시"하는 판(`min_shed`)을 함께 냅니다(보고만). 2013 S0 47.4 → 29.8, 2018 S0 144.1 → 31.3, 2024 S0 68.2 → 41.3, 모두 정전 0. 이 판으로 바꿔 넣으면 3M 이상인 해가 없어지고, S1a의 큰 이점(2013·2018·2024)도 대부분 사라집니다.
+- **M3c + S3**(2026-11-07 승인과 계산, [`notes/m3c_s3_results_KO.md`](notes/m3c_s3_results_KO.md)):
+  - Ofgem 면허·지침 초안(2026-07, [`notes/m3c_licence_KO.md`](notes/m3c_licence_KO.md))은 충전 전기값과 순환 비용을 수익에서 빼고 floor를 노린 보류를 금지합니다. 그래서 floor 아래 사업자는 운전 방식에 손익이 같고(무차별), 시장 이익 최대 운전(M1 가정, M3c 주 가정 (a))이 원문에 가장 가깝습니다. B6 같은 송전 제약에 대한 LDES 전용 규칙은 없습니다.
+  - **M3c**: 15개 해 × 네 설계안 × 16개 W1 사업 모두 수익이 floor 아래입니다(수익 ÷ floor 최대 0.71). 무차별 전제가 모든 해에서 성립합니다.
+  - **S3-제약시간**(제안 설계안): 전국 시장은 그대로 두고, B4나 B6가 어느 방향이든 한도에 닿는 시간(1년의 50~57%)에만 NESO가 W1 북쪽 장주기에 지시할 수 있게 합니다.
+    - D(S3) 중앙값 £15.7m(6.9~24.4). S0의 34.0을 대략 절반으로 줄이고, 15개 해 모두 M 아래입니다. 정전은 0입니다.
+    - 계통 총비용은 15개 해 모두 S3가 가장 쌉니다(일부는 구성상: 같은 계획에서 묶음만 풂). 소비자 지급도 15개 해 모두 S0보다 £3.3~14.4m 작습니다. floor 보전은 £7.2~10.1m 늘지만 재급전 지급이 더 줄어듭니다.
+    - 한계: NESO가 제약 시간에 1년을 내다본다고 둔 완전예측 값이라 '잘 됐을 때'입니다. 지시량(7.0~8.7 TWh)은 최소화하지 않은 한 해의 값이라 필요한 지시량이 아닙니다.
+- 나머지(M3a+, 2035년, S2 위치 신호, 견고성 축)는 근거 자료를 확인한 뒤 사전등록합니다.
 
 ### 8.14 읽을 때 늘 기억할 것
 
@@ -1180,7 +1185,7 @@ V4가 떨어진 이유를 생각해 보세요. 이 모형은 인터커넥터가 
 | --- | --- |
 | `gbess/system/network.py` | 구역망 자료(구역, 발전기, 저장, 한도), LP 조립, 경계 조류 |
 | `gbess/system/stage1.py` | 1단계 전국 시장 |
-| `gbess/system/redispatch.py` | 재급전 (i)·(ii)·(iii), D_lo·D_hi, 순차 재급전, `min_deviation` |
+| `gbess/system/redispatch.py` | 재급전 (i)·(ii)·(iii), D_lo·D_hi, 순차 재급전, `min_deviation`·`min_shed`, 제약 시간만 푸는 `free_hours`(S3) |
 | `gbess/system/planner.py` | 계획자 최적 S6 |
 | `gbess/system/designs.py` | 설계안 S1a·S1b·S5 |
 | `gbess/system/fleet.py`, `inputs.py` | 2030 설비(FES BB), 수요·이용률·한도 → `data/processed/system/` |
@@ -1189,8 +1194,9 @@ V4가 떨어진 이유를 생각해 보세요. 이 모형은 인터커넥터가 
 | `gbess/system/observed.py`, `backcast.py`, `era5_ncar.py` | M2: 관측 값, 2025년 재현, ERA5 NCAR 미러 |
 | `gbess/system/holdout.py` | V5 보류 표본 |
 | `gbess/system/interconnectors.py` | 인터커넥터 가격 수용 민감도 |
-| `gbess/system/m3a.py` | M3a 입력·작업 목록·요약·그림 |
-| `tests/test_system_*.py` | 손계산 E1~E4, 불변식, 검증 함수, M3a 요약 (63개) |
+| `gbess/system/m3a.py` | M3a 입력·작업 목록·요약·그림, 시간별 점검, 충전 정전 판 |
+| `gbess/system/s3.py` | M3c+S3: S3-제약시간 판, 요약, M3c 수익 ÷ floor |
+| `tests/test_system_*.py` | 손계산 E1~E4, 불변식, 검증 함수, M3a 요약·정전 시간 묶음·제약 시간 비율·충전 정전 판, S3 제약 시간 판(free_hours) (73개) |
 
 ```bash
 .venv/bin/python -m pytest -q tests/test_system_model.py          # 손계산 E1~E4 (몇 초)
@@ -1198,4 +1204,6 @@ V4가 떨어진 이유를 생각해 보세요. 이 모형은 인터커넥터가 
 .venv/bin/python -m gbess.system.run_m1 --mult 1.0 --designs S0 --label x1.0_S0    # 한 판, 약 35분
 .venv/bin/python -m gbess.system.backcast                           # 2025년 재현 (M2)
 .venv/bin/python -m gbess.system.m3a summary                        # M3a 요약과 그림 (results/system/m3a/)
+.venv/bin/python -m gbess.system.s3 run 2013                         # S3-제약시간 판 하나 (약 30분) → results/system/m3c_s3/
+.venv/bin/python -m gbess.system.s3 summary                          # M3c+S3 요약
 ```

@@ -1,0 +1,4 @@
+design,variant,limit_mult,system_cost,redispatch_cost,D,curtailment_mwh,status,seconds,fixed_deviation_mwh,wholesale,redispatch_payment,floor_topup,cap_clawback,consumer_payment,shed_mwh,plan,instructed_mwh,free_hours
+S6,-,1.0,1661425146.2695303,0.0,0.0,84426429.47045673,Optimization terminated successfully. (HiGHS Status 7: Optimal),20.8295989590697,0.0,,,,,,,,,
+S3,iii,1.0,1718070636.5788012,453795073.37306595,56645490.30927086,85162754.51522677,Optimization terminated successfully. (HiGHS Status 7: Optimal),34.0867682909593,9.999758709403934e-07,6268248529.691687,453795073.37306434,945805581.6441886,0.0,7667849184.70894,0.0,first_solve,6852562.228215955,4813.0
+S3,iii,1.0,1674877828.215654,410601000.7345214,13452681.9461236,84948901.11535202,Optimization terminated successfully. (HiGHS Status 7: Optimal),1979.1653715409338,1e-06,6268248529.691687,410601000.7345197,948922632.1156898,0.0,7627772162.541897,0.0,D_lo,8152531.988141397,4813.0

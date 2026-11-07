@@ -221,3 +221,24 @@ def test_sequential_invariants(seed):
     prev = np.hstack([e0, r.e[:, :-1]])
     assert np.allclose(r.e, prev + eta_c * r.ch - r.d / eta_d, atol=1e-5)
     assert r.extra["redispatch_cost"] == pytest.approx(r.cost - s1.cost)
+
+
+def test_min_shed_prefers_storage_deviation_over_load_shedding():
+    """충전 정전 판 (min_shed). 한 시간, 북쪽 수요 40, 남쪽 가스 £100, 한도 50. 묶은 북쪽 저장 계획: 30 충전.
+    북쪽에 필요한 것 40 + 30 = 70 > 수입 한도 50. min_deviation은 정전 20(LP가 풀리므로 이탈 0)을, min_shed는 충전을
+    10으로 줄여(이탈 20) 정전 0을 고른다. 비용: 북쪽 (40 − 정전 20) + 충전 30 = 수입 50 → 가스 50 × 100 = £5,000 + 정전
+    20 × 17,000 = £340,000 → £345,000 / 북쪽 40 + 충전 10 = 수입 50 → 가스 £5,000"""
+    from types import SimpleNamespace
+    net = Network(zones=["N", "S"], demand=[[40], [0]], limits=[50], gens=[Gen("gas_S", 1, 10_000, 100.0)],
+                  stores=[Store("ldes_N", 0, 30, 30, 100, soc0=0.0, tags=frozenset({"w1", "north"}))], terminal=None)
+    plan = SimpleNamespace(ch=np.array([[30.0]]), d=np.array([[0.0]]), cost=0.0)
+    a = redispatch(plan, net, "intertemporal", ["ldes_N"], infeasible="min_deviation")
+    assert a.shed.sum() == pytest.approx(20) and a.extra["fixed_deviation_mwh"] == pytest.approx(0, abs=1e-6)
+    assert a.cost == pytest.approx(345_000, abs=TOL)
+    b = redispatch(plan, net, "intertemporal", ["ldes_N"], infeasible="min_shed")
+    assert b.shed.sum() == pytest.approx(0, abs=1e-6) and b.extra["fixed_deviation_mwh"] == pytest.approx(20, abs=1e-3)
+    assert b.ch[0, 0] == pytest.approx(10, abs=1e-3) and b.cost == pytest.approx(5_000, abs=TOL)   # 이탈량 허용 오차(DEV_TOL)만큼
+    # 정전 없이 묶을 수 있는 예(E1)에서는 min_shed = strict
+    n1 = e1()
+    p1 = solve_stage1(n1)
+    assert redispatch(p1, n1, "gen_only", infeasible="min_shed").cost == pytest.approx(redispatch(p1, n1, "gen_only").cost, abs=1e-3)

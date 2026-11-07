@@ -107,7 +107,8 @@ def test_zone_demand_scales_to_annual_totals(tmp_path):
     from gbess.system.inputs import zone_demand
     import pandas as pd
     n = 8760 * 2
-    pd.DataFrame({"ND": np.full(n, 30.0), "ENGLAND_WALES_DEMAND": np.r_[np.full(n // 2, 20.0), np.full(n // 2, 26.0)],
+    # 스코틀랜드 몫 0.2(앞 절반)·0.1(뒤 절반): 정상 범위 안이라 오류 칸 정제(clean_ew)에 걸리지 않음
+    pd.DataFrame({"ND": np.full(n, 30.0), "ENGLAND_WALES_DEMAND": np.r_[np.full(n // 2, 24.0), np.full(n // 2, 27.0)],
                   "EMBEDDED_WIND_GENERATION": np.zeros(n), "EMBEDDED_SOLAR_GENERATION": np.zeros(n)}
                  ).to_csv(tmp_path / "d.csv", index=False)
     d = zone_demand({"N": 7.0, "S": 17.0, "EW": 235.0}, ["N", "S", "EW"], tmp_path / "d.csv")
@@ -208,3 +209,16 @@ def test_underlying_demand_shape(tmp_path):
     assert ew[0] == pytest.approx(90) and sc[0] == pytest.approx(10)
     ew, sc = demand_shapes(tmp_path / "d.csv", underlying=True)     # GB 120을 EW/ND = 0.9로 나눔
     assert ew[0] == pytest.approx(108) and sc[0] == pytest.approx(12)
+
+
+def test_clean_ew_by_hand():
+    from gbess.system.inputs import clean_ew
+    # ND 100씩, EW 90·0·88·90 → 스코틀랜드 몫 0.10·1.0·0.12·0.10. 둘째 칸(EW = 0)은 오류 → 몫을 0.10과 0.12 사이로 이어 0.11, EW 89
+    ew, bad = clean_ew([100, 100, 100, 100], [90, 0, 88, 90])
+    assert bad.tolist() == [False, True, False, False] and ew.tolist() == pytest.approx([90, 89, 88, 90])
+    # EW > ND(몫 −0.05)와 몫 0.30(> 0.25)도 오류. 끝 칸은 가장 가까운 정상 칸 몫(0.10)으로
+    ew, bad = clean_ew([100, 100, 100], [105, 90, 70])
+    assert bad.tolist() == [True, False, True] and ew.tolist() == pytest.approx([90, 90, 90])
+    # 오류가 없으면 그대로
+    ew, bad = clean_ew([100, 200], [90, 180])
+    assert not bad.any() and ew.tolist() == [90, 180]

@@ -41,6 +41,11 @@ CALIBRATION = "calibration_2013.json"   # 2013년에 정한 해상 정격 풍속
 #     6,885~8,026 MW) ÷ NESO 2025 배전망 풍력 용량 6,606 MW = 0.36~0.53의 가운데. 태양광 몫 = FES BB 2025 태양광 스코틀랜드 비율
 EMB_SCOT_WIND_SHARE = 0.445
 EMB_SCOT_SOLAR_SHARE = 0.045
+# (7) NESO Historic Demand Data의 ENGLAND_WALES_DEMAND 오류 칸 (2026-11-06 M3a 점검에서 발견, 연구자 결정 2026-11-06):
+#     EW ≤ 0, 또는 스코틀랜드 몫 (ND − EW) ÷ ND가 0 미만이나 SCOT_SHARE_MAX 초과인 반시간은 잘못 적힌 칸으로 보고, 그 몫을
+#     앞뒤의 정상 칸에서 선형으로 이어 EW를 다시 만든다. 0.25 = 정상 칸 최대(2010~2025, 0.155)보다 넉넉히 큰 값.
+#     2010~2012·2014~2018에 1~4칸씩 있고 2013·2019~2025에는 없다(그래서 M1·M2 입력은 바뀌지 않음)
+SCOT_SHARE_MAX = 0.25
 # (1') 스코틀랜드(N·S) 육상 풍력 이용률 배율 = 감축 전 실제 이용률 ÷ 모형 이용률 (2025년, ERA5 2025 같은 출력 곡선)
 #     감축 전 실제 = (DESNZ "Regional renewable electricity in 2025" 22.0 TWh + REF 스코틀랜드 육상 감축 3.948 TWh)
 #                   ÷ (10,421 MW × 8,760 h) = 28.43%.  모형 = 31.77% (gbess.system.backcast, FES 2025 설비 가중) → 0.895
@@ -72,15 +77,28 @@ OFFSHORE_SITES = {               # (위도, 경도). 2030년 운전 단지, 연�
 
 
 # ---------------------------------------------------------------------------------------------------------------
+def clean_ew(nd, ew, share_max=SCOT_SHARE_MAX):
+    """(7) EW 오류 칸을 스코틀랜드 몫의 선형 잇기로 고친다. 돌려주는 값: (고친 EW, 고친 칸 표시)."""
+    nd, ew = np.asarray(nd, float), np.asarray(ew, float)
+    share = (nd - ew) / nd
+    bad = (ew <= 0) | (share < 0) | (share > share_max)
+    if not bad.any():
+        return ew, bad
+    i = np.arange(len(nd))
+    share = share.copy()
+    share[bad] = np.interp(i[bad], i[~bad], share[~bad])
+    return nd * (1 - share), bad
+
+
 def demand_shapes(path=DEMAND, underlying="regional"):
     """(EW, 스코틀랜드) 1시간 평균 MW 모양, 길이 8,760 (윤년은 12월 31일을 뺌).
     underlying="regional" (주 결과, 2026-11-05 M2 V1 원인 점검 뒤 연구자 결정 ②): 실제 소비 GB = ND + 배전망 풍력 + 배전망
       태양광. 스코틀랜드 = (ND − EW) + EMB_SCOT_WIND_SHARE × 배전망 풍력 + EMB_SCOT_SOLAR_SHARE × 배전망 태양광, EW = 나머지.
     underlying=True (이전 판): 실제 소비를 시간마다 EW/ND 비율로 나눔. underlying=False (이전 2013 판): ND 그대로."""
     d = pd.read_csv(path)
-    ew = d["ENGLAND_WALES_DEMAND"].to_numpy(float)
-    sc = d["ND"].to_numpy(float) - ew
     nd = d["ND"].to_numpy(float)
+    ew, _ = clean_ew(nd, d["ENGLAND_WALES_DEMAND"].to_numpy(float))
+    sc = nd - ew
     gb = nd + d["EMBEDDED_WIND_GENERATION"].to_numpy(float) + d["EMBEDDED_SOLAR_GENERATION"].to_numpy(float)
     if underlying == "regional":
         sc = (np.clip(sc, 0, None) + EMB_SCOT_WIND_SHARE * d["EMBEDDED_WIND_GENERATION"].to_numpy(float)

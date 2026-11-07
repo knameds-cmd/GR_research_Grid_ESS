@@ -5,6 +5,7 @@
       mode="gen_only"      변형 (i)  : 저장은 모두 1단계 계획 그대로, 발전기(와 정전)만 조정
       mode="intertemporal" 변형 (ii) : 저장도 1년 전체에 걸쳐 다시 고름. fixed_units를 주면 그 저장만 1단계 계획에 묶음
                            변형 (iii): mode="intertemporal", fixed_units = W1 북쪽 사업
+                           S3-제약시간: 변형 (iii)에 free_hours(제약 시간 표시)를 주면 그 시간에는 W1 북쪽도 묶지 않음
       mode="sequential"    구간별 순차 재급전 (M1 조건부 판정용, 2026-11-05 연구자 위임으로 정의): NESO는 한 시간씩, 앞을 보지
                            않고 재급전한다. 그 시간에는 발전기와 모든 저장(W1 북쪽 포함)을 조정할 수 있다. 발전기는 한계비용,
                            저장은 1단계 시장 해의 물 가치(저장 수지 쌍대)로 값을 매긴다: 시간 t 끝에 남은 에너지 1 MWh는 1단계의
@@ -25,6 +26,10 @@
   "min_deviation" : 묶은 저장이 계획에서 벗어나는 양 Σ|Δch| + Σ|Δd| (MWh)를 먼저 최소화하고, 그 양을 넘지 않는 범위에서
                     비용을 최소화한다(사전식 두 번 풀이). 벗어난 양은 extra["fixed_deviation_mwh"]에 남긴다. 저장량은
                     벗어난 운전대로 물리적으로 바뀐다. 묶을 수 있으면 벗어난 양 0이라 strict와 같다
+  "min_shed"      : '충전 정전' 판 (M3a 결과 뒤 추가, 연구자 결정 2026-11-06, 보고만). 정전 변수가 있으면 LP는 늘 풀리므로
+                    min_deviation은 묶은 저장 대신 소비자 공급을 끊는다. 이 판은 "NESO는 정전을 막을 때만 묶은 저장에 지시"로 본다:
+                    사전식 세 번 풀이 ① 최종 운전의 정전량 최소(묶은 저장 이탈 허용) ② 그 정전량에서 이탈량 최소 ③ 비용 최소.
+                    정전이 없는 판에서는 ①이 0, ②가 0이라 min_deviation과 같다. 정전량은 extra["shed_min_mwh"]
 
 1단계 해가 여럿일 때 (spec.yaml degeneracy)
   redispatch_lo: "1단계 계획 + 재급전"을 한 LP로 묶어, 1단계 비용 ≤ C1* × (1 + 1e-6) 안에서 재급전 비용을 최소화 (D_lo, 정확)
@@ -37,7 +42,7 @@ from gbess.system.network import Dispatch
 from gbess.system.stage1 import REL_TOL, cost_cap_row, solve_stage1, stage1_extreme
 
 MODES = ("gen_only", "intertemporal", "sequential")
-INFEASIBLE = ("strict", "min_deviation")
+INFEASIBLE = ("strict", "min_deviation", "min_shed")
 DEV_TOL = 1e-6
 FPN_TIE = 0.01                     # £/MWh. 순차 재급전에서 저장이 1단계 계획에서 벗어나는 양에 붙이는 동률 깨기 비용
 
@@ -50,43 +55,55 @@ def _fixed_names(net, mode, fixed_units):
     raise ValueError(f"mode는 {MODES}")
 
 
-def _link(lp, net, b2, units, target, soft):
+def _link(lp, net, b2, units, target, soft, free=None):
     """b2의 units 충·방전을 target에 묶는다. target = (ch 배열들, d 배열들) 상수 또는 1단계 블록(b1).
-    soft면 이탈 변수(±)를 두고 그 번호를 돌려준다."""
+    free: (T,) bool. True인 시간에는 묶지 않는다(S3-제약시간). soft면 이탈 변수(±)를 두고 그 번호를 돌려준다."""
     names = net.store_names()
+    hrs = np.arange(net.T) if free is None else np.flatnonzero(~np.asarray(free, bool))
     dev = []
+    if len(hrs) == 0:
+        return np.array([], int)
     for u in units:
         i = names.index(u)
         for x2, tgt in ((b2.ch, "ch"), (b2.d, "d")):
-            terms = [(x2[i], 1.0)]
+            terms = [(x2[i][hrs], 1.0)]
             if isinstance(target, dict):
-                rhs = target[u][0 if tgt == "ch" else 1]
+                rhs = np.asarray(target[u][0 if tgt == "ch" else 1])[hrs]
             else:
-                rhs = np.zeros(net.T)
-                terms.append((getattr(target, tgt)[i], -1.0))
+                rhs = np.zeros(len(hrs))
+                terms.append((getattr(target, tgt)[i][hrs], -1.0))
             if soft:
-                pos, neg = lp.var((net.T,)), lp.var((net.T,))
+                pos, neg = lp.var((len(hrs),)), lp.var((len(hrs),))
                 terms += [(pos, -1.0), (neg, 1.0)]
                 dev += [pos, neg]
             lp.eq.add(rhs, terms)
     return np.concatenate(dev) if dev else np.array([], int)
 
 
-def _solve(lp, c, dev, infeasible):
-    """infeasible="min_deviation"이면 먼저 이탈량 최소, 그다음 그 이탈량 안에서 c 최소."""
+def _solve(lp, c, dev, infeasible, shed=None):
+    """infeasible="min_deviation"이면 먼저 이탈량 최소, 그다음 그 이탈량 안에서 c 최소.
+    "min_shed"면 그 앞에 shed(최종 운전의 정전 변수 번호) 합을 먼저 최소화한다."""
     if infeasible == "strict" or len(dev) == 0:
         return lp.solve(c_override=c), 0.0
+    secs = 0.0
+    if infeasible == "min_shed":
+        shed = np.asarray(shed).ravel()
+        c_shed = np.zeros(lp.n)
+        c_shed[shed] = 1.0
+        rs = lp.solve(c_override=c_shed)
+        secs += rs.seconds
+        lp.le.add([float(rs.x[shed].sum()) * (1 + DEV_TOL) + DEV_TOL], [(shed[None, :], 1.0)])
     c_dev = np.zeros(lp.n)
     c_dev[dev] = 1.0
     r0 = lp.solve(c_override=c_dev)
     dev_min = float(r0.x[dev].sum())
     lp.le.add([dev_min * (1 + DEV_TOL) + DEV_TOL], [(dev[None, :], 1.0)])
     r = lp.solve(c_override=c)
-    r.seconds += r0.seconds
+    r.seconds += r0.seconds + secs
     return r, float(r.x[dev].sum())
 
 
-def redispatch(plan, net, mode, fixed_units=None, infeasible="strict"):
+def redispatch(plan, net, mode, fixed_units=None, infeasible="strict", free_hours=None):
     if mode == "sequential":
         if fixed_units:
             raise ValueError("sequential은 모든 저장을 조정한다 (fixed_units 없음)")
@@ -98,8 +115,8 @@ def redispatch(plan, net, mode, fixed_units=None, infeasible="strict"):
     lp = LP()
     b2 = add_dispatch(lp, net, network=True)
     target = {u: (plan.ch[names.index(u)], plan.d[names.index(u)]) for u in units}
-    dev = _link(lp, net, b2, units, target, soft=infeasible == "min_deviation")
-    res, dev_mwh = _solve(lp, lp.cost_vector(), dev, infeasible)
+    dev = _link(lp, net, b2, units, target, soft=infeasible != "strict", free=free_hours)
+    res, dev_mwh = _solve(lp, lp.cost_vector(), dev, infeasible, b2.shed)
     out = read(net, res, b2, network=True)
     if dev_mwh > 0:
         out.prices = None          # 이탈량 제약이 걸린 풀이의 쌍대는 구역 가격이 아님
@@ -108,7 +125,8 @@ def redispatch(plan, net, mode, fixed_units=None, infeasible="strict"):
     return out
 
 
-def redispatch_lo(net, mode, fixed_units=None, c1=None, caps=None, rel_tol=REL_TOL, infeasible="strict"):
+def redispatch_lo(net, mode, fixed_units=None, c1=None, caps=None, rel_tol=REL_TOL, infeasible="strict",
+                  free_hours=None):
     """재급전 비용을 최소로 만드는 1단계 최적 계획과 그 재급전. extra['plan']에 그 1단계 계획."""
     if c1 is None:
         c1 = solve_stage1(net, caps=caps).cost
@@ -117,11 +135,11 @@ def redispatch_lo(net, mode, fixed_units=None, c1=None, caps=None, rel_tol=REL_T
     b1 = add_dispatch(lp, net, network=False, caps=caps)
     cost_cap_row(lp, b1, c1, rel_tol)
     b2 = add_dispatch(lp, net, network=True)
-    dev = _link(lp, net, b2, units, b1, soft=infeasible == "min_deviation")
+    dev = _link(lp, net, b2, units, b1, soft=infeasible != "strict", free=free_hours)
     c = np.zeros(lp.n)
     np.add.at(c, b2.cost_idx, b2.cost_coef)
     np.add.at(c, b1.cost_idx, -b1.cost_coef)
-    res, dev_mwh = _solve(lp, c, dev, infeasible)
+    res, dev_mwh = _solve(lp, c, dev, infeasible, b2.shed)
     plan = read(net, res, b1, network=False)
     final = read(net, res, b2, network=True)
     plan.prices = final.prices = None   # 이 결합 LP의 쌍대는 시장 가격이 아님

@@ -59,6 +59,10 @@ def test_summarize_by_hand():
     assert out["D_lo_x0.8"] == {"median": 35.0, "min": 20.0, "max": 50.0, "n": 2}
     assert out["years_D_lo_x0.8_ge_M"] == 1 and out["years_D_lo_x0.8_ge_3M"] == 0
     assert out["not_comparable_x0.8"] == [2015] and out["not_comparable_x1.0"] == []
+    # 비교 불가 판을 넣은 값도 따로 (20·50·300: 중앙 50, ≥ 25는 2개, ≥ 75는 1개). 비교 불가가 없는 ×1.0에는 *_all이 없음
+    assert out["D_lo_x0.8_all"] == {"median": 50.0, "min": 20.0, "max": 300.0, "n": 3}
+    assert out["years_D_lo_x0.8_ge_M_all"] == 2 and out["years_D_lo_x0.8_ge_3M_all"] == 1
+    assert "D_lo_x1.0_all" not in out
     # 2013 순위 (S0, S1a, S1b) = (2, 0, 1). 2015는 (1, 2, 0)으로 뒤집힘. 소비자 지급은 셋 다 같아 (0, 0, 0)으로 모두 유지
     assert out["rank_system_cost"] == {"reference_2013": (2, 0, 1), "same_as_2013": 2, "n": 3, "flipped_years": [2015]}
     assert out["rank_consumer_payment"]["same_as_2013"] == 3
@@ -69,3 +73,20 @@ def test_summarize_by_hand():
     assert out["D_lo_x1.0"]["n"] == 2 and out["D_lo_x1.0"]["median"] == 20.0
     assert out["rank_system_cost"] == {"reference_2013": (2, 0, 1), "same_as_2013": 2, "n": 2, "flipped_years": []}
     assert out["not_comparable_x1.0"] == [2015] and out["not_comparable_x0.8"] == []
+
+
+def test_shed_events_by_hand():
+    # 두 구역, 6시간. 정전: 1~2시(북 0, 남 10·20 MW), 4시(북 5, 남 0). 이어진 묶음 두 개
+    shed = [[0, 0, 0, 0, 5, 0], [0, 10, 20, 0, 0, 0]]
+    assert m3a.shed_events(shed) == [(1, 2, (0.0, 30.0)), (4, 4, (5.0, 0.0))]
+    # 반시간 단위(dt 0.5)면 MWh는 절반, 마지막 시간까지 이어진 묶음도 닫힘
+    assert m3a.shed_events([[0, 2, 2]], dt=0.5) == [(1, 2, (2.0,))]
+    assert m3a.shed_events([[0, 0]]) == []
+
+
+def test_constraint_share_by_hand():
+    # 경계 두 개, 4시간. 경계 1 조류 5·10·12·−3, 한도 10 → 10 이상인 시간 2개 = 0.5
+    flows = [[0, 0, 0, 0], [5, 10, 12, -3]]
+    assert m3a.constraint_share(flows, [4, 10], 1) == 0.5
+    # 시간별 한도(경계 1: 6·10·13·1)면 5 < 6, 10 ≥ 10, 12 < 13, −3 < 1 → 1개 = 0.25
+    assert m3a.constraint_share(flows, [[4, 4, 4, 4], [6, 10, 13, 1]], 1) == 0.25
