@@ -948,10 +948,10 @@ BM 층은 3.5절에 구현했고, 검증 결과는 5.6절에 있습니다. BM �
 | `gbess/finance/costs.py`, `config/costs.yaml` | 기술·비용 입력 → 2025년 실질 £의 capex·opex·repex·잔존가치·가변비용 (4.4절). 출처 `literature/sources/tech/TECH_SOURCES.md` |
 | `literature/sources/ldes/window1_projects.csv` | Ofgem Window 1 신청 사업 73건(MW·시간·RTE·첫 운전·선정 여부, 쪽 번호) |
 | `data/raw/macro/` | CPIH 지수(ONS L522)와 연평균 환율(영국은행) |
-| `tests/` | 이 문서의 예제와 불변식 62개 + 구조층(`test_system_*.py`, 손계산 E1~E4는 `docs/notes/model_examples_KO.md`) 73개 = 135개. 구조층 파일 지도는 8.15절 |
+| `tests/` | 이 문서의 예제와 불변식 62개 + 구조층(`test_system_*.py`, 손계산 E1~E4는 `docs/notes/model_examples_KO.md`) 77개 = 139개. 구조층 파일 지도는 8.15절 |
 
 ```bash
-.venv/bin/python -m pytest -q tests                       # 시험 135개
+.venv/bin/python -m pytest -q tests                       # 시험 139개
 .venv/bin/python -m gbess.finance.costs                   # 기술·비용 표 (몇 초)
 .venv/bin/python -m gbess.realized.psh --start 2016-09 --end 2026-10
 .venv/bin/python -m gbess.realized.ancillary
@@ -1169,6 +1169,9 @@ V4가 떨어진 이유를 생각해 보세요. 이 모형은 인터커넥터가 
     - D(S3) 중앙값 £15.7m(6.9~24.4). S0의 34.0을 대략 절반으로 줄이고, 15개 해 모두 M 아래입니다. 정전은 0입니다.
     - 계통 총비용은 15개 해 모두 S3가 가장 쌉니다(일부는 구성상: 같은 계획에서 묶음만 풂). 소비자 지급도 15개 해 모두 S0보다 £3.3~14.4m 작습니다. floor 보전은 £7.2~10.1m 늘지만 재급전 지급이 더 줄어듭니다.
     - 한계: NESO가 제약 시간에 1년을 내다본다고 둔 완전예측 값이라 '잘 됐을 때'입니다. 지시량(7.0~8.7 TWh)은 최소화하지 않은 한 해의 값이라 필요한 지시량이 아닙니다.
+  - **결과 뒤 추가 판 두 가지**(연구자 승인 2026-11-07, 보고만, 메모 8장):
+    - **순차판**(NESO가 한 시간씩 앞을 모르고 지시, 15개 해): W1 북쪽을 늘 묶으면 £255~601m, S3면 £218~294m. S3 효과 중앙 £72.1m로 완전예측(15.6)보다 커 보이지만, 거의 다 '묶어서 생긴 정전'(15개 해 중 13개)의 VoLL 값입니다(상관 0.999). 정전 몫을 빼면 £7.2~17.8m(중앙 14.3)로 완전예측과 거의 같습니다. 순차판 S3는 W1 북쪽을 늘 푼 값보다 £9~13m만 큽니다. 다만 제약 시간 밖에서도 저장량이 계획과 어긋나 해마다 2.3~3.1 TWh의 '어쩔 수 없는 이탈'이 생깁니다.
+    - **최소 지시량**(같은 비용에서 지시량 최소, 15개 해 중 8개 해만 끝남): 5.67~7.25 TWh(중앙 6.03), D_lo 판 지시량의 0.75~0.83배. W1 북쪽이 1년 내내 최대로 충전·방전한 양(89 TWh)의 약 7%입니다.
 - 나머지(M3a+, 2035년, S2 위치 신호, 견고성 축)는 근거 자료를 확인한 뒤 사전등록합니다.
 
 ### 8.14 읽을 때 늘 기억할 것
@@ -1195,8 +1198,8 @@ V4가 떨어진 이유를 생각해 보세요. 이 모형은 인터커넥터가 
 | `gbess/system/holdout.py` | V5 보류 표본 |
 | `gbess/system/interconnectors.py` | 인터커넥터 가격 수용 민감도 |
 | `gbess/system/m3a.py` | M3a 입력·작업 목록·요약·그림, 시간별 점검, 충전 정전 판 |
-| `gbess/system/s3.py` | M3c+S3: S3-제약시간 판, 요약, M3c 수익 ÷ floor |
-| `tests/test_system_*.py` | 손계산 E1~E4, 불변식, 검증 함수, M3a 요약·정전 시간 묶음·제약 시간 비율·충전 정전 판, S3 제약 시간 판(free_hours) (73개) |
+| `gbess/system/s3.py` | M3c+S3: S3-제약시간 판, 요약, M3c 수익 ÷ floor, 결과 뒤 추가 판(순차판·최소 지시량) |
+| `tests/test_system_*.py` | 손계산 E1~E4, 불변식, 검증 함수, M3a 요약·정전 시간 묶음·제약 시간 비율·충전 정전 판, S3 제약 시간 판(free_hours), S3 순차판·최소 지시량 판 (77개) |
 
 ```bash
 .venv/bin/python -m pytest -q tests/test_system_model.py          # 손계산 E1~E4 (몇 초)
@@ -1206,4 +1209,7 @@ V4가 떨어진 이유를 생각해 보세요. 이 모형은 인터커넥터가 
 .venv/bin/python -m gbess.system.m3a summary                        # M3a 요약과 그림 (results/system/m3a/)
 .venv/bin/python -m gbess.system.s3 run 2013                         # S3-제약시간 판 하나 (약 30분) → results/system/m3c_s3/
 .venv/bin/python -m gbess.system.s3 summary                          # M3c+S3 요약
+.venv/bin/python -m gbess.system.s3 extra 2013 seq                  # 추가 판: 순차판 (iii)·S3 (약 50초)
+.venv/bin/python -m gbess.system.s3 extra 2013 min                  # 추가 판: 최소 지시량 (80~127분, 2개 이하 동시)
+.venv/bin/python -m gbess.system.s3 extra-summary                    # extra_by_year.csv, extra_summary.json
 ```

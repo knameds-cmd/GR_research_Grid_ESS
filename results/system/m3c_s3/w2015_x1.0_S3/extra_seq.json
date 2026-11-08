@@ -1,0 +1,17 @@
+{
+  "git_commit": "1b5840c0ff39015221d4c5ea1ce7a0aa93858bc8",
+  "spec_sha256": "af11bfb85f177e073de96200a4e27e675887027486de54f571f3dd6ea47a5133",
+  "input_sha256": {
+    "/Users/knameds/GR_research_Grid_ESS/data/processed/system/demand_2030_mw_2015.csv": "bf357ddb23c0961eee0b7fca8934c050e283f689e816cc978c5e5c030d1fde0f",
+    "/Users/knameds/GR_research_Grid_ESS/data/processed/system/cf_onshore_wind_2015.csv": "a3714ceabea5d7549975b7cf626d2b875013bcc4614bfe16d89f5c8c36492c16",
+    "/Users/knameds/GR_research_Grid_ESS/data/processed/system/cf_offshore_wind_2015.csv": "b82283f78e22c9c294d46f37189a4b25b69ce5ec341f42df8a9b2f656f68bbb4",
+    "/Users/knameds/GR_research_Grid_ESS/data/processed/system/cf_solar_2015.csv": "da2761e7c73a07df73063099c58486a9206c2d078340c4ae8b91bd7e1f94808f",
+    "/Users/knameds/GR_research_Grid_ESS/gbess/config/zones.yaml": "a6b951136c19fa3d84c877836e1e01205fbd325428a84cdeca12b222b11e6b21",
+    "/Users/knameds/GR_research_Grid_ESS/gbess/config/fleet_2030.yaml": "8fb30bfb29541b448300177003b3389b21bdda51ad13149ff1bb6bc93f4ad7aa",
+    "/Users/knameds/GR_research_Grid_ESS/data/raw/system/fes2025_bb1_v006.csv": "1d582ecd0a9cccdeb6cdbdb75a8d0accadf5dfdac7d52dc5485d9fb67370eb5f"
+  },
+  "weather_year": 2015,
+  "part": "seq",
+  "solve_seconds": 50.56811500014737,
+  "C_S6_from": "results/system/m3c_s3/w2015_x1.0_S3/results.csv"
+}

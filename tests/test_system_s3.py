@@ -8,7 +8,7 @@ import pytest
 from gbess.system.network import Gen, Network, Store
 from gbess.system.planner import solve_planner
 from gbess.system.redispatch import redispatch, redispatch_lo
-from gbess.system.s3 import bind_hours, instructed_mwh, ranking, revenue_floor, summarize, year_row
+from gbess.system.s3 import bind_hours, extra_year_row, instructed_mwh, ranking, revenue_floor, summarize, year_row
 
 TOL = 2.0
 
@@ -59,6 +59,73 @@ def test_redispatch_lo_free_hours_limits():
     assert all_free.cost == pytest.approx(solve_planner(net).cost, abs=TOL)
     none = redispatch_lo(net, "intertemporal", ["ldes_N"], free_hours=[False, False])
     assert none.cost == pytest.approx(redispatch_lo(net, "intertemporal", ["ldes_N"]).cost, abs=1e-6)
+
+
+def seq_plan(ch, d, e):
+    """순차 재급전용 손 계획(물 가치 0: 남은 에너지에 값이 없음)."""
+    ch, d, e = (np.atleast_2d(np.asarray(x, float)) for x in (ch, d, e))
+    return SimpleNamespace(ch=ch, d=d, e=e, cost=0.0,
+                           extra={"water_value": np.zeros_like(ch), "water_value_end": np.zeros(len(ch))})
+
+
+def test_sequential_fixed_and_free_hours_by_hand():
+    """두 시간 예(위)를 순차판으로. 계획: 두 시간 모두 충전 30, 물 가치 0.
+    묶음(순차판 iii): 시간마다 가스 50 × £100 + 정전 20 × £17,000 = £345,000 → £690,000 (묶음 이탈 0, 정전을 고름).
+    S3 순차판(시간 0만 풂): 시간 0 충전 0 → 가스 40 × 100 = £4,000, 시간 1 £345,000 → £349,000.
+    모두 풂(기존 순차 재급전): 충전 0 → £8,000. 연말 저장량 차이는 물 가치 0이라 정산 0."""
+    net = two_hours()
+    plan = seq_plan([30, 30], [0, 0], [30, 60])
+    tied = redispatch(plan, net, "sequential", ["ldes_N"])
+    assert tied.cost == pytest.approx(690_000, abs=TOL)
+    assert tied.extra["fixed_deviation_mwh"] == pytest.approx(0, abs=1e-6)
+    one = redispatch(plan, net, "sequential", ["ldes_N"], free_hours=[True, False])
+    assert one.cost == pytest.approx(349_000, abs=TOL)
+    assert one.ch[0].tolist() == pytest.approx([0, 30], abs=1e-6)
+    assert redispatch(plan, net, "sequential").cost == pytest.approx(8_000, abs=TOL)
+
+
+def test_sequential_fixed_needs_deviation_by_hand():
+    """한 시간. 북쪽 수요 10, 수출 한도 50, 묶은 방전 계획 80 → 북쪽에서 쓸 수 있는 건 60뿐이라 이탈 20이 꼭 필요.
+    이탈량 최소(20) 뒤 비용 최소: 방전 60, 남쪽 가스 100 − 50 = 50 → £5,000."""
+    net = Network(zones=["N", "S"], demand=[[10], [100]], limits=[50], gens=[Gen("gas_S", 1, 10_000, 100.0)],
+                  stores=[Store("ldes_N", 0, 100, 100, 100, soc0=1.0)], terminal=None)
+    r = redispatch(seq_plan([0], [80], [20]), net, "sequential", ["ldes_N"])
+    assert r.extra["fixed_deviation_mwh"] == pytest.approx(20, abs=1e-4)
+    assert r.d[0, 0] == pytest.approx(60, abs=1e-4)
+    assert r.cost == pytest.approx(5_000, abs=TOL)
+
+
+def test_min_instruction_by_hand():
+    """E1 (test_system_model). 1단계 계획: t1 충전 50, t2 방전 50 (하나뿐). 계획자 최적: t1 충전 100, t2 방전 100.
+    두 시간 다 풂: 계획이 하나라면 최소 지시량 = |100 − 50| + |100 − 50| = 100 MWh. 다만 1단계 계획은 C1 × (1 + 1e-6)
+    (C1 ≈ £20,000 → 여유 £0.02) 안에서 함께 고르므로, t1 가스로 2 MWh 더 충전하고 t2에 2 MWh 더 방전하는 계획(추가 비용
+    2 × TIE £0.01 = £0.02)도 된다 → 지시량 |100 − 52| × 2 = 96 MWh. 비용 = 계획자 최적.
+    t1만 풂(t2는 방전 50에 묶임): t1 충전 50~100 모두 같은 비용(남는 에너지는 쓸 데 없음) → 최소 지시량 0."""
+    from tests.test_system_model import e1
+    net = e1()
+    both = redispatch_lo(net, "intertemporal", ["ldes_N"], free_hours=[True, True], min_instruction=True)
+    assert both.extra["instructed_min_mwh"] == pytest.approx(96, abs=1e-3)
+    assert instructed_mwh(both.extra["plan"], both, [0]) == pytest.approx(96, abs=1e-3)
+    assert both.cost == pytest.approx(solve_planner(net).cost, abs=TOL)
+    one = redispatch_lo(net, "intertemporal", ["ldes_N"], free_hours=[True, False], min_instruction=True)
+    assert one.extra["instructed_min_mwh"] == pytest.approx(0, abs=1e-3)
+    assert instructed_mwh(one.extra["plan"], one, [0]) == pytest.approx(0, abs=1e-3)
+    ref = redispatch_lo(net, "intertemporal", ["ldes_N"], free_hours=[True, False])
+    assert one.cost == pytest.approx(ref.cost, abs=TOL)
+
+
+def test_extra_year_row_by_hand():
+    """D(S0) 40, D(S3) 15 → 완전예측 효과 25. 순차판 iii 300, S3 240 → 순차판 효과 60, 늘 풂(기존 D_seq) 230 → S3 − 늘 풂 10.
+    지시량: D_lo 판 8 TWh(= 8,000 GWh), 최소 6 TWh → 비율 0.75."""
+    s3_row = {"D_S0": 40.0, "D_S3": 15.0, "instructed_gwh_S3": 8_000.0}
+    seq = pd.DataFrame([dict(case="seq_iii", D=300.0, shed_mwh=5.0, fixed_deviation_mwh=1.0, instructed_mwh=1e5),
+                        dict(case="seq_S3", D=240.0, shed_mwh=0.0, fixed_deviation_mwh=2e6, instructed_mwh=9e6)])
+    mn = pd.DataFrame([dict(case="D_lo_min_instruction", D=15.0, instructed_mwh=6e6)])
+    r = extra_year_row(s3_row, seq, mn, 230.0)
+    assert r["foresight_gain_S3"] == pytest.approx(25) and r["seq_gain_S3"] == pytest.approx(60)
+    assert r["seq_S3_minus_all_free"] == pytest.approx(10) and r["instructed_twh_seq_S3"] == pytest.approx(9)
+    assert r["instructed_min_twh_S3"] == pytest.approx(6) and r["instructed_min_share"] == pytest.approx(0.75)
+    assert "D_seq_iii" not in extra_year_row(s3_row, None, None, 230.0)
 
 
 def test_year_row_ranking_summary_by_hand():

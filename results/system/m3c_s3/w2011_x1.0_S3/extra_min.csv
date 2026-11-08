@@ -1,0 +1,2 @@
+weather_year,limit_mult,case,system_cost,D,redispatch_cost,shed_mwh,fixed_deviation_mwh,instructed_mwh,free_hours,seconds,instructed_min_mwh,redispatch_cost_min
+2011,1.0,D_lo_min_instruction,1593582957.486846,7.594046845918656,394985284.3253012,0.0,1e-06,5673383.152752228,4926,5379.92868124973,5673383.152752226,394984085.7287277

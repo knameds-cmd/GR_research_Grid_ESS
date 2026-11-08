@@ -14,6 +14,9 @@
                            (저장이 BM에 기회비용 단가를 낸다는 관행. 앞을 보지 않으므로 계획자 최적보다 비싸질 수 있다)
                            지시가 없으면 발전소는 제출한 계획(FPN = 1단계 계획)을 따르므로, 저장이 계획에서 벗어나는 양에 MWh당
                            FPN_TIE(£0.01)를 붙여 같은 비용의 해 중에서는 계획을 따르게 한다. 이 몫은 비용 집계에 넣지 않는다.
+                           fixed_units를 주면 그 저장은 시간마다 1단계 계획에 묶는다(순차판 (iii)). free_hours를 주면 그 시간에는
+                           묶지 않는다(순차판 S3, M3c+S3 추가 판, 연구자 승인 2026-11-07, 보고만). 묶은 저장 때문에 그 시간을 풀 수
+                           없으면 min_deviation처럼 이탈량을 먼저 최소화한다(이탈량은 extra["fixed_deviation_mwh"]).
 
 조정 단가는 한계비용, 상향·하향 대칭이다. 그러면 "Σ c·(u − w)를 최소화"하는 것은 "최종 운전의 비용을 최소화"하는 것과
 같으므로 최종 운전을 변수로 둔다. 재급전 비용 = 최종 운전 비용 − 1단계 계획 비용 (실제 BM 단가보다 낮을 수 있어 하한).
@@ -31,6 +34,11 @@
                     사전식 세 번 풀이 ① 최종 운전의 정전량 최소(묶은 저장 이탈 허용) ② 그 정전량에서 이탈량 최소 ③ 비용 최소.
                     정전이 없는 판에서는 ①이 0, ②가 0이라 min_deviation과 같다. 정전량은 extra["shed_min_mwh"]
 
+최소 지시량 (redispatch_lo(…, min_instruction=True), M3c+S3 추가 판, 연구자 승인 2026-11-07, 보고만)
+  D_lo 결합 LP는 비용만 최소화해서, 같은 비용의 해 중 묶음을 푼 저장(free_hours의 fixed_units)을 크게 다시 짜는 해를 고를
+  수 있다. 이 판은 D_lo를 푼 뒤 "재급전 비용 ≤ 최솟값 + C1 × rel_tol" 안에서 그 저장의 지시량 Σ|Δch| + |Δd|(1단계 계획 대비,
+  1단계 계획도 C1 × (1 + rel_tol) 안에서 함께 고름)를 최소화한다. 지시량은 extra["instructed_min_mwh"]
+
 1단계 해가 여럿일 때 (spec.yaml degeneracy)
   redispatch_lo: "1단계 계획 + 재급전"을 한 LP로 묶어, 1단계 비용 ≤ C1* × (1 + 1e-6) 안에서 재급전 비용을 최소화 (D_lo, 정확)
   redispatch_hi: 1단계 극단 계획 두 개(extreme_units의 충전 최소 / 방전 최대)에 각각 재급전을 풀어 큰 쪽 (D_hi, 근사)
@@ -45,6 +53,7 @@ MODES = ("gen_only", "intertemporal", "sequential")
 INFEASIBLE = ("strict", "min_deviation", "min_shed")
 DEV_TOL = 1e-6
 FPN_TIE = 0.01                     # £/MWh. 순차 재급전에서 저장이 1단계 계획에서 벗어나는 양에 붙이는 동률 깨기 비용
+SEQ_FIXED_PENALTY = 1e6            # £/MWh. 순차판에서 묶은 저장의 이탈 비용(첫 풀이). 이탈이 남으면 사전식으로 다시 푼다
 
 
 def _fixed_names(net, mode, fixed_units):
@@ -105,9 +114,7 @@ def _solve(lp, c, dev, infeasible, shed=None):
 
 def redispatch(plan, net, mode, fixed_units=None, infeasible="strict", free_hours=None):
     if mode == "sequential":
-        if fixed_units:
-            raise ValueError("sequential은 모든 저장을 조정한다 (fixed_units 없음)")
-        return redispatch_sequential(plan, net)
+        return redispatch_sequential(plan, net, fixed_units=fixed_units, free_hours=free_hours)
     if infeasible not in INFEASIBLE:
         raise ValueError(f"infeasible는 {INFEASIBLE}")
     names = net.store_names()
@@ -126,8 +133,9 @@ def redispatch(plan, net, mode, fixed_units=None, infeasible="strict", free_hour
 
 
 def redispatch_lo(net, mode, fixed_units=None, c1=None, caps=None, rel_tol=REL_TOL, infeasible="strict",
-                  free_hours=None):
-    """재급전 비용을 최소로 만드는 1단계 최적 계획과 그 재급전. extra['plan']에 그 1단계 계획."""
+                  free_hours=None, min_instruction=False):
+    """재급전 비용을 최소로 만드는 1단계 최적 계획과 그 재급전. extra['plan']에 그 1단계 계획.
+    min_instruction: 그 비용 안에서 free_hours의 fixed_units 지시량을 최소화한 해를 돌려준다(모듈 머리말)."""
     if c1 is None:
         c1 = solve_stage1(net, caps=caps).cost
     units = _fixed_names(net, mode, fixed_units)
@@ -136,16 +144,34 @@ def redispatch_lo(net, mode, fixed_units=None, c1=None, caps=None, rel_tol=REL_T
     cost_cap_row(lp, b1, c1, rel_tol)
     b2 = add_dispatch(lp, net, network=True)
     dev = _link(lp, net, b2, units, b1, soft=infeasible != "strict", free=free_hours)
+    ins = np.array([], int)
+    if min_instruction:
+        if free_hours is None:
+            raise ValueError("min_instruction에는 free_hours가 필요")
+        ins = _link(lp, net, b2, units, b1, soft=True, free=~np.asarray(free_hours, bool))   # 푼 시간의 |Δ| (비용 0)
     c = np.zeros(lp.n)
     np.add.at(c, b2.cost_idx, b2.cost_coef)
     np.add.at(c, b1.cost_idx, -b1.cost_coef)
     res, dev_mwh = _solve(lp, c, dev, infeasible, b2.shed)
+    r_min = float(c @ res.x)
+    if min_instruction:
+        nz = np.flatnonzero(c)
+        lp.le.add([r_min + abs(c1) * rel_tol], [(nz[None, :], c[nz])])
+        c_ins = np.zeros(lp.n)
+        c_ins[ins] = 1.0
+        if len(dev):
+            c_ins[dev] = 1.0
+        r2 = lp.solve(c_override=c_ins)
+        r2.seconds += res.seconds
+        res = r2
     plan = read(net, res, b1, network=False)
     final = read(net, res, b2, network=True)
     plan.prices = final.prices = None   # 이 결합 LP의 쌍대는 시장 가격이 아님
     final.extra.update(redispatch_cost=final.cost - plan.cost, stage1_cost=plan.cost, mode=mode,
                        fixed_units=sorted(units), plan=plan, infeasible=infeasible,
                        fixed_deviation_mwh=dev_mwh * net.dt)
+    if min_instruction:
+        final.extra.update(redispatch_cost_min=r_min, instructed_min_mwh=float(res.x[np.concatenate([ins, dev])].sum()) * net.dt)
     return final
 
 
@@ -164,8 +190,9 @@ def redispatch_hi(net, mode, extreme_units, fixed_units=None, c1=None, caps=None
     return best
 
 
-def redispatch_sequential(plan, net, log_every=None):
-    """구간별 순차 재급전 (모듈 머리말). plan은 쌍대(water_value)가 있는 1단계 첫 풀이여야 한다."""
+def redispatch_sequential(plan, net, log_every=None, fixed_units=None, free_hours=None):
+    """구간별 순차 재급전 (모듈 머리말). plan은 쌍대(water_value)가 있는 1단계 첫 풀이여야 한다.
+    fixed_units: 시간마다 계획에 묶을 저장. free_hours: (T,) bool, True인 시간에는 묶지 않음."""
     if "water_value" not in plan.extra:
         raise ValueError("1단계 계획에 물 가치(water_value)가 없음: solve_stage1의 첫 풀이를 넘길 것")
     import time
@@ -177,6 +204,9 @@ def redispatch_sequential(plan, net, log_every=None):
     e_prev = np.array([s.soc0 * s.e_mwh for s in net.stores])
     p, ch, d, e = np.zeros((G, T)), np.zeros((S, T)), np.zeros((S, T)), np.zeros((S, T))
     shed, flows = np.zeros((Z, T)), np.zeros((Z - 1, T))
+    fixed = [k for k, s in enumerate(net.stores) if s.name in set(fixed_units or [])]
+    free = np.zeros(T, bool) if free_hours is None else np.asarray(free_hours, bool)
+    fixed_dev = 0.0
     for t in range(T):
         gens = [Gen(g.name, g.zone, 1.0, gcost[i, t], [ub[i, t]], g.renewable, lb[i, t]) for i, g in enumerate(net.gens)]
         stores = [Store(s.name, s.zone, s.p_ch, s.p_dis, s.e_mwh, s.eta_ch, s.eta_dis,
@@ -190,7 +220,17 @@ def redispatch_sequential(plan, net, log_every=None):
         value = wv[:, t + 1] if t + 1 < T else wv_end
         c[b.e[:, 0]] -= value
         c[dev] = FPN_TIE * dt
+        tied = np.array([] if free[t] else [dev[4 * k + j] for k in fixed for j in range(4)], int)   # 저장마다 ch±, d±
+        c[tied] = SEQ_FIXED_PENALTY * dt
         x = lp.solve(c_override=c).x
+        if len(tied) and x[tied].sum() > DEV_TOL:          # 묶은 채로는 풀 수 없는 시간: 이탈량 최소 → 비용 최소
+            c0 = np.zeros(lp.n)
+            c0[tied] = 1.0
+            m = float(lp.solve(c_override=c0).x[tied].sum())
+            lp.le.add([m * (1 + DEV_TOL) + DEV_TOL], [(tied[None, :], 1.0)])
+            c[tied] = FPN_TIE * dt
+            x = lp.solve(c_override=c).x
+        fixed_dev += float(x[tied].sum()) * dt
         p[:, t], ch[:, t], d[:, t], e[:, t] = x[b.p[:, 0]], x[b.ch[:, 0]], x[b.d[:, 0]], x[b.e[:, 0]]
         shed[:, t], flows[:, t] = x[b.shed[:, 0]], x[b.f[:, 0]]
         e_prev = e[:, t]
@@ -201,6 +241,7 @@ def redispatch_sequential(plan, net, log_every=None):
     run_cost = float((gc * p).sum() * dt + (vc * d).sum() * dt + net.voll * shed.sum() * dt)
     terminal_adj = float(-(wv_end * (e[:, -1] - plan.e[:, -1])).sum())
     out = Dispatch(p, ch, d, e, shed, run_cost + terminal_adj, flows, None, "sequential", time.perf_counter() - t0)
-    out.extra.update(redispatch_cost=out.cost - plan.cost, stage1_cost=plan.cost, mode="sequential", fixed_units=[],
-                     terminal_adjustment=terminal_adj, running_cost=run_cost, fixed_deviation_mwh=0.0)
+    out.extra.update(redispatch_cost=out.cost - plan.cost, stage1_cost=plan.cost, mode="sequential",
+                     fixed_units=sorted(net.stores[k].name for k in fixed), free_hours=int(free.sum()),
+                     terminal_adjustment=terminal_adj, running_cost=run_cost, fixed_deviation_mwh=fixed_dev)
     return out

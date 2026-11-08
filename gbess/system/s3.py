@@ -4,12 +4,22 @@ M3c + S3 (spec scenarios_m3.m3c_s3, 연구자 승인 2026-11-07). M3a의 15개 �
     .venv/bin/python -m gbess.system.s3 run 2018          # S3-제약시간 판 하나 → results/system/m3c_s3/w2018_x1.0_S3/
     .venv/bin/python -m gbess.system.s3 jobs              # 15개 해 실행 명령 목록 (8개 동시에 돌림)
     .venv/bin/python -m gbess.system.s3 summary           # summary_by_year.csv, summary.json, m3c_revenue_floor.csv
+    .venv/bin/python -m gbess.system.s3 extra 2018 seq    # 추가 판 (연구자 승인 2026-11-07, 보고만): 순차판 (iii)·S3
+    .venv/bin/python -m gbess.system.s3 extra 2018 min    # 추가 판: S3 D_lo의 최소 지시량
+    .venv/bin/python -m gbess.system.s3 extra-jobs        # 15개 해 × 두 판 실행 명령 목록
+    .venv/bin/python -m gbess.system.s3 extra-summary     # extra_by_year.csv, extra_summary.json
 
 S3-제약시간: 1단계(전국 시장) S0 첫 풀이에서 B4나 B6의 암묵적 조류가 어느 방향이든 한도에 닿는 시간(|f| ≥ F)에만 NESO가
 W1 북쪽에 지시할 수 있다. 다른 시간에는 W1 북쪽은 시장 계획대로(재급전 변형 (iii)의 묶음). 1단계 계획은 S0과 같다(S3는
 시장 단계를 바꾸지 않음). 재급전 비용은 (iii)처럼 첫 풀이 판과 D_lo(결합 LP) 판을 낸다. 지시 이탈은 비용 기준으로 정산
 (payments_national 그대로). 정전 처리는 M3a와 같은 min_deviation, 정전이 남으면 min_shed 판을 함께 낸다.
 M3c 주 가정 (a): floor 아래 운전 = 시장 이익 최대 운전 = M1·M3a 그대로이므로 새 계산 없이 수익 ÷ floor 분포만 낸다.
+
+추가 판 두 가지 (사전등록 뒤 결과를 보고 더한 판, 연구자 승인 2026-11-07, 보고만. spec changelog):
+  seq  순차판. NESO가 한 시간씩 앞을 보지 않고 재급전(spec redispatch.sequential 그대로)하되, W1 북쪽은
+       seq_iii: 늘 1단계 첫 풀이 계획에 묶음 / seq_S3: 제약 시간에만 풂. 'S3의 순차판 효과' = D_seq_iii − D_seq_S3.
+       W1 북쪽을 늘 푼 기존 순차 재급전(D_seq, M3a)과 함께 본다. 세 값 모두 모든 저장의 앞을 못 보는 비용이 섞여 있다.
+  min  S3 D_lo 비용 안에서 W1 북쪽 지시량을 최소화(redispatch_lo min_instruction). '꼭 필요한 지시량'.
 """
 import json
 import sys
@@ -95,6 +105,79 @@ def run(year, mult=1.0, out_dir=None, log=print):
 
 def jobs(ys=None):
     return [f".venv/bin/python -m gbess.system.s3 run {y}" for y in (ys or years())]
+
+
+EXTRA_PARTS = ("seq", "min")
+
+
+def run_extra(year, part, mult=1.0, log=print):
+    """추가 판 하나(모듈 머리말). C(S6)은 같은 입력의 S3 판 results.csv에서 읽는다. → extra_{part}.csv, extra_{part}.json"""
+    from gbess.system.inputs import build_network_2030
+    from gbess.system.redispatch import redispatch, redispatch_lo
+    from gbess.system.run_m1 import SPEC, file_sha256, git_commit
+    from gbess.system.stage1 import solve_stage1
+    if part not in EXTRA_PARTS:
+        raise ValueError(f"part는 {EXTRA_PARTS}")
+    t0 = time.perf_counter()
+    out = s3_dir(year, mult)
+    base = pd.read_csv(out / "results.csv")
+    c6 = float(base.loc[base.design == "S6", "system_cost"].iloc[0])
+    net, meta = build_network_2030(weather_year=year)
+    n = net.scaled_limits(mult)
+    north = meta["w1_north"]
+    idx = [n.store_names().index(u) for u in north]
+    s0 = solve_stage1(n)
+    free = bind_hours(s0.flows, n.limits, meta["bind_boundaries"])
+    rows = []
+
+    def row(case, r, plan, **kw):
+        rows.append({"weather_year": year, "limit_mult": mult, "case": case, "system_cost": r.cost,
+                     "D": (r.cost - c6) / 1e6, "redispatch_cost": r.extra["redispatch_cost"],
+                     "shed_mwh": float(r.shed.sum() * n.dt), "fixed_deviation_mwh": r.extra["fixed_deviation_mwh"],
+                     "instructed_mwh": instructed_mwh(plan, r, idx, n.dt), "free_hours": int(free.sum()),
+                     "seconds": time.perf_counter() - t0, **kw})
+        log(f"{year} {case}: D £{rows[-1]['D']:.1f}m, 지시량 {rows[-1]['instructed_mwh'] / 1e6:.2f} TWh "
+            f"({rows[-1]['seconds']:.0f}s)")
+
+    if part == "seq":
+        for case, fr in (("seq_iii", None), ("seq_S3", free)):
+            row(case, redispatch(s0, n, "sequential", north, free_hours=fr), s0)
+    else:
+        lo = redispatch_lo(n, "intertemporal", north, c1=s0.cost, infeasible="min_deviation", free_hours=free,
+                           min_instruction=True)
+        row("D_lo_min_instruction", lo, lo.extra["plan"], instructed_min_mwh=lo.extra["instructed_min_mwh"],
+            redispatch_cost_min=lo.extra["redispatch_cost_min"])
+    pd.DataFrame(rows).to_csv(out / f"extra_{part}.csv", index=False)
+    record = {"git_commit": git_commit(), "spec_sha256": file_sha256(SPEC),
+              "input_sha256": {str(p): file_sha256(p) for p in meta["inputs"]}, "weather_year": year, "part": part,
+              "solve_seconds": time.perf_counter() - t0, "C_S6_from": str((out / "results.csv").relative_to(ROOT))}
+    (out / f"extra_{part}.json").write_text(json.dumps(record, indent=2, ensure_ascii=False), encoding="utf-8")
+    return rows
+
+
+def extra_jobs(ys=None, parts=EXTRA_PARTS):
+    return [f".venv/bin/python -m gbess.system.s3 extra {y} {p}" for p in parts for y in (ys or years())]
+
+
+def extra_year_row(s3_row, seq, mn, seq_all):
+    """한 해의 추가 판 보고 값(£m, TWh). s3_row: year_row 결과, seq·mn: extra_*.csv(DataFrame, 없으면 None),
+    seq_all: 기존 순차 재급전(W1 북쪽 늘 풂, with_W1N) D_seq £m."""
+    out = {"D_S0": s3_row["D_S0"], "D_S3": s3_row["D_S3"], "foresight_gain_S3": s3_row["D_S0"] - s3_row["D_S3"],
+           "D_seq_all_free": seq_all, "instructed_twh_S3": s3_row["instructed_gwh_S3"] / 1e3}
+    if seq is not None:
+        c = seq.set_index("case")
+        out.update(D_seq_iii=c.at["seq_iii", "D"], D_seq_S3=c.at["seq_S3", "D"],
+                   seq_gain_S3=c.at["seq_iii", "D"] - c.at["seq_S3", "D"],
+                   shed_mwh_seq_iii=c.at["seq_iii", "shed_mwh"], shed_mwh_seq_S3=c.at["seq_S3", "shed_mwh"],
+                   fixed_deviation_mwh_seq_iii=c.at["seq_iii", "fixed_deviation_mwh"],
+                   fixed_deviation_mwh_seq_S3=c.at["seq_S3", "fixed_deviation_mwh"],
+                   seq_S3_minus_all_free=c.at["seq_S3", "D"] - seq_all,
+                   instructed_twh_seq_S3=c.at["seq_S3", "instructed_mwh"] / 1e6)
+    if mn is not None:
+        r = mn.iloc[0]
+        out.update(instructed_min_twh_S3=r.instructed_mwh / 1e6, D_S3_min_instruction=r.D,
+                   instructed_min_share=r.instructed_mwh / (s3_row["instructed_gwh_S3"] * 1e3))
+    return out
 
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -189,6 +272,28 @@ def main(argv):
         run(int(argv[1]), float(argv[2]) if len(argv) > 2 else 1.0, log=lambda *x: print(*x, flush=True))
     elif argv[:1] == ["jobs"]:
         print("\n".join(jobs([int(a) for a in argv[1:]] or None)))
+    elif argv[:1] == ["extra"]:
+        run_extra(int(argv[1]), argv[2], log=lambda *x: print(*x, flush=True))
+    elif argv[:1] == ["extra-jobs"]:
+        print("\n".join(extra_jobs()))
+    elif argv[:1] == ["extra-summary"]:
+        base = pd.read_csv(OUT / "summary_by_year.csv", index_col="weather_year")
+        rows = {}
+        for y in years():
+            d = s3_dir(y)
+            seq = pd.read_csv(d / "extra_seq.csv") if (d / "extra_seq.csv").exists() else None
+            mn = pd.read_csv(d / "extra_min.csv") if (d / "extra_min.csv").exists() else None
+            sa = pd.read_csv(M1 / f"results_sequential_w1n_increment_{y}.csv")
+            sa = float(sa[(sa.limit_mult == 1.0) & (sa.fleet == "with_W1N")].D_seq.iloc[0])
+            s3_row = dict(base.loc[y])
+            s3_row["D_S0"] = s3_row["system_cost_S0"] - (s3_row["system_cost_S3"] - s3_row["D_S3"])
+            rows[y] = extra_year_row(s3_row, seq, mn, sa)
+        df = pd.DataFrame.from_dict(rows, orient="index").sort_index()
+        stats = {c: {"median": float(df[c].median()), "min": float(df[c].min()), "max": float(df[c].max()),
+                     "n": int(df[c].notna().sum())} for c in df.columns}
+        df.to_csv(OUT / "extra_by_year.csv", index_label="weather_year")
+        (OUT / "extra_summary.json").write_text(json.dumps(stats, indent=1, ensure_ascii=False))
+        print(df.round(2).to_string())
     elif argv[:1] == ["summary"]:
         m3a = json.loads((ROOT / "results" / "system" / "m3a" / "summary.json").read_text())
         rows, revs = {}, []
