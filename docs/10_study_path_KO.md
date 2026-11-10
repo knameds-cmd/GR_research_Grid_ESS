@@ -54,7 +54,7 @@
 | **지금 기준** | [`review_2026-11-04/`](../review_2026-11-04/) 재검토 문서 4개 | 01 사실·개념(6장이 가장 중요), 02 결정 20개와 이유, 03 진행 방법, 04 검증·go/no-go 기준(독립 에이전트) |
 | **지금 기준** | [`08_ldes_redesign_KO.md`](08_ldes_redesign_KO.md) 장주기 재설계 | 꼼꼼히 (질문, 두 층, 규칙 4유형) |
 | **지금 기준** | [`09_model_explained_KO.md`](09_model_explained_KO.md) 모델 해설 | 꼼꼼히 (모든 부품과 검증 결과). 구조층 A안은 8장 |
-| **지금 기준** | [`notes/`](notes/) 구조층 작업 메모 | 결과의 원본. 손계산 예제 `model_examples_KO.md`, 결과 `m1_results_KO.md`·`m1_conditional_KO.md`·`m2_validation_KO.md`, 다음 단계 `m3_prereg_draft_KO.md`·`m3c_licence_KO.md` |
+| **지금 기준** | [`notes/`](notes/) 구조층 작업 메모 | 결과의 원본. 손계산 예제 `model_examples_KO.md`, 결과 `m1_results_KO.md`·`m1_conditional_KO.md`·`m2_validation_KO.md`, 다음 단계 `m3_prereg_draft_KO.md`·`m3c_licence_KO.md`, 같은 질문을 다룬 기존 연구 `c1_related_work_KO.md` |
 | **지금 기준** | [`11_referee_review_KO.md`](11_referee_review_KO.md) 독립 심사 기록 | 1·4·5장 (판정, 말할 수 있는 것, 다음 작업) |
 | **지금 기준** | [`07_decisions_and_build_KO.md`](07_decisions_and_build_KO.md) 결정, 정밀 환경, 허점 점검표 | 4·5장 위주 |
 | 근거 자료 | [`literature/sources/ldes/FACTS.md`](../literature/sources/ldes/FACTS.md) | Ofgem 제도 숫자의 출처 (쪽 번호) |
